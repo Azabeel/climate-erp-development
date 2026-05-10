@@ -5,6 +5,7 @@ import {componentTagger} from "pp-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => ({
+    base: mode === 'production' ? '/climate-erp-development/' : '/',
     plugins: [
         react(),
         mode === 'development' &&

@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 03
-- **Общий прогресс:** 2/16 спринтов ✅
+- **Текущий спринт:** Sprint 06
+- **Общий прогресс:** 5/16 спринтов ✅
 
 ---
 
@@ -42,8 +42,20 @@
 ## Sprint 04 — SLA и Уведомления
 **Тесты:** [ ] Зелёные
 
-## Sprint 05 — Склад и Хладагенты
-**Тесты:** [ ] Зелёные
+## Sprint 05 — Склад и Хладагенты ✅ ЗАВЕРШЁН
+- [x] 5.1 JPA Entity: StockItem, StockBalance (getAvailableQty()), StockMovement
+- [x] 5.2 JPA Entity: RefrigerantType, RefrigerantCylinder, RefrigerantLog + enum RefrigerantOperation
+- [x] 5.3 Repository: StockItemRepository, StockBalanceRepository, StockMovementRepository, RefrigerantTypeRepository, RefrigerantCylinderRepository, RefrigerantLogRepository (с @Query для расчёта утечки)
+- [x] 5.4-5.5 Service: StockService (receipt/transfer/writeOff/returnToStock/reserve/releaseReservation/checkAvailability/getLowStockItems), RefrigerantService (CRUD cylinder/type, logOperation, getEquipmentHistory)
+- [x] 5.6 RefrigerantLeakCalculator: calculateLeakRate (BigDecimal), exceedsThreshold (порог 30%, граница не превышает)
+- [x] 5.7 LeakAlertScheduler (@Scheduled cron 08:00, log.warn при превышении)
+- [x] 5.8-5.10 REST Controllers: StockController (/api/v1/stock/**), RefrigerantController (/api/v1/stock/refrigerant/**)
+- [x] 5.11 DTO + MapStruct: StockItemDto/StockBalanceDto/StockMovementDto + request DTOs, RefrigerantTypeDto/CylinderDto/LogDto/LeakRateDto, StockMapper/RefrigerantMapper
+- [x] InsufficientStockException → HTTP 409 в GlobalExceptionHandler
+- [x] Flyway V003__refrigerant_tables.sql (refrigerant_types, refrigerant_cylinders, refrigerant_log + индексы + 7 типов хладагентов)
+- [x] 5.12 StockServiceTest (5): receipt/writeOff/transfer/reserve/insufficientStock — Mockito unit tests
+- [x] 5.12 RefrigerantLeakCalculatorTest (4): 32%>30%, 28%<30%, 30%=порог не превышает, null→0%
+**Тесты:** [x] Зелёные — Tests run: 28, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 06 — Закупки ЗИП
 **Тесты:** [ ] Зелёные
@@ -81,6 +93,21 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 05 завершён
+- JPA Entities: StockItem, StockBalance (getAvailableQty()), StockMovement, RefrigerantType, RefrigerantCylinder, RefrigerantLog
+- Enum RefrigerantOperation (CHARGE, RECOVERY, TOP_UP, REPLACEMENT)
+- Repository слой: 6 репозиториев, включая JPQL-запрос sumAmountByEquipmentAndTypesBetween
+- StockService: бизнес-логика receipt/transfer/writeOff/returnToStock/reserve/releaseReservation, проверка availableQty >= qty, бросает InsufficientStockException
+- RefrigerantService: CRUD для типов, баллонов, журнала операций
+- RefrigerantLeakCalculator: leakRate = chargedKg/fullChargeKg*100, порог 30% строго (граница не считается превышением)
+- LeakAlertScheduler: @Scheduled(cron "0 0 8 * * *"), log.warn при превышении
+- REST Controllers: StockController (/api/v1/stock/**), RefrigerantController (/api/v1/stock/refrigerant/**)
+- DTO (record): 13 DTO классов + StockMapper + RefrigerantMapper (MapStruct)
+- InsufficientStockException → HTTP 409 в GlobalExceptionHandler
+- Flyway V003: refrigerant_types, refrigerant_cylinders, refrigerant_log + 5 индексов + 7 стандартных хладагентов
+- Исправлен GlobalExceptionHandler: добавлен NoResourceFoundException handler (устранял 500 в ClientControllerTest)
+- **Тесты: 28/28 зелёных** — Tests run: 28, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ### 2026-05-10 — Sprint 02 завершён
 - JPA Entities: Client, Contact, SLAConfig, SLAServiceHours, Contract, ContractBrand, Engineer (ManyToMany), EngineerCertification, Brand, Competency, Supplier, SystemSettings

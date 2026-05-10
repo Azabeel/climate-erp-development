@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/claude/servis-klimat-dev && bash scripts/post-edit-hook.sh \"$CLAUDE_FILE_PATHS\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date '+%H:%M:%S')] Running: $CLAUDE_TOOL_INPUT\" >> /home/claude/servis-klimat-dev/PROGRESS.md"
+          }
+        ]
+      }
+    ]
+  }
+}

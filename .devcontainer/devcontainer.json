@@ -2,14 +2,6 @@
   "name": "АСУ СЦ Сервис Климат",
   "image": "mcr.microsoft.com/devcontainers/universal:2",
 
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest",
-      "enableNonRootDocker": "true",
-      "moby": true
-    }
-  },
-
   "forwardPorts": [5173, 8090, 5432, 6379, 15672],
   "portsAttributes": {
     "5173": { "label": "Фронтенд (React)", "onAutoForward": "openBrowser" },
@@ -17,7 +9,7 @@
     "15672": { "label": "RabbitMQ панель" }
   },
 
-  "postCreateCommand": "npm install && echo '✅ npm готов. Запустите: bash scripts/start-dev.sh'",
+  "postCreateCommand": "bash .devcontainer/install-services.sh && npm install && echo '✅ Готово! Запустите: bash scripts/start-dev.sh'",
 
   "customizations": {
     "vscode": {
@@ -26,8 +18,7 @@
         "redhat.vscode-xml",
         "bradlc.vscode-tailwindcss",
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
-        "ms-azuretools.vscode-docker"
+        "dbaeumer.vscode-eslint"
       ],
       "settings": {
         "editor.formatOnSave": true,

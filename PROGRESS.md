@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 04 ✅ завершён
-- **Общий прогресс:** 6/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 10)
+- **Текущий спринт:** Sprint 07 ✅ завершён
+- **Общий прогресс:** 7/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 10)
 
 ---
 
@@ -95,8 +95,22 @@
 - [x] 6.13 PurchaseStatusAggregatorTest (8): allReceived/partial/allNew/inTransit/ordered/empty/transferred/singleReceived
 **Тесты:** [x] Зелёные — Tests run: 79, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 07 — Финансы
-**Тесты:** [ ] Зелёные
+## Sprint 07 — Финансы и Маржинальность ✅ ЗАВЕРШЁН
+- [x] 7.1 CostCalculationService: calculateServiceRevenue (SUM price×qty), calculateMaterialsCost (SUM qty×unitPrice), calculateMargin, calculateMarginPercent (zero-safe), calculateAndUpdate (persists all 4 fields); stubs for labor/fuel/refrigerant/zip/overhead (Sprint 08)
+- [x] 7.2 Invoice JPA Entity: id, workOrderId, clientId, number (unique), totalAmount, status, issuedAt, dueDate, paidAt, @OneToMany lines, audit createdAt/updatedAt
+- [x] 7.3 InvoiceLine JPA Entity: id, invoice (ManyToOne), description, quantity, unitPrice, totalPrice, sortOrder
+- [x] 7.4 Act JPA Entity: id, workOrderId, invoiceId, clientId, number (unique), totalAmount, status, signedAt, createdAt
+- [x] 7.5 Flyway V006__finance_tables.sql: invoices, invoice_lines, acts + 5 индексов
+- [x] 7.6 InvoiceRepository: findByWorkOrderId, findByClientId+Pageable, existsByNumber
+- [x] 7.7 InvoiceLineRepository: findByInvoiceIdOrderBySortOrder
+- [x] 7.8 ActRepository: findByWorkOrderId, findByInvoiceId
+- [x] 7.9 InvoiceService: create (номер INV-{YEAR}-{SEQ:06d}, lines из service lines, issuedAt=now), findById, findAll(Pageable), findByWorkOrderId, markPaid (status=PAID, paidAt=now)
+- [x] 7.10 MarginUpdateListener: @EventListener → при COMPLETED/CLOSED вызывает costCalculationService.calculateAndUpdate()
+- [x] 7.11 DTO (record): InvoiceDto, MarginDto, CreateInvoiceRequest (@NotNull workOrderId/clientId, dueDate)
+- [x] 7.12 FinanceController: GET/POST /api/v1/finance/invoices, GET /api/v1/finance/invoices/{id}, PUT /api/v1/finance/invoices/{id}/paid, GET /api/v1/work-orders/{id}/margin
+- [x] 7.13 CostCalculationServiceTest (6): empty/twoServiceLines/servicesAndMaterials/claudeMdExample(1750@35%)/zeroRevenue/nullPriceSkipped
+- [x] 7.14 InvoiceServiceTest (6): generateNumber/sequentialNumbers/markPaid/findByIdNotFound/workOrderNotFound/numberFormat
+**Тесты:** [x] Зелёные — Tests run: 101, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 08 — HR и Зарплата
 **Тесты:** [ ] Зелёные
@@ -139,6 +153,19 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 07 завершён
+- CostCalculationService: calculateServiceRevenue/calculateMaterialsCost/calculateMargin/calculateMarginPercent(zero-safe)/calculateAndUpdate с persist; stubs для labor/fuel/refrigerant/zip/overhead → Sprint 08
+- Invoice, InvoiceLine, Act JPA entities с @AuditingEntityListener
+- InvoiceRepository, InvoiceLineRepository, ActRepository
+- InvoiceService: create (INV-{YEAR}-{SEQ:06d}, lines из WorkOrder.services, issuedAt=now), markPaid, findById/findAll/findByWorkOrderId
+- MarginUpdateListener: @EventListener → COMPLETED/CLOSED → calculateAndUpdate()
+- FinanceController: /api/v1/finance/invoices (GET/POST/GET/{id}/PUT paid), /api/v1/work-orders/{id}/margin
+- DTO (record): InvoiceDto, MarginDto, CreateInvoiceRequest
+- Flyway V006__finance_tables.sql: invoices + invoice_lines + acts + 5 индексов
+- CostCalculationServiceTest (6 тестов) + InvoiceServiceTest (6 тестов)
+- Ключевой кейс CLAUDE.md §3: revenue=5000, costPrice=3250 → margin=1750, marginPercent=35%
+- **Тесты: 101/101 зелёных** — Tests run: 101, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ### 2026-05-10 — Sprint 04 завершён
 - SLACalculator: рабочие часы с перебором окон по dayOfWeek+timeFrom/timeTo, поиск следующего окна до 7 дней вперёд, fallback calendar hours при нулевом config

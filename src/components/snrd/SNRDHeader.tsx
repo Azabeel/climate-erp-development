@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { useQuery } from '@tanstack/react-query';
 
 interface SNRDHeaderProps {
   activeTab: string;
@@ -37,6 +38,14 @@ const tabTitles: Record<string, string> = {
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
+  const { isFetching, isError, isSuccess } = useQuery({
+    queryKey: ['health'],
+    queryFn: () => fetch('/api/v1/work-orders?page=0&size=1').then(r => r.ok ? 'ok' : Promise.reject()),
+    retry: false,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+  const apiStatus = isFetching ? 'checking' : isSuccess ? 'online' : isError ? 'offline' : 'idle';
   const showCreateButton = [
     'applications',
     'work-orders',
@@ -68,6 +77,10 @@ const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full border" title="Статус подключения к API">
+            <span className={`w-2 h-2 rounded-full ${apiStatus === 'online' ? 'bg-green-500' : apiStatus === 'offline' ? 'bg-red-400' : 'bg-yellow-400 animate-pulse'}`} />
+            <span className="text-gray-500">{apiStatus === 'online' ? 'API' : apiStatus === 'offline' ? 'Демо' : '...'}</span>
+          </div>
           <Button variant="outline" size="sm">
             <Icon name="Download" size={16} className="mr-2" />
             Экспорт

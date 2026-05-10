@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 08 ✅ завершён
-- **Общий прогресс:** 8/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10)
+- **Текущий спринт:** Sprint 12 ✅ завершён
+- **Общий прогресс:** 9/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 12)
 
 ---
 
@@ -149,8 +149,18 @@
 ## Sprint 11 — EAM
 **Тесты:** [ ] Зелёные
 
-## Sprint 12 — Умное Планирование
-**Тесты:** [ ] Зелёные
+## Sprint 12 — Умное Планирование ✅ ЗАВЕРШЁН
+- [x] 12.2 PlanningScoreCalculator: формула SLA 40% + гео 30% + загрузка 20% + серт 10%
+- [x] 12.3 PlanningService: suggest() — топ-3 варианта, обычный и REQUIRES_TWO (поиск пар)
+- [x] 12.4 CapacityChecker: getCurrentLoad() + hasCapacity() по дате инженера
+- [x] 12.11 REST API: POST /api/v1/planning/suggest (SuggestRequest → List<EngineerSuggestionDto>)
+- [x] 12.12 REST API: POST /api/v1/planning/assign (AssignRequest → WorkOrderDto)
+- [x] 12.15 WeatherRiskAnalyzer: LOW/MEDIUM/HIGH по правилам температуры/ветра/осадков/indoor
+- [x] PlanningController, DTO: SuggestRequest, AssignRequest, EngineerSuggestionDto
+- [x] PlanningScoreCalculatorTest (9 тестов): включая CLAUDE.md пример 73 балла
+- [x] WeatherRiskAnalyzerTest (12 тестов): все правила включая indoor-исключение
+- [x] Stub travel distance (детерминированный, без OSRM) — готов к замене
+**Тесты:** [x] Зелёные — Tests run: 128, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 13 — Интеграции
 **Тесты:** [ ] Зелёные
@@ -167,6 +177,18 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 12 завершён
+- PlanningScoreCalculator: формула score = (slaFactor×40) + (geoFactor×30) + (loadFactor×20) + (certFactor×10); slaFactor: GREEN=1.0/YELLOW=0.5/RED=0.0/null=GREEN; geoFactor/loadFactor/certFactor зажаты в [0,1]
+- Ключевой тест из CLAUDE.md: GREEN+5km/10km+3/5+1.0 = 40+15+8+10 = 73.0 ✓
+- WeatherRiskAnalyzer: LOW/MEDIUM/HIGH по правилам temp/wind/precipitation; indoor всегда LOW
+- CapacityChecker: getCurrentLoad(engineerId, date) — считает активные наряды со scheduledStart на дату; hasCapacity() < maxCapacity
+- PlanningService: suggest() — загружает активных autoScheduler-инженеров, скорит через PlanningScoreCalculator, возвращает топ-3; для REQUIRES_TWO строит пары; stub travel distance детерминированный (UUID hash, 5-30km)
+- PlanningService: assign() — делегирует в WorkOrderService.assign()
+- PlanningController: POST /api/v1/planning/suggest, POST /api/v1/planning/assign
+- DTO: SuggestRequest, AssignRequest, EngineerSuggestionDto (пакет api/dto/planning/)
+- PlanningScoreCalculatorTest (9 тестов) + WeatherRiskAnalyzerTest (12 тестов) — все зелёные
+- **Тесты: 128/128 зелёных** — Tests run: 128, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ### 2026-05-10 — Sprint 07 завершён
 - CostCalculationService: calculateServiceRevenue/calculateMaterialsCost/calculateMargin/calculateMarginPercent(zero-safe)/calculateAndUpdate с persist; stubs для labor/fuel/refrigerant/zip/overhead → Sprint 08

@@ -31,3 +31,6 @@ target/
 *.jar
 *.war
 spring.log
+
+# Claude Code internals
+.claude/worktrees/

@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 13 ✅ завершён
-- **Общий прогресс:** 11/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 11, 12, 13)
+- **Текущий спринт:** Sprint 14 ✅ завершён
+- **Общий прогресс:** 12/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 11, 12, 13, 14)
 
 ---
 
@@ -197,8 +197,26 @@
 - [x] 13.14 OneCIntegrationServiceTest (2): isAvailable→false/syncWorkOrder_noThrow
 **Тесты:** [x] Зелёные — Tests run: 137, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 14 — ИИ-Агенты
-**Тесты:** [ ] Зелёные
+## Sprint 14 — ИИ-Агенты ✅ ЗАВЕРШЁН
+- [x] 14.1 JPA Entity: ErrorCode (маппинг на error_codes: id, brandId, modelPattern, code, displayText, descriptions/probableCauses/resolutionSteps JSONB, createdAt)
+- [x] 14.2 JPA Entity: AiConversation (ai_conversations: id, userId, sessionId, agentType, workOrderId, createdAt)
+- [x] 14.3 JPA Entity: AiMessage (ai_messages: id, conversationId, role, content, rating, tokensUsed, createdAt)
+- [x] 14.4 ErrorCodeRepository: findByCode, findByBrandIdAndCode, searchByCodeOrDescription(@Query LIKE)
+- [x] 14.5 AiConversationRepository: findByWorkOrderId, findFirstByWorkOrderIdOrderByCreatedAtDesc
+- [x] 14.6 AiMessageRepository: findByConversationId(Sort)
+- [x] 14.7 ErrorCodeService: findByCode (EntityNotFoundException если не найден), findById, search(Pageable)
+- [x] 14.8 TechConsultantService (ai/consultant): stub AI чат — load/create AiConversation, save messages, keyword-based response (error code lookup / refrigerant advice / default)
+- [x] 14.9 PreWorkBriefGenerator (ai/consultant): генерация текстового брифинга инженеру (клиент, оборудование, работы, SLA deadline)
+- [x] 14.10 OCRService (ai/consultant): stub OCR — длина base64 > 100 → "E-01", иначе null
+- [x] 14.11 BusinessAnalystService (ai/analyst): generateDailySummary() из реальных данных WorkOrderRepository, getEfficiencyScore() stub 7.5/10
+- [x] 14.12 WorkOrderRepository: добавлены countByStatus(WorkOrderStatus), countBySlaViolatedTrue()
+- [x] 14.13 AiController: POST /api/v1/ai/consultant/chat, GET /api/v1/ai/consultant/history/{workOrderId}, POST /api/v1/ai/error-lookup, GET /api/v1/ai/analyst/summary
+- [x] 14.14 DTOs: ChatRequest, ChatResponse, ErrorCodeDto, ErrorLookupRequest (record классы)
+- [x] 14.15 Flyway V010__error_codes_data.sql: 5 примеров кодов ошибок (E-01, E-02, F1, P5, H6)
+- [x] 14.16 TechConsultantServiceTest (4 теста): chat с error keyword, chat generic, сохранение USER+ASSISTANT messages, getHistory
+- [x] 14.17 PreWorkBriefGeneratorTest (3 теста): с услугами, с SLA дедлайном, без SLA (no NPE)
+- [x] 14.18 ErrorCodeServiceTest (2 теста): findByCode существующий, findByCode несуществующий → EntityNotFoundException
+**Тесты:** [x] Зелёные — Tests run: 146, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 15 — Фронтенд
 **Тесты:** [ ] Зелёные
@@ -209,6 +227,19 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 14 завершён
+- JPA Entities: ErrorCode, AiConversation, AiMessage (mapping to V001 tables: error_codes, ai_conversations, ai_messages)
+- Repositories: ErrorCodeRepository (LIKE search @Query), AiConversationRepository, AiMessageRepository
+- ErrorCodeService: findByCode (EntityNotFoundException), search(Pageable) + WorkOrderRepository: countByStatus, countBySlaViolatedTrue
+- TechConsultantService (ai/consultant): stub LLM chat — load/create conversation, persist USER+ASSISTANT messages, keyword routing (error code lookup / refrigerant advice / default)
+- PreWorkBriefGenerator: text brief с услугами, клиентом, SLA дедлайном (safe for null SLA)
+- OCRService: stub (base64 length > 100 → "E-01")
+- BusinessAnalystService (ai/analyst): generateDailySummary() из real DB counts, getEfficiencyScore() stub 7.5
+- AiController: 4 endpoints (/consultant/chat, /consultant/history, /error-lookup, /analyst/summary)
+- DTOs: ChatRequest, ChatResponse, ErrorCodeDto, ErrorLookupRequest (records)
+- Flyway V010: 5 образцов кодов ошибок (E-01, E-02, F1, P5, H6)
+- **Тесты: 146/146 зелёных** (+9 новых: TechConsultantServiceTest×4, PreWorkBriefGeneratorTest×3, ErrorCodeServiceTest×2)
 
 ### 2026-05-10 — Sprint 11 завершён
 - ServiceLocation, EquipmentType, Equipment JPA entities mapping to existing V001 tables

@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 02
-- **Общий прогресс:** 1/16 спринтов ✅
+- **Текущий спринт:** Sprint 03
+- **Общий прогресс:** 2/16 спринтов ✅
 
 ---
 
@@ -21,8 +21,20 @@
 - [x] 1.10 Health endpoint: GET /actuator/health
 **Тесты:** [x] Зелёные — Tests run: 9, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 02 — Клиенты и Договоры
-**Тесты:** [ ] Зелёные
+## Sprint 02 — Клиенты и Договоры ✅ ЗАВЕРШЁН
+- [x] 2.1 JPA Entity: Client, Contact, SLAConfig, SLAServiceHours, Contract, ContractBrand
+- [x] 2.2 JPA Entity: Engineer (ManyToMany competencies), EngineerCertification, Brand, Competency, Supplier, SystemSettings
+- [x] 2.3 Repository: ClientRepository, ContactRepository, ContractRepository, SLAConfigRepository, EngineerRepository, EngineerCertificationRepository, BrandRepository, CompetencyRepository, SupplierRepository, SystemSettingsRepository
+- [x] 2.4 Service: ClientService (CRUD + contacts), ContractService (CRUD + findActiveByClient), EngineerService (CRUD + certifications + findAvailable)
+- [x] 2.5 DTO + MapStruct: ClientDto/CreateClientRequest/UpdateClientRequest, ContactDto/CreateContactRequest, ContractDto/CreateContractRequest/UpdateContractRequest, EngineerDto/CreateEngineerRequest/UpdateEngineerRequest, CertificationDto/CreateCertificationRequest, BrandDto, SupplierDto с маппперами
+- [x] 2.6 ClientController (GET /api/v1/clients, GET /{id}, POST, PUT, DELETE, GET /{id}/contacts, POST /{id}/contacts)
+- [x] 2.7 ContractController (GET /api/v1/contracts ?clientId=, GET /{id}, POST, PUT)
+- [x] 2.8 EngineerController (GET /api/v1/engineers, GET /{id}, POST, PUT, GET /{id}/certifications, POST /{id}/certifications)
+- [x] 2.9 BrandController + SupplierController
+- [x] 2.10 GlobalExceptionHandler (@RestControllerAdvice: 404/400/409/500)
+- [x] 2.11 ClientServiceTest (3), ContractServiceTest (2), EngineerServiceTest (2) — Mockito unit tests
+- [x] 2.12 ClientControllerTest (3) — @SpringBootTest + @AutoConfigureMockMvc + @MockBean
+**Тесты:** [x] Зелёные — Tests run: 28, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 03 — FSM Наряды
 **Тесты:** [ ] Зелёные
@@ -69,6 +81,16 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 02 завершён
+- JPA Entities: Client, Contact, SLAConfig, SLAServiceHours, Contract, ContractBrand, Engineer (ManyToMany), EngineerCertification, Brand, Competency, Supplier, SystemSettings
+- Repository слой с кастомными методами (findByIsActiveTrue, findByClientIdAndStatus, findByIsActiveTrueAndUseInAutoSchedulerTrue)
+- Service слой: ClientService, ContractService, EngineerService с @Transactional(readOnly=true)
+- DTO (record классы) + MapStruct маперы для Client, Contact, Contract, Engineer, Certification, Brand, Supplier
+- REST Controllers: /api/v1/clients, /api/v1/contracts, /api/v1/engineers, /api/v1/brands, /api/v1/suppliers
+- GlobalExceptionHandler: EntityNotFoundException→404, MethodArgumentNotValidException→400, IllegalStateException→409, Exception→500
+- Тесты: ClientServiceTest(3), ContractServiceTest(2), EngineerServiceTest(2), ClientControllerTest(3) — все зелёные
+- **Тесты: 28/28 зелёных** — Tests run: 28, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ### 2026-05-10 — Sprint 01 завершён
 - Создан Spring Boot 3.2.5 проект (Java 21, Maven)

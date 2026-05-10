@@ -25,4 +25,8 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, UUID> {
     Optional<WorkOrder> findByNumber(String number);
 
     List<WorkOrder> findByEquipmentId(UUID equipmentId);
+
+    long countByStatus(WorkOrderStatus status);
+
+    long countBySlaViolatedTrue();
 }

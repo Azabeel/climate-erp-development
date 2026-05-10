@@ -2,24 +2,24 @@
 # Автоматически обновляется Claude Code
 
 ## Статус проекта
-- **Начато:** (Claude Code заполнит)
-- **Текущий спринт:** Sprint 01
-- **Общий прогресс:** 0/16 спринтов
+- **Начато:** 2026-05-10
+- **Текущий спринт:** Sprint 02
+- **Общий прогресс:** 1/16 спринтов ✅
 
 ---
 
-## Sprint 01 — Инфраструктура и БД
-- [ ] 1.1 Docker Compose
-- [ ] 1.2 Spring Boot проект
-- [ ] 1.3 application.yml
-- [ ] 1.4 Flyway V001 миграция
-- [ ] 1.5 Flyway V002 начальные данные
-- [ ] 1.6 Keycloak конфигурация
-- [ ] 1.7 SecurityConfig
-- [ ] 1.8 AuditConfig
-- [ ] 1.9 MinIO бакеты
-- [ ] 1.10 Health endpoint
-**Тесты:** [ ] Зелёные
+## Sprint 01 — Инфраструктура и БД ✅ ЗАВЕРШЁН
+- [x] 1.1 Docker Compose (postgres, redis, rabbitmq, minio, keycloak, elasticsearch)
+- [x] 1.2 Spring Boot проект (pom.xml, Java 21, Spring Boot 3.2.5)
+- [x] 1.3 application.yml (все настройки с env-переменными)
+- [x] 1.4 Flyway V001__init_schema.sql (полная схема БД)
+- [x] 1.5 Flyway V002__initial_data.sql (бренды, компетенции, SLA, каталог услуг)
+- [x] 1.6 Keycloak realm конфигурация (роли, клиенты, тестовые пользователи)
+- [x] 1.7 SecurityConfig (JWT + Keycloak + RBAC)
+- [x] 1.8 AuditConfig (@EnableJpaAuditing, UUID auditor from JWT sub)
+- [x] 1.9 MinIO конфигурация + автосоздание бакетов при старте
+- [x] 1.10 Health endpoint: GET /actuator/health
+**Тесты:** [x] Зелёные — Tests run: 9, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 02 — Клиенты и Договоры
 **Тесты:** [ ] Зелёные
@@ -69,4 +69,16 @@
 ---
 
 ## Лог работы
-<!-- Claude Code автоматически добавляет записи -->
+
+### 2026-05-10 — Sprint 01 завершён
+- Создан Spring Boot 3.2.5 проект (Java 21, Maven)
+- pom.xml: spring-boot-starter-web, data-jpa, security, oauth2-resource-server, amqp, data-redis, data-elasticsearch, mail, minio, mapstruct, lombok, springdoc, testcontainers
+- Полная схема БД в V001 (16 таблиц: clients, contracts, work_orders, engineers, stock, purchases, notifications, ai, audit, integration)
+- V002: 20 брендов, 10 компетенций, 10 типов оборудования, базовый каталог услуг (15 позиций), системные настройки
+- SecurityConfig: JWT via Keycloak, RBAC через realm_access.roles, stateless session
+- AuditConfig: AuditorAware читает UUID из JWT subject
+- MinioConfig: авто-создание бакетов (work-order-photos, documents, manuals) при старте
+- RabbitMQConfig: exchange sk.notifications + DLQ, JSON serializer
+- RedisConfig: RedisTemplate + RedisCacheManager (TTL 30 мин)
+- Keycloak realm JSON: роли ADMIN/MANAGER/DISPATCHER/ENGINEER/ACCOUNTANT/SALES/VIEWER, 3 клиента (backend/web/mobile), тестовые пользователи
+- **Тесты: 9/9 зелёных** — WorkOrderNumberGeneratorTest (4), WorkOrderStatusTest (4), ApplicationContextTest (1)

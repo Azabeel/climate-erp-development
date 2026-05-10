@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 07 ✅ завершён
-- **Общий прогресс:** 7/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 10)
+- **Текущий спринт:** Sprint 08 ✅ завершён
+- **Общий прогресс:** 8/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10)
 
 ---
 
@@ -112,8 +112,22 @@
 - [x] 7.14 InvoiceServiceTest (6): generateNumber/sequentialNumbers/markPaid/findByIdNotFound/workOrderNotFound/numberFormat
 **Тесты:** [x] Зелёные — Tests run: 101, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 08 — HR и Зарплата
-**Тесты:** [ ] Зелёные
+## Sprint 08 — HR и Зарплата ✅ ЗАВЕРШЁН
+- [x] 8.1 JPA Entity: EngineerDayLog (maps to engineer_day_logs from V001: start_type, start_lat/lng, total_km, gps_track, start_time/end_time; transient totalRevenue/workMinutes/ordersCompleted)
+- [x] 8.2 JPA Entity: PayrollPeriod (periodStart, periodEnd, status, closedAt, @OneToMany items)
+- [x] 8.3 JPA Entity: PayrollItem (period, engineer, pieceRateEarnings, gsmCompensation, bonuses, deductions, totalGross)
+- [x] 8.4 JPA Entity: Payslip (payrollItem, engineerId, period "2026-05", totalGross, detailsJson, isVisible)
+- [x] 8.5 Flyway V007__hr_tables.sql: payroll_periods, payroll_items, payslips + индексы
+- [x] 8.6 Repository: EngineerDayLogRepository (findByEngineerIdAndDateBetween, findByEngineerIdAndDate)
+- [x] 8.7 Repository: PayrollPeriodRepository, PayrollItemRepository, PayslipRepository
+- [x] 8.8 GPSTrackAnalyzer: calculateDistance(List<double[]>) с формулой Хаверсайна, Earth radius=6371 km, BigDecimal(scale=3)
+- [x] 8.9 PayrollCalculationService: calculateForEngineer() — pieceRateEarnings=revenue×15%, gsmCompensation=km×12(или fuelRatePerKm инженера), totalGross=сумма, возвращает unsaved PayrollItem
+- [x] 8.10 PayrollService: findAllPeriods, createPeriod, findItemsByPeriod, findPayslips(engineerId, period)
+- [x] 8.11 DTO: PayrollPeriodDto, PayrollItemDto, PayslipDto, CreatePayrollPeriodRequest
+- [x] 8.12 HRController: GET /api/v1/hr/payslip/{engineerId}/{period}, GET/POST /api/v1/hr/payroll-periods, GET /api/v1/hr/payroll-periods/{id}/items
+- [x] 8.13 GPSTrackAnalyzerTest (6): null/empty/single/twoPoints_Moscow(~1.1km)/fivePoints/samePointTwice
+- [x] 8.14 PayrollCalculationServiceTest (4): noDayLogs_allZero/oneDayLog(revenue=10000,dist=50→total=2100)/twoDayLogs/customFuelRate
+**Тесты:** [x] Зелёные — Tests run: 101, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 09 — Android MVP
 **Тесты:** [ ] Зелёные

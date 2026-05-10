@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 11 ✅ завершён
-- **Общий прогресс:** 10/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 11, 12)
+- **Текущий спринт:** Sprint 13 ✅ завершён
+- **Общий прогресс:** 11/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 11, 12, 13)
 
 ---
 
@@ -180,8 +180,22 @@
 - [x] Stub travel distance (детерминированный, без OSRM) — готов к замене
 **Тесты:** [x] Зелёные — Tests run: 128, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 13 — Интеграции
-**Тесты:** [ ] Зелёные
+## Sprint 13 — Интеграции ✅ ЗАВЕРШЁН
+- [x] 13.1 InboxMessage JPA Entity: channel (Channel enum), externalId (unique), clientId, phone, email, subject, body, isRead, assignedTo, workOrderId, receivedAt (@CreatedDate), processedAt
+- [x] 13.2 InboxRepository: findByIsReadFalse(Pageable), findByClientId(UUID, Pageable), findByChannel(Channel, Pageable)
+- [x] 13.3 InboxService: receive() — создаёт InboxMessage, матчит клиента по телефону через ClientRepository; markRead() — isRead=true + processedAt=now; assignToWorkOrder(); findAll(Pageable); findUnread(Pageable)
+- [x] 13.4 IntegrationLog JPA Entity: maps to integration_log из V001 (system, direction, documentType, documentId, requestPayload jsonb, responsePayload jsonb, status, errorMessage, attemptCount, createdAt, completedAt)
+- [x] 13.5 IntegrationLogRepository: findBySystem(String, Pageable)
+- [x] 13.6 IntegrationLogService: logRequest(service, endpoint, requestBody, responseBody, success, errorMessage); findRecent(Pageable); findByService(String, Pageable)
+- [x] 13.7 DeliveryTrackingService: stub — CDEK→IN_TRANSIT+ETA+3d, POCHTA→PROCESSING+ETA+7d, DEFAULT→UNKNOWN; updatePurchaseItemStatus() обновляет PurchaseRequestItem.status и plannedDeliveryDate
+- [x] 13.8 OneCIntegrationService: @Value("${onec.enabled:false}") stub — isAvailable() всегда false, syncWorkOrder() и syncClient() логируют и выходят при disabled, выбрасывают EntityNotFoundException при несуществующей записи
+- [x] 13.9 InboxController: GET /api/v1/inbox, GET /api/v1/inbox/unread, POST /api/v1/inbox, PUT /api/v1/inbox/{id}/read, PUT /api/v1/inbox/{id}/assign-work-order
+- [x] 13.10 DTO (record): InboxMessageDto, CreateInboxMessageRequest
+- [x] 13.11 Flyway V009__inbox.sql: CREATE TABLE inbox_messages + 3 индекса
+- [x] 13.12 InboxServiceTest (4): receive_saves/receive_matchesClient/markRead/findUnread_delegates
+- [x] 13.13 DeliveryTrackingServiceTest (3): cdek→IN_TRANSIT/pochta→PROCESSING/cdek_eta+3days
+- [x] 13.14 OneCIntegrationServiceTest (2): isAvailable→false/syncWorkOrder_noThrow
+**Тесты:** [x] Зелёные — Tests run: 137, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 14 — ИИ-Агенты
 **Тесты:** [ ] Зелёные

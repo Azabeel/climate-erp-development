@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import ru.servisklimat.domain.model.Client;
 import ru.servisklimat.domain.model.WorkOrder;
 import ru.servisklimat.domain.model.enums.*;
@@ -31,6 +32,8 @@ class WorkOrderServiceTest {
     @Mock WorkOrderStateMachine stateMachine;
     @Mock WorkOrderNumberGenerator numberGenerator;
     @Mock CriticalPathCalculator criticalPathCalculator;
+    @Mock SLACalculator slaCalculator;
+    @Mock ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     WorkOrderService workOrderService;
@@ -62,7 +65,7 @@ class WorkOrderServiceTest {
                 null, null, null, null, "desc", null);
 
         assertThat(result.getNumber()).isEqualTo("WO-2026-000001");
-        verify(workOrderRepository).save(any());
+        verify(workOrderRepository, atLeastOnce()).save(any());
     }
 
     @Test

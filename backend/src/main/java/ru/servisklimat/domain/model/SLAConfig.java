@@ -7,6 +7,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -51,6 +53,10 @@ public class SLAConfig {
     @Column(name = "is_active")
     @Builder.Default
     private Boolean isActive = true;
+
+    @OneToMany(mappedBy = "slaConfig", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<SLAServiceHours> serviceHours = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)

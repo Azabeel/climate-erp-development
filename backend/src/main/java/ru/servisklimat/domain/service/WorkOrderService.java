@@ -2,6 +2,7 @@ package ru.servisklimat.domain.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class WorkOrderService {
     private final WorkOrderStateMachine stateMachine;
     private final WorkOrderNumberGenerator numberGenerator;
     private final CriticalPathCalculator criticalPathCalculator;
+    private final SLACalculator slaCalculator;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public WorkOrder create(UUID clientId, WorkOrderType type, Priority priority,
@@ -69,7 +72,9 @@ public class WorkOrderService {
             }
         }
 
-        return workOrderRepository.save(builder.build());
+        WorkOrder saved = workOrderRepository.save(builder.build());
+        slaCalculator.calculateAndSetSLA(saved);
+        return workOrderRepository.save(saved);
     }
 
     public WorkOrder findById(UUID id) {
@@ -96,8 +101,11 @@ public class WorkOrderService {
     @Transactional
     public WorkOrder transition(UUID id, WorkOrderStatus newStatus, UUID changedBy, String comment) {
         WorkOrder order = findById(id);
+        WorkOrderStatus oldStatus = order.getStatus();
         stateMachine.transition(order, newStatus, changedBy, comment);
-        return workOrderRepository.save(order);
+        WorkOrder saved = workOrderRepository.save(order);
+        eventPublisher.publishEvent(new WorkOrderStatusChangedEvent(this, saved, oldStatus, newStatus));
+        return saved;
     }
 
     @Transactional
@@ -113,8 +121,11 @@ public class WorkOrderService {
             order.setSecondEngineer(second);
         }
 
+        WorkOrderStatus oldStatus = order.getStatus();
         stateMachine.transition(order, WorkOrderStatus.ASSIGNED, engineerId, "Assigned");
-        return workOrderRepository.save(order);
+        WorkOrder saved = workOrderRepository.save(order);
+        eventPublisher.publishEvent(new WorkOrderStatusChangedEvent(this, saved, oldStatus, WorkOrderStatus.ASSIGNED));
+        return saved;
     }
 
     @Transactional

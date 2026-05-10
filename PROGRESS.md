@@ -51,8 +51,18 @@
 - [x] 3.15 WorkOrderServiceTest (4): create/clientNotFound/findByIdNotFound/transition
 **Тесты:** [x] Зелёные — Tests run: 51, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 04 — SLA и Уведомления
-**Тесты:** [ ] Зелёные
+## Sprint 04 — SLA и Уведомления ✅ ЗАВЕРШЁН
+- [x] 4.1 SLACalculator: calculateAndSetSLA(), addWorkingHours() с учётом service_hours (Mon-Sun по timeFrom/timeTo), fallback 24ч calendar hours при отсутствии SLAConfig
+- [x] 4.2 SLAMonitoringScheduler: @Scheduled(fixedRate=300_000), YELLOW при remaining%<=warningPercent, RED при остановке <= 0, уведомление по одному разу (notifiedYellow/notifiedRed)
+- [x] 4.3 NotificationService: sendNotification() через RabbitMQ AmqpTemplate, graceful catch AmqpException и RuntimeException с log.warn
+- [x] 4.4 NotificationMessage: record (workOrderId, type, message, recipientId, sentAt)
+- [x] 4.5 WorkOrderStatusChangedEvent: ApplicationEvent с workOrder, oldStatus, newStatus
+- [x] 4.6 WorkOrderEventListener: @EventListener, клиентские уведомления для ASSIGNED/EN_ROUTE/COMPLETED
+- [x] 4.7 WorkOrderService: публикует WorkOrderStatusChangedEvent после каждого transition() и assign(); вызывает slaCalculator.calculateAndSetSLA() при создании наряда
+- [x] 4.8 SLAConfig: добавлен @OneToMany List<SLAServiceHours> serviceHours
+- [x] 4.9 SLACalculatorTest (9): defaultSLA/configWithoutServiceHours/fridayEvening/ttfAcrossWeekend/midDay/crossingDay/zeroHours/emptyWindows/allThreeMetrics
+- [x] 4.10 NotificationServiceTest (5): callsRabbitTemplate/nullRecipient/amqpExceptionCaught/runtimeExceptionCaught/messageFields
+**Тесты:** [x] Зелёные — Tests run: 79, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 05 — Склад и Хладагенты ✅ ЗАВЕРШЁН
 - [x] 5.1 JPA Entity: StockItem, StockBalance (getAvailableQty()), StockMovement
@@ -129,6 +139,17 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 04 завершён
+- SLACalculator: рабочие часы с перебором окон по dayOfWeek+timeFrom/timeTo, поиск следующего окна до 7 дней вперёд, fallback calendar hours при нулевом config
+- SLAMonitoringScheduler: @Scheduled(fixedRate=300_000), проверка всех активных нарядов без slaViolated, YELLOW/RED однократные уведомления с записью slaNotifiedYellow/slaNotifiedRed
+- NotificationService: graceful AmqpException catch, JSON через RabbitTemplate → exchange sk.notifications
+- NotificationMessage (record), WorkOrderStatusChangedEvent (ApplicationEvent)
+- WorkOrderEventListener: @EventListener для ASSIGNED/EN_ROUTE/COMPLETED → клиентские сообщения
+- WorkOrderService обновлён: publishEvent после transition/assign, slaCalculator.calculateAndSetSLA() при create
+- SLAConfig: добавлен @OneToMany List<SLAServiceHours>
+- SLACalculatorTest (9 тестов) + NotificationServiceTest (5 тестов)
+- **Тесты: 79/79 зелёных** — Tests run: 79, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ### 2026-05-10 — Sprint 06 завершён
 - PurchaseRequest entity (number PR-{YEAR}-{SEQ}, workOrderId, engineerId, status, latestDeliveryDate, @OneToMany items)

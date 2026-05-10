@@ -7,54 +7,75 @@ echo "  АСУ СЦ «Сервис Климат» — Запуск"
 echo "======================================"
 echo ""
 
-# 1. Базы данных
-echo "▶ Запуск баз данных (Docker)..."
-docker compose -f docker-compose.dev.yml up -d postgres redis rabbitmq
-echo "✓ PostgreSQL, Redis, RabbitMQ запущены"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# ── Запуск сервисов ───────────────────────────────────────────────────────────
+echo "▶ Запуск баз данных..."
+
+if command -v docker &>/dev/null && docker info &>/dev/null 2>&1; then
+    # Docker доступен — используем compose
+    docker compose -f "$PROJECT_DIR/docker-compose.dev.yml" up -d postgres redis rabbitmq
+    echo "✓ PostgreSQL, Redis, RabbitMQ запущены (Docker)"
+else
+    # Нативные сервисы (Codespaces без Docker)
+    sudo service postgresql start 2>/dev/null || true
+    sudo service redis-server start 2>/dev/null || true
+    sudo service rabbitmq-server start 2>/dev/null || true
+    echo "✓ PostgreSQL, Redis, RabbitMQ запущены (нативно)"
+fi
+
 echo ""
 
-# 2. Ждём готовности PostgreSQL
+# ── Ожидание PostgreSQL ───────────────────────────────────────────────────────
 echo "⏳ Ожидание готовности PostgreSQL..."
-until docker exec sk_postgres pg_isready -U servisklimat > /dev/null 2>&1; do
-  sleep 1
+for i in $(seq 1 30); do
+    if pg_isready -U servisklimat -d servisklimat -q 2>/dev/null || \
+       pg_isready -h localhost -U servisklimat -q 2>/dev/null; then
+        break
+    fi
+    sleep 2
 done
 echo "✓ PostgreSQL готов"
 echo ""
 
-# 3. Бэкенд в фоне
+# ── Бэкенд ───────────────────────────────────────────────────────────────────
 echo "▶ Запуск бэкенда (Spring Boot)..."
-cd "$(dirname "$0")/../backend"
+echo "  (первый запуск занимает ~2 минуты — скачиваются зависимости Maven)"
+echo ""
+cd "$PROJECT_DIR/backend"
 mvn spring-boot:run -q &
 BACKEND_PID=$!
-echo "✓ Бэкенд запускается (PID: $BACKEND_PID)..."
-echo ""
 
-# 4. Ждём бэкенд
-echo "⏳ Ожидание готовности API (может занять до 2 минут)..."
-until curl -s http://localhost:8090/actuator/health | grep -q '"status":"UP"'; do
-  sleep 3
+echo "⏳ Ожидание готовности API..."
+for i in $(seq 1 60); do
+    if curl -s http://localhost:8090/actuator/health 2>/dev/null | grep -q '"status":"UP"'; then
+        break
+    fi
+    sleep 5
+    echo "  ... ожидаем ($((i * 5)) сек)"
 done
 echo "✓ API готов: http://localhost:8090"
 echo ""
 
-# 5. Фронтенд
-echo "▶ Запуск фронтенда (React + Vite)..."
-cd "$(dirname "$0")/.."
+# ── Фронтенд ─────────────────────────────────────────────────────────────────
+echo "▶ Запуск фронтенда (React)..."
+cd "$PROJECT_DIR"
 npm run dev &
 FRONTEND_PID=$!
+sleep 3
+
 echo ""
 echo "======================================"
 echo "  ✅ Всё запущено!"
 echo "======================================"
 echo ""
-echo "  🌐 Интерфейс:      http://localhost:5173"
-echo "  📡 API:            http://localhost:8090"
-echo "  📖 Swagger UI:     http://localhost:8090/swagger-ui.html"
-echo "  🐰 RabbitMQ UI:    http://localhost:15672"
+echo "  🌐 Интерфейс:   http://localhost:5173"
+echo "  📖 Swagger UI:  http://localhost:8090/swagger-ui.html"
+echo "  🐰 RabbitMQ UI: http://localhost:15672"
 echo "     (логин: admin / sk_rabbit_pass)"
 echo ""
 echo "  Для остановки нажмите Ctrl+C"
 echo ""
 
-# Держим скрипт живым
 wait $BACKEND_PID $FRONTEND_PID

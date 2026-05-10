@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 04 + Sprint 06
-- **Общий прогресс:** 7/16 спринтов ✅
+- **Текущий спринт:** Sprint 04 ✅ завершён
+- **Общий прогресс:** 6/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 10)
 
 ---
 
@@ -69,8 +69,21 @@
 - [x] 5.12 RefrigerantLeakCalculatorTest (4): 32%>30%, 28%<30%, 30%=порог не превышает, null→0%
 **Тесты:** [x] Зелёные — Tests run: 28, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 06 — Закупки ЗИП
-**Тесты:** [ ] Зелёные
+## Sprint 06 — Закупки ЗИП ✅ ЗАВЕРШЁН
+- [x] 6.1 JPA Entity: PurchaseRequest (number, workOrderId, engineerId, status, latestDeliveryDate, clientNotified, аудит)
+- [x] 6.2 JPA Entity: PurchaseRequestItem (name, article, qty, unit, supplierId, purchasePrice, markupPercent, markupAmount, salePrice, trackingNumber, status, @OneToMany→PaymentRequest)
+- [x] 6.3 JPA Entity: PaymentRequest (purchaseItem, amount, currency, dueDate, invoiceUrl, paymentStatus, paidAt)
+- [x] 6.4 Repository: PurchaseRequestRepository (findByWorkOrderId, findByStatus+Pageable)
+- [x] 6.5 Repository: PurchaseRequestItemRepository (findByRequestId)
+- [x] 6.6 Repository: PaymentRequestRepository (findByPurchaseItemId)
+- [x] 6.7 MarkupCalculationService: Mode1 (percent→salePrice+amount), Mode2 (amount→salePrice+percent), Mode3 (default 30%), BigDecimal/HALF_UP, защита от деления на 0
+- [x] 6.8 PurchaseStatusAggregator: TRANSFERRED>FULLY_RECEIVED>PARTIALLY_RECEIVED>IN_PROGRESS(ORDERED/IN_TRANSIT)>NEW, пустой список→NEW
+- [x] 6.9 PurchaseRequestService: create (номер PR-{YEAR}-{SEQ:06d}), addItem (с расчётом наценки), updateItemStatus (с пересчётом агрегата), createPaymentRequest
+- [x] 6.10 DTO (record): PurchaseRequestDto, PurchaseRequestItemDto, PaymentRequestDto, CreatePurchaseRequest, AddPurchaseItemRequest, UpdateItemStatusRequest, CreatePaymentRequestDto
+- [x] 6.11 PurchaseController (/api/v1/purchases): GET/GET/{id}/GET by-work-order/POST, POST /{id}/items, PUT /{id}/items/{itemId}/status, POST /{id}/items/{itemId}/payment
+- [x] 6.12 MarkupCalculationServiceTest (6): percent/amount/default/zero-price/explicit-default/priority
+- [x] 6.13 PurchaseStatusAggregatorTest (8): allReceived/partial/allNew/inTransit/ordered/empty/transferred/singleReceived
+**Тесты:** [x] Зелёные — Tests run: 79, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 07 — Финансы
 **Тесты:** [ ] Зелёные
@@ -116,6 +129,19 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 06 завершён
+- PurchaseRequest entity (number PR-{YEAR}-{SEQ}, workOrderId, engineerId, status, latestDeliveryDate, @OneToMany items)
+- PurchaseRequestItem entity (markupPercent/Amount/salePrice, trackingNumber, status, @OneToMany payments)
+- PaymentRequest entity (amount, paymentStatus, invoiceUrl, dueDate)
+- 3 Spring Data репозитория с доменными query-методами
+- MarkupCalculationService: 3 режима (%, руб, дефолт 30%), BigDecimal HALF_UP, защита от деления на 0
+- PurchaseStatusAggregator: TRANSFERRED > FULLY_RECEIVED > PARTIALLY_RECEIVED > IN_PROGRESS > NEW
+- PurchaseRequestService: create + addItem (с расчётом наценки) + updateItemStatus (пересчёт агрегата) + createPaymentRequest
+- PurchaseController (/api/v1/purchases): 6 endpoint-ов
+- 7 DTO record-классов (request + response)
+- MarkupCalculationServiceTest (6 тестов) + PurchaseStatusAggregatorTest (8 тестов)
+- **Тесты: 79/79 зелёных** — Tests run: 79, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ### 2026-05-10 — Sprint 03 + Sprint 10 завершены
 - WorkOrder entity (40+ полей: SLA-метки, cost/margin BigDecimal, FSM-статус), WorkOrderServiceLine, WorkOrderMaterial, WorkOrderPhoto, WorkOrderStatusLog

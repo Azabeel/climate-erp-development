@@ -1,0 +1,142 @@
+spring:
+  application:
+    name: servis-klimat-backend
+
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/servisklimat}
+    username: ${POSTGRES_USER:servisklimat}
+    password: ${POSTGRES_PASSWORD:sk_local_pass}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_schema: public
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:admin}
+    password: ${RABBITMQ_PASSWORD:sk_rabbit_pass}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL:http://localhost:8080}/realms/${KEYCLOAK_REALM:servisklimat}
+
+  mail:
+    host: ${EMAIL_HOST:smtp.yandex.ru}
+    port: ${EMAIL_PORT:587}
+    username: ${EMAIL_USER:}
+    password: ${EMAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL:http://localhost:9200}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+server:
+  port: 8090
+  servlet:
+    context-path: /
+
+# MinIO
+minio:
+  url: ${MINIO_URL:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:sk_minio_access}
+  secret-key: ${MINIO_SECRET_KEY:sk_minio_secret}
+  bucket:
+    photos: work-order-photos
+    documents: documents
+    manuals: manuals
+
+# OSRM
+osrm:
+  url: ${OSRM_URL:http://router.project-osrm.org}
+
+# Yandex Maps
+yandex:
+  maps:
+    api-key: ${YANDEX_MAPS_API_KEY:}
+
+# AI
+ai:
+  model:
+    url: ${AI_MODEL_URL:http://localhost:11434}
+    consultant-model: ${AI_CONSULTANT_MODEL:mistral-7b-instruct}
+    analyst-model: ${AI_ANALYST_MODEL:mistral-7b-instruct}
+    max-tokens: 2048
+    temperature: 0.3
+
+# Telegram
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN:}
+    username: ${TELEGRAM_BOT_USERNAME:servisklimat_bot}
+
+# WhatsApp
+whatsapp:
+  api-url: ${WHATSAPP_API_URL:}
+  api-key: ${WHATSAPP_API_KEY:}
+  phone-number-id: ${WHATSAPP_PHONE_ID:}
+
+# 1С интеграция
+onec:
+  api-url: ${ONEC_API_URL:}
+  login: ${ONEC_LOGIN:}
+  password: ${ONEC_PASSWORD:}
+  sync-interval-seconds: 3600
+  retry-attempts: 3
+  retry-delay-seconds: 60
+
+# Планировщик
+scheduler:
+  sla-check-interval-minutes: 5
+  stock-check-interval-hours: 2
+  digest-time: "0 0 8 * * MON-FRI"   # Каждый будний день в 8:00
+  tracking-expiry-minutes: 30         # За сколько мин показывать трекинг после последнего GPS
+
+# Настройки по умолчанию (переопределяются через system_settings)
+defaults:
+  zip-markup-percent: 30
+  overhead-percent: 15
+  arrival-warning-minutes: 30
+  sla-warning-percent: 20
+
+# OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+# Logging
+logging:
+  level:
+    ru.servisklimat: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO

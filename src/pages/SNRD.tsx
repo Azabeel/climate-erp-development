@@ -21,10 +21,11 @@ import ServiceObjectModal from '@/components/snrd/ServiceObjectModal';
 import { toast } from 'sonner';
 import { Application, WorkOrder, ApplicationStatus, Priority, WorkOrderStatus, Employee, Client, ServiceObject } from '@/types/snrd';
 import { mockApplications, mockWorkOrders, mockClients, mockEmployees, mockServiceObjects, mockServiceTypes } from '@/data/snrdTestData';
+import { useApplications, useOrders, useClients, useEngineers } from '@/hooks/useApi';
 
 const SNRD = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
@@ -36,11 +37,21 @@ const SNRD = () => {
   const [workOrderSearchQuery, setWorkOrderSearchQuery] = useState('');
   const [workOrderStatusFilter, setWorkOrderStatusFilter] = useState('all');
 
-  const [applications, setApplications] = useState<Application[]>(mockApplications);
-  const [workOrders, setWorkOrders] = useState<WorkOrder[]>(mockWorkOrders);
-  const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
-  const [clients, setClients] = useState<Client[]>(mockClients);
+  const { data: apiApplications } = useApplications();
+  const { data: apiWorkOrders } = useOrders();
+  const { data: apiClients } = useClients();
+  const { data: apiEmployees } = useEngineers();
+
+  const [localApplications, setLocalApplications] = useState<Application[]>([]);
+  const [localWorkOrders, setLocalWorkOrders] = useState<WorkOrder[]>([]);
+  const [localEmployees, setLocalEmployees] = useState<Employee[]>([]);
+  const [localClients, setLocalClients] = useState<Client[]>([]);
   const [serviceObjects, setServiceObjects] = useState<ServiceObject[]>(mockServiceObjects);
+
+  const applications = apiApplications ?? (localApplications.length ? localApplications : mockApplications);
+  const workOrders = apiWorkOrders ?? (localWorkOrders.length ? localWorkOrders : mockWorkOrders);
+  const employees = apiEmployees ?? (localEmployees.length ? localEmployees : mockEmployees);
+  const clients = apiClients ?? (localClients.length ? localClients : mockClients);
 
   const [applicationModalOpen, setApplicationModalOpen] = useState(false);
   const [employeeModalOpen, setEmployeeModalOpen] = useState(false);
@@ -121,13 +132,13 @@ const SNRD = () => {
   };
 
   const handleDelete = (id: string) => {
-    setApplications(applications.filter(a => a.id !== id));
+    setLocalApplications(applications.filter(a => a.id !== id));
     toast.success('Заявка удалена');
   };
 
   const handleSaveApplication = (appData: Partial<Application>) => {
     if (editingApplication) {
-      setApplications(applications.map(a => a.id === editingApplication.id ? { ...editingApplication, ...appData } : a));
+      setLocalApplications(applications.map(a => a.id === editingApplication.id ? { ...editingApplication, ...appData } : a));
       toast.success('Заявка обновлена');
     } else {
       const newApp: Application = {
@@ -145,14 +156,14 @@ const SNRD = () => {
         plannedStartDate: appData.plannedStartDate,
         plannedEndDate: appData.plannedEndDate,
       };
-      setApplications([...applications, newApp]);
+      setLocalApplications([...applications, newApp]);
       toast.success('Заявка создана');
     }
   };
 
   const handleSaveEmployee = (empData: Partial<Employee>) => {
     if (editingEmployee) {
-      setEmployees(employees.map(e => e.id === editingEmployee.id ? { ...editingEmployee, ...empData } : e));
+      setLocalEmployees(employees.map(e => e.id === editingEmployee.id ? { ...editingEmployee, ...empData } : e));
       toast.success('Данные сотрудника обновлены');
     } else {
       const newEmp: Employee = {
@@ -169,14 +180,14 @@ const SNRD = () => {
         workGroup: empData.workGroup || '',
         licensed: empData.licensed || false,
       };
-      setEmployees([...employees, newEmp]);
+      setLocalEmployees([...employees, newEmp]);
       toast.success('Сотрудник добавлен');
     }
   };
 
   const handleSaveClient = (clientData: Partial<Client>) => {
     if (editingClient) {
-      setClients(clients.map(c => c.id === editingClient.id ? { ...editingClient, ...clientData } : c));
+      setLocalClients(clients.map(c => c.id === editingClient.id ? { ...editingClient, ...clientData } : c));
       toast.success('Данные клиента обновлены');
     } else {
       const newClient: Client = {
@@ -190,7 +201,7 @@ const SNRD = () => {
         objectsCount: clientData.objectsCount || 0,
         assetsCount: clientData.assetsCount || 0,
       };
-      setClients([...clients, newClient]);
+      setLocalClients([...clients, newClient]);
       toast.success('Клиент добавлен');
     }
   };
@@ -257,7 +268,7 @@ const SNRD = () => {
             getPriorityColor={getPriorityColor}
             onEdit={(order) => console.log('Edit order', order)}
             onDelete={(id) => {
-              setWorkOrders(workOrders.filter(w => w.id !== id));
+              setLocalWorkOrders(workOrders.filter(w => w.id !== id));
               toast.success('Наряд удален');
             }}
             searchQuery={workOrderSearchQuery}
@@ -294,7 +305,7 @@ const SNRD = () => {
               setEmployeeModalOpen(true);
             }}
             onDelete={(id) => {
-              setEmployees(employees.filter(e => e.id !== id));
+              setLocalEmployees(employees.filter(e => e.id !== id));
               toast.success('Сотрудник удален');
             }}
             searchQuery={employeeSearchQuery}
@@ -311,7 +322,7 @@ const SNRD = () => {
               setClientModalOpen(true);
             }}
             onDelete={(id) => {
-              setClients(clients.filter(c => c.id !== id));
+              setLocalClients(clients.filter(c => c.id !== id));
               toast.success('Клиент удален');
             }}
             searchQuery={clientSearchQuery}

@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sk_postgres
+    environment:
+      POSTGRES_DB: servisklimat
+      POSTGRES_USER: servisklimat
+      POSTGRES_PASSWORD: sk_local_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docs/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U servisklimat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sk_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: sk_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: sk_rabbit_pass
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # Management UI: http://localhost:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  minio:
+    image: minio/minio:latest
+    container_name: sk_minio
+    environment:
+      MINIO_ROOT_USER: sk_minio_access
+      MINIO_ROOT_PASSWORD: sk_minio_secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"   # Console: http://localhost:9001
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: sk_keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: sk_keycloak_pass
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/servisklimat
+      KC_DB_USERNAME: servisklimat
+      KC_DB_PASSWORD: sk_local_pass
+      KC_DB_SCHEMA: keycloak
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: start-dev
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: sk_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  # Опционально — только если нужна локальная ИИ модель
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: sk_ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
+  elasticsearch_data:
+  # ollama_data:
+
+networks:
+  default:
+    name: servisklimat_network

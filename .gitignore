@@ -23,3 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 builds
+
+# Project artifacts
+servis-klimat-unzipped/
+target/
+*.class
+*.jar
+*.war
+spring.log
+
+# Claude Code internals
+.claude/worktrees/

@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 12 ✅ завершён
-- **Общий прогресс:** 9/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 12)
+- **Текущий спринт:** Sprint 11 ✅ завершён
+- **Общий прогресс:** 10/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 11, 12)
 
 ---
 
@@ -146,8 +146,26 @@
 - [x] 10.13 DealServiceTest (3): forecast/emptyPipeline/createDeal
 **Тесты:** [x] Зелёные — Tests run: 51, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 11 — EAM
-**Тесты:** [ ] Зелёные
+## Sprint 11 — EAM ✅ ЗАВЕРШЁН
+- [x] 11.1 JPA Entity: ServiceLocation (maps to V001 service_locations: clientId, name, address, lat/lng, timezone, floor, room, accessNotes, isActive)
+- [x] 11.1 JPA Entity: EquipmentType (maps to V001 equipment_types: name, attributesSchema jsonb, isActive)
+- [x] 11.1 JPA Entity: Equipment (maps to V001 equipment: 20+ полей — clientId, locationId, serialNumber, name, brandId, equipmentTypeId, refrigerantType, warrantyStart/End, qrCodeUrl, lastServiceDate, predictedFailureDate, attributes jsonb, status, isActive)
+- [x] 11.2 JPA Entity: MaintenancePlan (Flyway V008: equipmentId, name, frequencyMonths, lastDoneDate, nextDueDate, isActive, @OneToMany items)
+- [x] 11.2 JPA Entity: MaintenancePlanItem (maintenancePlan FK, serviceId, name, description, sortOrder, isMandatory)
+- [x] Flyway V008__eam_tables.sql: maintenance_plans + maintenance_plan_items + 2 индекса
+- [x] Repository: ServiceLocationRepository (findByClientId, findByIsActiveTrue+Pageable)
+- [x] Repository: EquipmentTypeRepository (findByIsActiveTrue+Pageable)
+- [x] Repository: EquipmentRepository (findByClientId+Pageable, findByLocationId, findByIsActiveTrue+Pageable, findDueForMaintenance(cutoffDate JPQL))
+- [x] Repository: MaintenancePlanRepository (findByEquipmentId, findByNextDueDateBefore, findByEquipmentIdAndIsActiveTrue)
+- [x] WorkOrderRepository: добавлен findByEquipmentId(UUID)
+- [x] QRCodeService: generateQrContent() → "SK-EQ:{id}:{clientId}:{serial}" (null→UNKNOWN), generateQrCode() → Base64 stub
+- [x] AssetHistoryService: getHistory(equipmentId) агрегирует WorkOrder + RefrigerantLog + MaintenancePlan события, сортирует по occurredAt desc; AssetEvent record
+- [x] EquipmentService: CRUD (findAll/findById/findByClientId/create/update/deactivate), generateQr(), findDueForMaintenance() (cutoff=today+30d), CRUD для EquipmentType и ServiceLocation, findPlansByEquipmentId/createPlan
+- [x] EquipmentController: GET/POST /api/v1/equipment, GET /api/v1/equipment/{id}, GET /api/v1/equipment/{id}/history, GET /api/v1/equipment/{id}/qr, GET /api/v1/equipment/due-maintenance, GET/POST /api/v1/service-locations, GET/POST /api/v1/equipment-types
+- [x] DTO (record): EquipmentDto, CreateEquipmentRequest, EquipmentTypeDto, ServiceLocationDto, CreateServiceLocationRequest, AssetEventDto
+- [x] 11.12 QRCodeServiceTest (3): correctFormat/nullSerial→UNKNOWN/validBase64
+- [x] EquipmentServiceTest (3): findByIdNotFound→EntityNotFoundException/create+save/findDueForMaintenance+date
+**Тесты:** [x] Зелёные — Tests run: 128, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 12 — Умное Планирование ✅ ЗАВЕРШЁН
 - [x] 12.2 PlanningScoreCalculator: формула SLA 40% + гео 30% + загрузка 20% + серт 10%
@@ -177,6 +195,19 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 11 завершён
+- ServiceLocation, EquipmentType, Equipment JPA entities mapping to existing V001 tables
+- MaintenancePlan + MaintenancePlanItem entities with V008 migration
+- EquipmentRepository: JPQL findDueForMaintenance(cutoffDate) for maintenance scheduling
+- WorkOrderRepository: добавлен findByEquipmentId() для AssetHistoryService
+- QRCodeService: canonical format "SK-EQ:{id}:{clientId}:{serial}", Base64 stub output
+- AssetHistoryService: aggregates WorkOrder + RefrigerantLog + MaintenancePlan events into AssetEvent records sorted newest-first
+- EquipmentService: full CRUD + generateQr() + findDueForMaintenance() (today+30d window) + EquipmentType/ServiceLocation/MaintenancePlan management
+- EquipmentController: 9 endpoints covering /api/v1/equipment, /api/v1/service-locations, /api/v1/equipment-types
+- 6 DTO record types in api/dto/equipment/ package
+- QRCodeServiceTest (3) + EquipmentServiceTest (3) = 6 new tests
+- **Тесты: 128/128 зелёных** — Tests run: 128, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ### 2026-05-10 — Sprint 12 завершён
 - PlanningScoreCalculator: формула score = (slaFactor×40) + (geoFactor×30) + (loadFactor×20) + (certFactor×10); slaFactor: GREEN=1.0/YELLOW=0.5/RED=0.0/null=GREEN; geoFactor/loadFactor/certFactor зажаты в [0,1]

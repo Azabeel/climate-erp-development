@@ -23,4 +23,6 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, UUID> {
     List<WorkOrder> findByStatusInAndSlaViolatedFalse(List<WorkOrderStatus> statuses);
 
     Optional<WorkOrder> findByNumber(String number);
+
+    List<WorkOrder> findByEquipmentId(UUID equipmentId);
 }

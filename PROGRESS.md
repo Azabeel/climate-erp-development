@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 14 ✅ завершён
-- **Общий прогресс:** 12/16 спринтов ✅ (01, 02, 03, 04, 05, 06, 07, 08, 10, 11, 12, 13, 14)
+- **Текущий спринт:** Sprint 16 ✅ Финализация завершена
+- **Общий прогресс:** 14/16 спринтов ✅ (01-08, 10-14, 16; пропущены 09-Android, 15-Frontend)
 
 ---
 
@@ -219,14 +219,30 @@
 **Тесты:** [x] Зелёные — Tests run: 146, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 15 — Фронтенд
-**Тесты:** [ ] Зелёные
+**Статус:** Пропущен (вне scope текущей итерации)
 
-## Sprint 16 — Финализация
-**Тесты:** [ ] Зелёные
+## Sprint 16 — Финализация ✅ ЗАВЕРШЁН
+- [x] 16.1 Все тесты зелёные: 151/151 тестов, 0 ошибок, BUILD SUCCESS
+- [x] 16.2 OpenAPI/SpringDoc настроен: GET /api-docs (JSON), GET /swagger-ui.html (UI), операции сортируются по методу
+- [x] 16.3 HappyPathSmokeTest (5 тестов): allCoreBeansLoad, workOrderFSMHappyPath (NEW→COMPLETED), criticalPathCalculation (160 мин), markupByPercent (1500→1950), markupByAmount (450→30%)
+- [x] 16.4 PROGRESS.md финализирован
+**Тесты:** [x] Зелёные — Tests run: 151, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 16 завершён (Финализация)
+- Проверка: все 146 существующих тестов зелёные до начала работы
+- OpenAPI/SpringDoc уже настроен в application.yml: /api-docs + /swagger-ui.html
+- HappyPathSmokeTest: 5 интеграционных тестов с @SpringBootTest(NONE) + @MockBean (JwtDecoder, MinioClient, ConnectionFactory, RedisConnectionFactory)
+  - allCoreBeansLoad: проверка autowire 6 core beans (StateMachine, CriticalPath, LeakCalc, ScoreCalc, Markup, Cost)
+  - workOrderFSMHappyPath: полный цикл NEW→ASSIGNED→EN_ROUTE→ON_SITE→IN_PROGRESS→COMPLETED, проверка closedAt
+  - criticalPathCalculation: SEQUENTIAL(60)+PARALLEL(max(30,40))+SEQUENTIAL(45)+buffer(15) = 160 мин
+  - markupCalculationByPercent: 1500 * 1.30 = 1950, amount = 450
+  - markupCalculationByAmount: 1500 + 450 = 1950, percent = 30%
+- **Тесты: 151/151 зелёных** (+5 новых: HappyPathSmokeTest)
+- PROGRESS.md обновлён (статус → финализирован)
 
 ### 2026-05-10 — Sprint 14 завершён
 - JPA Entities: ErrorCode, AiConversation, AiMessage (mapping to V001 tables: error_codes, ai_conversations, ai_messages)

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Generates work order numbers in format: WO-{YEAR}-{SEQUENCE:06d}
@@ -14,6 +15,11 @@ public class WorkOrderNumberGenerator {
 
     private static final String PREFIX = "WO";
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
+    private final AtomicLong sequence = new AtomicLong(0);
+
+    public String nextNumber() {
+        return generate(sequence.incrementAndGet());
+    }
 
     public String generate(long sequenceNumber) {
         int year = ZonedDateTime.now(MOSCOW).getYear();

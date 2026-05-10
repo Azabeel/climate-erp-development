@@ -3,8 +3,8 @@
 
 ## Статус проекта
 - **Начато:** 2026-05-10
-- **Текущий спринт:** Sprint 06
-- **Общий прогресс:** 5/16 спринтов ✅
+- **Текущий спринт:** Sprint 04 + Sprint 06
+- **Общий прогресс:** 7/16 спринтов ✅
 
 ---
 
@@ -36,8 +36,20 @@
 - [x] 2.12 ClientControllerTest (3) — @SpringBootTest + @AutoConfigureMockMvc + @MockBean
 **Тесты:** [x] Зелёные — Tests run: 28, Failures: 0, Errors: 0, BUILD SUCCESS
 
-## Sprint 03 — FSM Наряды
-**Тесты:** [ ] Зелёные
+## Sprint 03 — FSM Наряды ✅ ЗАВЕРШЁН
+- [x] 3.1 JPA Entity: Service, ServiceModifier (с @ManyToMany к Competency и Brand)
+- [x] 3.2 JPA Entity: WorkOrder (40+ полей: SLA, стоимость, маржа, FSM)
+- [x] 3.3 JPA Entity: WorkOrderServiceLine, WorkOrderMaterial, WorkOrderPhoto, WorkOrderStatusLog
+- [x] 3.4 CriticalPathCalculator: SEQUENTIAL=sum, PARALLEL=max, REQUIRES_TWO=sequential+flag, буфер 15 мин
+- [x] 3.5 WorkOrderStateMachine: все переходы статусов, side-effects (actualStart/End, closedAt), InvalidStateTransitionException
+- [x] 3.6 Service слой: WorkOrderService (CRUD + assign + addMaterial + addServiceLine + transition), ServiceCatalogService
+- [x] 3.7-3.9 REST API: WorkOrderController (/api/v1/work-orders: GET/POST/status/assign/materials)
+- [x] 3.11 WorkOrderNumberGenerator: nextNumber() через AtomicLong → WO-{YEAR}-{SEQ:06d}
+- [x] 3.12 Flyway V001: полная схема work_orders, work_order_services, work_order_materials, work_order_photos, work_order_status_log уже в V001
+- [x] 3.13 CriticalPathCalculatorTest (5): empty/sequential/parallel/requiresTwo/mixed
+- [x] 3.14 WorkOrderStateMachineTest (6): happyPath/closed/invalidTransition/terminal/awaitingParts/statusLog
+- [x] 3.15 WorkOrderServiceTest (4): create/clientNotFound/findByIdNotFound/transition
+**Тесты:** [x] Зелёные — Tests run: 51, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 04 — SLA и Уведомления
 **Тесты:** [ ] Зелёные
@@ -69,8 +81,19 @@
 ## Sprint 09 — Android MVP
 **Тесты:** [ ] Зелёные
 
-## Sprint 10 — CRM
-**Тесты:** [ ] Зелёные
+## Sprint 10 — CRM ✅ ЗАВЕРШЁН
+- [x] 10.1 JPA Entity: Lead, Deal (с DealStage enum), CommercialProposal, CPLine, CrmTask, ClientHealthScore
+- [x] 10.2 Flyway V004__crm_tables.sql (leads, deals, commercial_proposals, cp_lines, crm_tasks, client_health_scores + индексы)
+- [x] 10.3 LeadService: CRUD + convert() Lead → Deal
+- [x] 10.4 DealService: CRUD + updateStage() + getForecast() (взвешенная воронка SUM(amount*probability/100))
+- [x] 10.5 CPService: create() с автономером CP-{YEAR}-{SEQ:06d} + send()
+- [x] 10.7 ClientHealthCalculator: score 0-100, штрафы/бонусы, зажим [0,100]
+- [x] 10.10 REST API: CrmController (/api/v1/crm/leads, /deals, /proposals + /forecast + /convert + /send)
+- [x] 10.11 CrmMapper (MapStruct): Lead→LeadDto, Deal→DealDto, CommercialProposal→ProposalDto
+- [x] 10.12 Repositories: LeadRepository, DealRepository, CommercialProposalRepository, ClientHealthScoreRepository
+- [x] 10.13 ClientHealthCalculatorTest (5): healthy/noOrders/noOrdersAtAll/lowRating/clampToZero
+- [x] 10.13 DealServiceTest (3): forecast/emptyPipeline/createDeal
+**Тесты:** [x] Зелёные — Tests run: 51, Failures: 0, Errors: 0, BUILD SUCCESS
 
 ## Sprint 11 — EAM
 **Тесты:** [ ] Зелёные
@@ -93,6 +116,26 @@
 ---
 
 ## Лог работы
+
+### 2026-05-10 — Sprint 03 + Sprint 10 завершены
+- WorkOrder entity (40+ полей: SLA-метки, cost/margin BigDecimal, FSM-статус), WorkOrderServiceLine, WorkOrderMaterial, WorkOrderPhoto, WorkOrderStatusLog
+- Service entity (с ManyToMany: competencies, brands), ServiceModifier
+- CriticalPathCalculator: SEQUENTIAL=sum, PARALLEL=max, REQUIRES_TWO=sequential+flag, +15 мин буфер
+- WorkOrderStateMachine: 10 статусов, карта переходов, side-effects на EN_ROUTE/COMPLETED/CLOSED
+- InvalidStateTransitionException (HTTP 409)
+- WorkOrderService: create/findById/findAll/findByClient/findByEngineer/assign/addMaterial/addServiceLine/transition
+- ServiceCatalogService: findAll/findActive/findById
+- WorkOrderController (/api/v1/work-orders): GET/POST/status/assign/materials
+- WorkOrderMapper (MapStruct): включает engineerName/secondEngineerName из lazy ManyToOne
+- WorkOrderNumberGenerator: nextNumber() через AtomicLong
+- CRM: Lead, Deal, CommercialProposal, CPLine, CrmTask, ClientHealthScore entities
+- CRM V004 миграция: 7 таблиц + 7 индексов
+- LeadService (CRUD + convert→Deal), DealService (CRUD + getForecast weighted), CPService (create + send + номер CP-{YEAR}-{SEQ})
+- ClientHealthCalculator: score 0-100 с штрафами/бонусами, зажат в [0,100]
+- CrmController (/api/v1/crm/leads, /deals, /proposals + вложенные действия)
+- CrmMapper (MapStruct): Lead/Deal/CommercialProposal → Dto
+- **Тесты: 51/51 зелёных** — Tests run: 51, Failures: 0, Errors: 0, BUILD SUCCESS
+
 
 ### 2026-05-10 — Sprint 05 завершён
 - JPA Entities: StockItem, StockBalance (getAvailableQty()), StockMovement, RefrigerantType, RefrigerantCylinder, RefrigerantLog

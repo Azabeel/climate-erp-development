@@ -1,0 +1,39 @@
+{
+  "name": "АСУ СЦ Сервис Климат",
+  "image": "mcr.microsoft.com/devcontainers/java:21-bullseye",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  "forwardPorts": [5173, 8090, 5432, 6379, 15672],
+  "portsAttributes": {
+    "5173": { "label": "Фронтенд (React)", "onAutoForward": "openBrowser" },
+    "8090": { "label": "Бэкенд API (Spring Boot)" },
+    "15672": { "label": "RabbitMQ панель" }
+  },
+
+  "postCreateCommand": "npm install",
+
+  "postStartCommand": "docker compose -f docker-compose.dev.yml up -d postgres redis rabbitmq",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "redhat.vscode-xml",
+        "Pivotal.vscode-spring-boot",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "java.jdt.ls.java.home": "/usr/local/sdkman/candidates/java/current",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  }
+}

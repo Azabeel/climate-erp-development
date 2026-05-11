@@ -43,6 +43,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       ]
     },
     { id: 'scheduled-maintenance', label: 'Плановое обслуживание', icon: 'CalendarClock' },
+    { id: 'finance', label: 'Финансы', icon: 'CircleDollarSign' },
     { id: 'reports', label: 'Отчеты', icon: 'BarChart3' },
     { 
       id: 'directories', 
@@ -79,11 +80,11 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center">
-            <Icon name="Radio" size={24} className="text-white" />
+            <Icon name="Wind" size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">SNRD</h1>
-            <p className="text-xs text-gray-500">Диспетчерская</p>
+            <h1 className="text-lg font-bold text-gray-900">HVAC ERP</h1>
+            <p className="text-xs text-gray-500">Сервис Климат</p>
           </div>
         </div>
       </div>
@@ -148,7 +149,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">Администратор</p>
-            <p className="text-xs text-gray-500">admin@snrd.ru</p>
+            <p className="text-xs text-gray-500">admin@hvac-erp.ru</p>
           </div>
         </div>
       </div>

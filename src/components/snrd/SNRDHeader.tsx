@@ -30,11 +30,15 @@ const tabTitles: Record<string, string> = {
   sla: 'Соглашения об уровнях сервиса',
   territories: 'Территории обслуживания',
   licensing: 'Лицензирование',
+  finance: 'Финансы и маржинальность',
   'office-users': 'Пользователи офиса',
   'work-groups': 'Рабочие группы',
   roles: 'Конструктор ролей',
   integrations: 'Интеграции с внешними системами',
   import: 'Импорт данных',
+  crm: 'CRM — Воронка продаж',
+  hr: 'HR и Зарплата',
+  warehouse: 'Склад и хладагенты',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
@@ -66,7 +70,7 @@ const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
-            {tabTitles[activeTab] || 'SNRD Платформа'}
+            {tabTitles[activeTab] || 'HVAC ERP'}
           </h2>
           <p className="text-sm text-gray-500 mt-1">
             {new Date().toLocaleDateString('ru-RU', { 

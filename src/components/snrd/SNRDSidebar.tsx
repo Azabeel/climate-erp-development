@@ -44,6 +44,9 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
     },
     { id: 'scheduled-maintenance', label: 'Плановое обслуживание', icon: 'CalendarClock' },
     { id: 'finance', label: 'Финансы', icon: 'CircleDollarSign' },
+    { id: 'warehouse', label: 'Склад', icon: 'Package' },
+    { id: 'crm', label: 'CRM', icon: 'TrendingUp' },
+    { id: 'hr', label: 'HR / Зарплата', icon: 'UserCheck' },
     { id: 'reports', label: 'Отчеты', icon: 'BarChart3' },
     { 
       id: 'directories', 

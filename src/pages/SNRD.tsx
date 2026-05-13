@@ -18,6 +18,22 @@ import ApplicationModal from '@/components/snrd/ApplicationModal';
 import EmployeeModal from '@/components/snrd/EmployeeModal';
 import ClientModal from '@/components/snrd/ClientModal';
 import ServiceObjectModal from '@/components/snrd/ServiceObjectModal';
+import CompletionActs from '@/components/snrd/CompletionActs';
+import FinanceDashboard from '@/components/snrd/FinanceDashboard';
+import ContractorsList from '@/components/snrd/ContractorsList';
+import ServiceTypesList from '@/components/snrd/ServiceTypesList';
+import SLAAgreementsList from '@/components/snrd/SLAAgreementsList';
+import TerritoriesList from '@/components/snrd/TerritoriesList';
+import OfficeUsersList from '@/components/snrd/OfficeUsersList';
+import WorkGroupsList from '@/components/snrd/WorkGroupsList';
+import SurveyTemplatesList from '@/components/snrd/SurveyTemplatesList';
+import SurveyJournal from '@/components/snrd/SurveyJournal';
+import TypedTasksList from '@/components/snrd/TypedTasksList';
+import CRMModule from '@/components/snrd/CRMModule';
+import HRModule from '@/components/snrd/HRModule';
+import WarehouseModule from '@/components/snrd/WarehouseModule';
+import RolesConstructor from '@/components/snrd/RolesConstructor';
+import ImportData from '@/components/snrd/ImportData';
 import { toast } from 'sonner';
 import { Application, WorkOrder, ApplicationStatus, Priority, WorkOrderStatus, Employee, Client, ServiceObject } from '@/types/snrd';
 import { mockApplications, mockWorkOrders, mockClients, mockEmployees, mockServiceObjects, mockServiceTypes } from '@/data/snrdTestData';
@@ -281,6 +297,9 @@ const SNRD = () => {
       case 'contracts':
         return <ContractsList />;
 
+      case 'completion-acts':
+        return <CompletionActs />;
+
       case 'work-drafts':
         return <WorkDraftsList />;
 
@@ -355,6 +374,51 @@ const SNRD = () => {
 
       case 'reports':
         return <Reports />;
+
+      case 'finance':
+        return <FinanceDashboard />;
+
+      case 'contractors':
+        return <ContractorsList />;
+
+      case 'service-types':
+        return <ServiceTypesList />;
+
+      case 'typed-tasks':
+        return <TypedTasksList />;
+
+      case 'sla':
+        return <SLAAgreementsList />;
+
+      case 'territories':
+        return <TerritoriesList />;
+
+      case 'office-users':
+        return <OfficeUsersList />;
+
+      case 'work-groups':
+        return <WorkGroupsList />;
+
+      case 'survey-templates':
+        return <SurveyTemplatesList />;
+
+      case 'survey-journal':
+        return <SurveyJournal />;
+
+      case 'crm':
+        return <CRMModule />;
+
+      case 'hr':
+        return <HRModule />;
+
+      case 'warehouse':
+        return <WarehouseModule />;
+
+      case 'roles':
+        return <RolesConstructor />;
+
+      case 'import':
+        return <ImportData />;
 
       default:
         return (

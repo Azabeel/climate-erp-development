@@ -30,11 +30,15 @@ const tabTitles: Record<string, string> = {
   sla: 'Соглашения об уровнях сервиса',
   territories: 'Территории обслуживания',
   licensing: 'Лицензирование',
+  finance: 'Финансы и маржинальность',
   'office-users': 'Пользователи офиса',
   'work-groups': 'Рабочие группы',
   roles: 'Конструктор ролей',
   integrations: 'Интеграции с внешними системами',
   import: 'Импорт данных',
+  crm: 'CRM — Воронка продаж',
+  hr: 'HR и Зарплата',
+  warehouse: 'Склад и хладагенты',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {

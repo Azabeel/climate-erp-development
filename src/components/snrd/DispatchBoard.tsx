@@ -11,20 +11,16 @@ import {
 import Icon from '@/components/ui/icon';
 
 // ─────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────
+type WOStatus = 'назначен' | 'выполняется' | 'завершён' | 'аварийный';
 
-type WOStatus = 'assigned' | 'in_progress' | 'completed' | 'emergency';
-
-interface WorkOrder {
+interface WorkOrderBlock {
   id: string;
-  number: string;
   client: string;
   address: string;
   serviceType: string;
   status: WOStatus;
-  engineerId: number | null;
-  dayIndex: number; // 0=Mon … 6=Sun
+  engineerId: number;
+  dayIndex: number;
   timeStart: string;
   timeEnd: string;
   notes: string;
@@ -35,9 +31,13 @@ interface Engineer {
   name: string;
 }
 
-// ─────────────────────────────────────────────
-// Demo data
-// ─────────────────────────────────────────────
+interface UnassignedOrder {
+  id: string;
+  client: string;
+  address: string;
+  serviceType: string;
+  priority: 'Срочно' | 'Обычный' | 'Аварийный';
+}
 
 const ENGINEERS: Engineer[] = [
   { id: 1, name: 'Иванов А.В.' },
@@ -50,355 +50,242 @@ const ENGINEERS: Engineer[] = [
   { id: 8, name: 'Зайцев Н.П.' },
 ];
 
-const WORK_ORDERS: WorkOrder[] = [
-  { id: 'wo1',  number: 'WO-2026-000121', client: 'ТЦ «Мега»',          address: 'ул. Ленина, 45',       serviceType: 'Ремонт',      status: 'in_progress', engineerId: 1, dayIndex: 0, timeStart: '09:00', timeEnd: '11:30', notes: 'Замена компрессора Daikin' },
-  { id: 'wo2',  number: 'WO-2026-000122', client: 'БЦ «Авангард»',      address: 'пр. Мира, 12',        serviceType: 'ТО',          status: 'assigned',    engineerId: 1, dayIndex: 1, timeStart: '10:00', timeEnd: '12:00', notes: 'Плановое ТО VRF-системы' },
-  { id: 'wo3',  number: 'WO-2026-000123', client: 'Склад «Логистик»',   address: 'ул. Промышленная, 3', serviceType: 'Диагностика', status: 'completed',   engineerId: 2, dayIndex: 0, timeStart: '08:00', timeEnd: '09:30', notes: '' },
-  { id: 'wo4',  number: 'WO-2026-000124', client: 'Ресторан «Уют»',     address: 'ул. Садовая, 7',      serviceType: 'Ремонт',      status: 'emergency',   engineerId: 2, dayIndex: 2, timeStart: '14:00', timeEnd: '17:00', notes: 'Аварийный вызов, компрессор не запускается' },
-  { id: 'wo5',  number: 'WO-2026-000125', client: 'ТЦ «Европа»',        address: 'пл. Победы, 1',       serviceType: 'Установка',   status: 'assigned',    engineerId: 3, dayIndex: 0, timeStart: '13:00', timeEnd: '16:00', notes: 'Монтаж кассетного блока' },
-  { id: 'wo6',  number: 'WO-2026-000126', client: 'Офис «Прогресс»',    address: 'ул. Гагарина, 22',    serviceType: 'ТО',          status: 'completed',   engineerId: 3, dayIndex: 3, timeStart: '09:00', timeEnd: '10:30', notes: '' },
-  { id: 'wo7',  number: 'WO-2026-000127', client: 'Гостиница «Заря»',   address: 'ул. Морская, 8',      serviceType: 'Ремонт',      status: 'in_progress', engineerId: 4, dayIndex: 1, timeStart: '11:00', timeEnd: '14:00', notes: 'Утечка фреона R-410A' },
-  { id: 'wo8',  number: 'WO-2026-000128', client: 'Банк «Надёжный»',    address: 'пр. Советский, 55',   serviceType: 'Диагностика', status: 'assigned',    engineerId: 4, dayIndex: 4, timeStart: '10:00', timeEnd: '11:30', notes: '' },
-  { id: 'wo9',  number: 'WO-2026-000129', client: 'ТЦ «Мега»',          address: 'ул. Ленина, 45',      serviceType: 'ТО',          status: 'completed',   engineerId: 5, dayIndex: 2, timeStart: '09:00', timeEnd: '11:00', notes: 'Плановое ТО чиллера' },
-  { id: 'wo10', number: 'WO-2026-000130', client: 'Склад «Логистик»',   address: 'ул. Промышленная, 3', serviceType: 'Ремонт',      status: 'assigned',    engineerId: 5, dayIndex: 4, timeStart: '13:00', timeEnd: '15:30', notes: '' },
-  { id: 'wo11', number: 'WO-2026-000131', client: 'Кафе «Уголок»',      address: 'ул. Цветочная, 14',   serviceType: 'Установка',   status: 'assigned',    engineerId: 6, dayIndex: 0, timeStart: '09:00', timeEnd: '13:00', notes: 'Монтаж 3 сплит-систем' },
-  { id: 'wo12', number: 'WO-2026-000132', client: 'Офис «Прогресс»',    address: 'ул. Гагарина, 22',    serviceType: 'Ремонт',      status: 'emergency',   engineerId: 7, dayIndex: 3, timeStart: '15:00', timeEnd: '17:30', notes: 'Аварийный — офис без охлаждения' },
-  { id: 'wo13', number: 'WO-2026-000133', client: 'БЦ «Авангард»',      address: 'пр. Мира, 12',        serviceType: 'ТО',          status: 'in_progress', engineerId: 7, dayIndex: 1, timeStart: '08:30', timeEnd: '10:00', notes: '' },
-  { id: 'wo14', number: 'WO-2026-000134', client: 'Гостиница «Заря»',   address: 'ул. Морская, 8',      serviceType: 'Диагностика', status: 'completed',   engineerId: 8, dayIndex: 2, timeStart: '10:00', timeEnd: '11:30', notes: '' },
-  { id: 'wo15', number: 'WO-2026-000135', client: 'Банк «Надёжный»',    address: 'пр. Советский, 55',   serviceType: 'Ремонт',      status: 'assigned',    engineerId: 8, dayIndex: 5, timeStart: '09:00', timeEnd: '12:00', notes: 'Замена вентилятора конденсатора' },
+const WORK_ORDERS: WorkOrderBlock[] = [
+  { id: 'WO-2026-000201', client: 'ООО "МегаМолл"', address: 'ул. Ленина, 45', serviceType: 'Ремонт кондиционера', status: 'назначен', engineerId: 1, dayIndex: 0, timeStart: '09:00', timeEnd: '11:00', notes: 'Не охлаждает, ошибка E1' },
+  { id: 'WO-2026-000202', client: 'АО "ПромСтрой"', address: 'пр. Победы, 12', serviceType: 'ТО сплит-системы', status: 'выполняется', engineerId: 1, dayIndex: 1, timeStart: '10:00', timeEnd: '12:30', notes: 'Плановое обслуживание' },
+  { id: 'WO-2026-000203', client: 'ИП Соколов', address: 'ул. Садовая, 7', serviceType: 'Монтаж VRF', status: 'назначен', engineerId: 2, dayIndex: 0, timeStart: '08:00', timeEnd: '14:00', notes: 'Требуется лестница' },
+  { id: 'WO-2026-000204', client: 'ООО "НоваФарм"', address: 'ул. Советская, 33', serviceType: 'Заправка хладагентом', status: 'завершён', engineerId: 2, dayIndex: 2, timeStart: '11:00', timeEnd: '12:00', notes: 'R-410A, 0.5 кг' },
+  { id: 'WO-2026-000205', client: 'ПАО "СтройИнвест"', address: 'ул. Гагарина, 88', serviceType: 'Диагностика чиллера', status: 'аварийный', engineerId: 3, dayIndex: 0, timeStart: '07:00', timeEnd: '10:00', notes: 'Аварийная остановка, утечка' },
+  { id: 'WO-2026-000206', client: 'ООО "Альфа-Центр"', address: 'пр. Мира, 55', serviceType: 'Ремонт вентиляции', status: 'назначен', engineerId: 3, dayIndex: 2, timeStart: '13:00', timeEnd: '15:00', notes: 'Шум в воздуховоде' },
+  { id: 'WO-2026-000207', client: 'ООО "ТехноПлаза"', address: 'ул. Центральная, 1', serviceType: 'ТО VRF системы', status: 'выполняется', engineerId: 4, dayIndex: 1, timeStart: '09:00', timeEnd: '13:00', notes: 'Квартальное ТО' },
+  { id: 'WO-2026-000208', client: 'ИП Смирнов', address: 'ул. Лесная, 22', serviceType: 'Монтаж сплит-системы', status: 'завершён', engineerId: 4, dayIndex: 3, timeStart: '10:00', timeEnd: '13:00', notes: 'Установка в спальне' },
+  { id: 'WO-2026-000209', client: 'ООО "РиэлтиГрупп"', address: 'ул. Комсомольская, 14', serviceType: 'Гарантийный ремонт', status: 'назначен', engineerId: 5, dayIndex: 1, timeStart: '14:00', timeEnd: '16:00', notes: 'В рамках гарантии 2 года' },
+  { id: 'WO-2026-000210', client: 'АО "МетроМолл"', address: 'пр. Октября, 99', serviceType: 'Диагностика системы', status: 'выполняется', engineerId: 5, dayIndex: 3, timeStart: '09:00', timeEnd: '11:00', notes: 'Проверка всех блоков' },
+  { id: 'WO-2026-000211', client: 'ООО "ЭкоОфис"', address: 'ул. Парковая, 5', serviceType: 'Чистка фильтров', status: 'завершён', engineerId: 6, dayIndex: 0, timeStart: '11:00', timeEnd: '12:00', notes: 'Профилактика' },
+  { id: 'WO-2026-000212', client: 'ПАО "ГлобалТех"', address: 'ул. Новая, 78', serviceType: 'Монтаж канального кондиционера', status: 'назначен', engineerId: 7, dayIndex: 2, timeStart: '08:00', timeEnd: '16:00', notes: 'Сложный монтаж, нужны 2 чел.' },
+  { id: 'WO-2026-000213', client: 'ООО "СервисПлюс"', address: 'ул. Рабочая, 11', serviceType: 'Ремонт компрессора', status: 'аварийный', engineerId: 7, dayIndex: 4, timeStart: '09:00', timeEnd: '13:00', notes: 'Компрессор не запускается' },
+  { id: 'WO-2026-000214', client: 'ООО "БизнесЦентр"', address: 'пр. Ленина, 200', serviceType: 'ТО холодильного оборудования', status: 'назначен', engineerId: 8, dayIndex: 1, timeStart: '10:00', timeEnd: '13:00', notes: 'Плановое ТО ежеквартальное' },
+  { id: 'WO-2026-000215', client: 'ИП Кузнецова', address: 'ул. Молодёжная, 3', serviceType: 'Замена дренажного насоса', status: 'завершён', engineerId: 8, dayIndex: 3, timeStart: '14:00', timeEnd: '15:30', notes: 'Протекает поддон' },
 ];
 
-const UNASSIGNED_ORDERS: WorkOrder[] = [
-  { id: 'u1', number: 'WO-2026-000136', client: 'ТЦ «Аврора»',       address: 'ул. Речная, 3',     serviceType: 'Ремонт',      status: 'assigned', engineerId: null, dayIndex: -1, timeStart: '', timeEnd: '', notes: 'Кондиционер не охлаждает' },
-  { id: 'u2', number: 'WO-2026-000137', client: 'Завод «Металл»',    address: 'пр. Заводской, 88', serviceType: 'ТО',          status: 'assigned', engineerId: null, dayIndex: -1, timeStart: '', timeEnd: '', notes: 'Плановое ТО вентиляции' },
-  { id: 'u3', number: 'WO-2026-000138', client: 'ТЦ «Европа»',       address: 'пл. Победы, 1',     serviceType: 'Установка',   status: 'assigned', engineerId: null, dayIndex: -1, timeStart: '', timeEnd: '', notes: 'Монтаж чиллера 60 кВт' },
-  { id: 'u4', number: 'WO-2026-000139', client: 'Кафе «Бриз»',       address: 'ул. Набережная, 5', serviceType: 'Диагностика', status: 'assigned', engineerId: null, dayIndex: -1, timeStart: '', timeEnd: '', notes: 'Запах горелого из блока' },
-  { id: 'u5', number: 'WO-2026-000140', client: 'Офис «Центральный»', address: 'ул. Советская, 1',  serviceType: 'Ремонт',      status: 'emergency', engineerId: null, dayIndex: -1, timeStart: '', timeEnd: '', notes: 'Аварийный — утечка воды из дренажа' },
+const UNASSIGNED_ORDERS: UnassignedOrder[] = [
+  { id: 'WO-2026-000216', client: 'ООО "ФудКорт"', address: 'ул. Торговая, 8', serviceType: 'Ремонт VRF', priority: 'Срочно' },
+  { id: 'WO-2026-000217', client: 'АО "МедиаПарк"', address: 'пр. Свободы, 45', serviceType: 'Монтаж сплит-системы', priority: 'Обычный' },
+  { id: 'WO-2026-000218', client: 'ООО "АрктикЛогистик"', address: 'ул. Промышленная, 17', serviceType: 'Диагностика холодильника', priority: 'Аварийный' },
+  { id: 'WO-2026-000219', client: 'ИП Фёдоров', address: 'ул. Лесопарковая, 6', serviceType: 'ТО сплит-системы', priority: 'Обычный' },
+  { id: 'WO-2026-000220', client: 'ООО "СтройМастер"', address: 'пр. Победы, 31', serviceType: 'Замена фреона', priority: 'Срочно' },
 ];
-
-// ─────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────
-
-const STATUS_COLORS: Record<WOStatus, string> = {
-  assigned:    'bg-blue-100 border-blue-400 text-blue-800',
-  in_progress: 'bg-green-100 border-green-400 text-green-800',
-  completed:   'bg-gray-100 border-gray-400 text-gray-600',
-  emergency:   'bg-red-100 border-red-500 text-red-800',
-};
-
-const STATUS_LABELS: Record<WOStatus, string> = {
-  assigned:    'Назначен',
-  in_progress: 'Выполняется',
-  completed:   'Завершён',
-  emergency:   'Аварийный',
-};
 
 const DAY_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
-/** Returns Monday of the week containing `base` */
-function getMondayOf(base: Date): Date {
-  const d = new Date(base);
-  const day = d.getDay(); // 0=Sun
+function getMonday(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
   const diff = day === 0 ? -6 : 1 - day;
   d.setDate(d.getDate() + diff);
   d.setHours(0, 0, 0, 0);
   return d;
 }
 
-function formatDate(d: Date): string {
-  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+function addDays(date: Date, n: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return d;
 }
 
-// ─────────────────────────────────────────────
-// Sub-components
-// ─────────────────────────────────────────────
-
-function WOBlock({ wo, onClick }: { wo: WorkOrder; onClick: () => void }) {
-  const shortClient = wo.client.length > 14 ? wo.client.slice(0, 14) + '…' : wo.client;
-  return (
-    <div
-      onClick={onClick}
-      className={`border-l-4 rounded px-1.5 py-0.5 mb-1 cursor-pointer text-xs leading-tight hover:opacity-80 transition-opacity ${STATUS_COLORS[wo.status]}`}
-    >
-      <div className="font-semibold truncate">{wo.number.replace('WO-2026-0', 'WO-')}</div>
-      <div className="truncate">{shortClient}</div>
-      {wo.timeStart && <div className="text-[10px] opacity-70">{wo.timeStart}–{wo.timeEnd}</div>}
-    </div>
-  );
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
 }
 
-// ─────────────────────────────────────────────
-// Main component
-// ─────────────────────────────────────────────
+function isToday(date: Date): boolean {
+  const today = new Date();
+  return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+}
+
+const STATUS_COLORS: Record<WOStatus, string> = {
+  назначен: 'bg-blue-100 border-blue-400 text-blue-800',
+  выполняется: 'bg-green-100 border-green-400 text-green-800',
+  завершён: 'bg-gray-100 border-gray-400 text-gray-600',
+  аварийный: 'bg-red-100 border-red-400 text-red-800',
+};
+
+const STATUS_BADGE: Record<WOStatus, string> = {
+  назначен: 'bg-blue-500 text-white',
+  выполняется: 'bg-green-500 text-white',
+  завершён: 'bg-gray-400 text-white',
+  аварийный: 'bg-red-500 text-white',
+};
+
+const PRIORITY_BADGE: Record<string, string> = {
+  'Обычный': 'bg-gray-100 text-gray-700',
+  'Срочно': 'bg-orange-100 text-orange-700',
+  'Аварийный': 'bg-red-100 text-red-700',
+};
 
 export default function DispatchBoard() {
-  const today = new Date();
   const [weekOffset, setWeekOffset] = useState(0);
-  const [selectedWO, setSelectedWO] = useState<WorkOrder | null>(null);
+  const [selectedWO, setSelectedWO] = useState<WorkOrderBlock | null>(null);
   const [filterEngineer, setFilterEngineer] = useState<number | 'all'>('all');
   const [filterStatus, setFilterStatus] = useState<WOStatus | 'all'>('all');
+  const [assignedIds, setAssignedIds] = useState<string[]>([]);
 
-  // Compute week dates
-  const baseMonday = getMondayOf(today);
-  baseMonday.setDate(baseMonday.getDate() + weekOffset * 7);
-  const weekDates = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(baseMonday);
-    d.setDate(d.getDate() + i);
-    return d;
-  });
+  const today = new Date();
+  const monday = addDays(getMonday(today), weekOffset * 7);
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
 
-  const isToday = (d: Date) =>
-    d.getFullYear() === today.getFullYear() &&
-    d.getMonth() === today.getMonth() &&
-    d.getDate() === today.getDate();
+  const filteredEngineers = filterEngineer === 'all' ? ENGINEERS : ENGINEERS.filter(e => e.id === filterEngineer);
 
-  // Filter grid orders
-  const filteredOrders = WORK_ORDERS.filter(wo => {
-    if (filterEngineer !== 'all' && wo.engineerId !== filterEngineer) return false;
-    if (filterStatus !== 'all' && wo.status !== filterStatus) return false;
-    return true;
-  });
+  function getOrders(engineerId: number, dayIndex: number): WorkOrderBlock[] {
+    return WORK_ORDERS.filter(wo => wo.engineerId === engineerId && wo.dayIndex === dayIndex && (filterStatus === 'all' || wo.status === filterStatus));
+  }
 
-  const getCell = (engineerId: number, dayIndex: number) =>
-    filteredOrders.filter(wo => wo.engineerId === engineerId && wo.dayIndex === dayIndex);
+  function handleAssign(orderId: string) {
+    setAssignedIds(prev => [...prev, orderId]);
+  }
 
-  const visibleEngineers =
-    filterEngineer === 'all'
-      ? ENGINEERS
-      : ENGINEERS.filter(e => e.id === filterEngineer);
+  const unassignedVisible = UNASSIGNED_ORDERS.filter(o => !assignedIds.includes(o.id));
 
   return (
-    <div className="flex gap-4 h-full">
-      {/* Main board */}
-      <div className="flex-1 min-w-0">
-        <Card className="h-full flex flex-col">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Icon name="CalendarDays" size={20} />
-                Доска диспетчера
-              </CardTitle>
+    <div className="flex flex-col h-full gap-4 p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setWeekOffset(w => w - 1)}>
+            <Icon name="ChevronLeft" size={16} />
+          </Button>
+          <span className="font-semibold text-sm min-w-[180px] text-center">
+            {formatDate(monday)} — {formatDate(addDays(monday, 6))}
+          </span>
+          <Button variant="outline" size="sm" onClick={() => setWeekOffset(w => w + 1)}>
+            <Icon name="ChevronRight" size={16} />
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setWeekOffset(0)}>Сегодня</Button>
+        </div>
+        <div className="flex items-center gap-2 ml-auto">
+          <Icon name="Filter" size={15} className="text-gray-400" />
+          <select className="text-sm border rounded px-2 py-1" value={filterEngineer === 'all' ? 'all' : filterEngineer} onChange={e => setFilterEngineer(e.target.value === 'all' ? 'all' : Number(e.target.value))}>
+            <option value="all">Все инженеры</option>
+            {ENGINEERS.map(eng => <option key={eng.id} value={eng.id}>{eng.name}</option>)}
+          </select>
+          <select className="text-sm border rounded px-2 py-1" value={filterStatus} onChange={e => setFilterStatus(e.target.value as WOStatus | 'all')}>
+            <option value="all">Все статусы</option>
+            <option value="назначен">Назначен</option>
+            <option value="выполняется">Выполняется</option>
+            <option value="завершён">Завершён</option>
+            <option value="аварийный">Аварийный</option>
+          </select>
+        </div>
+      </div>
 
-              {/* Week navigation */}
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={() => setWeekOffset(w => w - 1)}>
-                  <Icon name="ChevronLeft" size={16} />
-                </Button>
-                <span className="text-sm font-medium min-w-[120px] text-center">
-                  {formatDate(weekDates[0])} — {formatDate(weekDates[6])}
-                </span>
-                <Button variant="outline" size="sm" onClick={() => setWeekOffset(w => w + 1)}>
-                  <Icon name="ChevronRight" size={16} />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => setWeekOffset(0)}>
-                  Сегодня
-                </Button>
-              </div>
-
-              {/* Filters */}
-              <div className="flex items-center gap-2">
-                <select
-                  className="text-sm border rounded px-2 py-1 bg-white"
-                  value={filterEngineer === 'all' ? 'all' : String(filterEngineer)}
-                  onChange={e => setFilterEngineer(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                >
-                  <option value="all">Все инженеры</option>
-                  {ENGINEERS.map(e => (
-                    <option key={e.id} value={e.id}>{e.name}</option>
-                  ))}
-                </select>
-                <select
-                  className="text-sm border rounded px-2 py-1 bg-white"
-                  value={filterStatus}
-                  onChange={e => setFilterStatus(e.target.value as WOStatus | 'all')}
-                >
-                  <option value="all">Все статусы</option>
-                  {(Object.keys(STATUS_LABELS) as WOStatus[]).map(s => (
-                    <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="flex-1 overflow-auto p-0">
-            <table className="w-full border-collapse text-sm" style={{ minWidth: 700 }}>
-              <thead>
-                <tr>
-                  <th className="border border-gray-200 bg-gray-50 px-3 py-2 text-left w-28 font-semibold text-gray-600">
-                    Инженер
-                  </th>
-                  {weekDates.map((d, i) => (
-                    <th
-                      key={i}
-                      className={`border border-gray-200 px-2 py-2 text-center font-semibold w-1/7 ${
-                        isToday(d) ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-600'
-                      }`}
-                    >
-                      <div>{DAY_NAMES[i]}</div>
-                      <div className={`text-xs font-normal ${isToday(d) ? 'text-blue-500' : 'text-gray-400'}`}>
-                        {formatDate(d)}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {visibleEngineers.map(eng => (
-                  <tr key={eng.id} className="hover:bg-gray-50/50">
-                    <td className="border border-gray-200 px-3 py-2 font-medium text-gray-700 bg-gray-50/60 align-top">
-                      {eng.name}
-                    </td>
-                    {weekDates.map((_, dayIdx) => {
-                      const cell = getCell(eng.id, dayIdx);
-                      return (
-                        <td
-                          key={dayIdx}
-                          className={`border border-gray-200 px-1 py-1 align-top ${
-                            isToday(weekDates[dayIdx]) ? 'bg-blue-50/30' : ''
-                          }`}
-                          style={{ minHeight: 60 }}
-                        >
-                          {cell.map(wo => (
-                            <WOBlock key={wo.id} wo={wo} onClick={() => setSelectedWO(wo)} />
-                          ))}
-                        </td>
-                      );
-                    })}
+      <div className="flex gap-4 flex-1 min-h-0">
+        <div className="flex-1 overflow-auto">
+          <Card>
+            <CardContent className="p-0">
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="border border-gray-200 px-3 py-2 text-left font-semibold w-32 min-w-[128px]">Инженер</th>
+                    {weekDays.map((day, i) => (
+                      <th key={i} className={`border border-gray-200 px-2 py-2 text-center font-semibold min-w-[130px] ${isToday(day) ? 'bg-blue-50 text-blue-700' : i >= 5 ? 'text-gray-400' : ''}`}>
+                        <div>{DAY_NAMES[i]}</div>
+                        <div className="text-xs font-normal">{formatDate(day)}</div>
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-
-          {/* Legend */}
-          <div className="px-4 py-2 border-t flex flex-wrap gap-3 text-xs text-gray-600">
-            <span className="font-medium">Обозначения:</span>
-            {(Object.keys(STATUS_LABELS) as WOStatus[]).map(s => (
-              <span key={s} className="flex items-center gap-1">
-                <span className={`inline-block w-3 h-3 rounded border-l-4 ${STATUS_COLORS[s]}`} />
-                {STATUS_LABELS[s]}
+                </thead>
+                <tbody>
+                  {filteredEngineers.map(eng => (
+                    <tr key={eng.id} className="hover:bg-gray-50/50">
+                      <td className="border border-gray-200 px-3 py-2 font-medium text-xs align-top bg-white">{eng.name}</td>
+                      {weekDays.map((_, dayIdx) => {
+                        const orders = getOrders(eng.id, dayIdx);
+                        return (
+                          <td key={dayIdx} className={`border border-gray-200 px-1 py-1 align-top min-h-[60px] ${dayIdx >= 5 ? 'bg-gray-50' : ''}`}>
+                            <div className="flex flex-col gap-1">
+                              {orders.map(wo => (
+                                <button key={wo.id} onClick={() => setSelectedWO(wo)} className={`w-full text-left text-xs border rounded px-1.5 py-1 cursor-pointer hover:opacity-80 transition-opacity ${STATUS_COLORS[wo.status]}`}>
+                                  <div className="font-semibold truncate">{wo.id.replace('WO-2026-', '#')}</div>
+                                  <div className="truncate text-[10px] opacity-80">{wo.client.length > 16 ? wo.client.slice(0, 16) + '…' : wo.client}</div>
+                                  <div className="text-[10px] opacity-70">{wo.timeStart}–{wo.timeEnd}</div>
+                                </button>
+                              ))}
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </CardContent>
+          </Card>
+          <div className="flex flex-wrap gap-4 mt-3 text-xs text-gray-600">
+            {(Object.entries(STATUS_COLORS) as [WOStatus, string][]).map(([status, cls]) => (
+              <span key={status} className="flex items-center gap-1.5">
+                <span className={`inline-block w-3 h-3 rounded border ${cls}`} />
+                {status.charAt(0).toUpperCase() + status.slice(1)}
               </span>
             ))}
           </div>
-        </Card>
+        </div>
+
+        <div className="w-64 shrink-0">
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Icon name="Clock" size={15} />
+                Нераспределённые
+                <Badge className="ml-auto bg-orange-100 text-orange-700 text-xs">{unassignedVisible.length}</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-3 pb-3">
+              {unassignedVisible.length === 0 ? (
+                <p className="text-xs text-gray-400 text-center py-4">Все наряды распределены</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {unassignedVisible.map(order => (
+                    <div key={order.id} className="border rounded p-2 text-xs bg-white hover:bg-gray-50">
+                      <div className="font-semibold text-gray-800">{order.id.replace('WO-2026-', '#')}</div>
+                      <div className="text-gray-500 truncate">{order.client}</div>
+                      <div className="text-gray-500 truncate text-[10px]">{order.serviceType}</div>
+                      <div className="flex items-center justify-between mt-1.5">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${PRIORITY_BADGE[order.priority]}`}>{order.priority}</span>
+                        <Button size="sm" variant="outline" className="h-6 text-[10px] px-2" onClick={() => handleAssign(order.id)}>Назначить</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
-      {/* Unassigned sidebar */}
-      <div className="w-64 flex-shrink-0">
-        <Card className="h-full flex flex-col">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Icon name="ClipboardList" size={16} />
-              Не назначено
-              <Badge variant="secondary" className="ml-auto">{UNASSIGNED_ORDERS.length}</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 overflow-auto space-y-2 p-3">
-            {UNASSIGNED_ORDERS.map(wo => (
-              <div
-                key={wo.id}
-                className={`rounded-lg border p-2 text-xs ${
-                  wo.status === 'emergency'
-                    ? 'border-red-300 bg-red-50'
-                    : 'border-gray-200 bg-white'
-                }`}
-              >
-                {wo.status === 'emergency' && (
-                  <div className="flex items-center gap-1 text-red-600 font-semibold mb-1">
-                    <Icon name="AlertTriangle" size={12} />
-                    Аварийный
-                  </div>
-                )}
-                <div className="font-semibold text-gray-800">{wo.number}</div>
-                <div className="text-gray-600 truncate">{wo.client}</div>
-                <div className="text-gray-500 truncate">{wo.serviceType}</div>
-                <div className="text-gray-400 truncate text-[10px]">{wo.notes}</div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="mt-1.5 w-full h-6 text-xs"
-                  onClick={() => setSelectedWO(wo)}
-                >
-                  Назначить
-                </Button>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Detail modal */}
       <Dialog open={!!selectedWO} onOpenChange={() => setSelectedWO(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Icon name="FileText" size={18} />
-              {selectedWO?.number}
+              {selectedWO?.id}
             </DialogTitle>
           </DialogHeader>
           {selectedWO && (
             <div className="space-y-3 text-sm">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <div className="text-gray-500 text-xs">Клиент</div>
-                  <div className="font-medium">{selectedWO.client}</div>
-                </div>
-                <div>
-                  <div className="text-gray-500 text-xs">Статус</div>
-                  <Badge
-                    className={`text-xs ${STATUS_COLORS[selectedWO.status]}`}
-                    variant="outline"
-                  >
-                    {STATUS_LABELS[selectedWO.status]}
-                  </Badge>
-                </div>
-                <div>
-                  <div className="text-gray-500 text-xs">Инженер</div>
-                  <div className="font-medium">
-                    {selectedWO.engineerId
-                      ? ENGINEERS.find(e => e.id === selectedWO.engineerId)?.name
-                      : <span className="text-red-500">Не назначен</span>}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-gray-500 text-xs">Тип работ</div>
-                  <div className="font-medium">{selectedWO.serviceType}</div>
-                </div>
-                <div className="col-span-2">
-                  <div className="text-gray-500 text-xs">Адрес</div>
-                  <div className="font-medium">{selectedWO.address}</div>
-                </div>
-                {selectedWO.timeStart && (
-                  <div>
-                    <div className="text-gray-500 text-xs">Время</div>
-                    <div className="font-medium">{selectedWO.timeStart} — {selectedWO.timeEnd}</div>
-                  </div>
-                )}
-                {selectedWO.dayIndex >= 0 && (
-                  <div>
-                    <div className="text-gray-500 text-xs">День недели</div>
-                    <div className="font-medium">{DAY_NAMES[selectedWO.dayIndex]}</div>
-                  </div>
-                )}
-                {selectedWO.notes && (
-                  <div className="col-span-2">
-                    <div className="text-gray-500 text-xs">Примечания</div>
-                    <div className="text-gray-700">{selectedWO.notes}</div>
-                  </div>
-                )}
+              <div className="flex items-center gap-2">
+                <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_BADGE[selectedWO.status]}`}>
+                  {selectedWO.status.charAt(0).toUpperCase() + selectedWO.status.slice(1)}
+                </span>
               </div>
-              <div className="flex gap-2 pt-2">
-                {!selectedWO.engineerId && (
-                  <Button size="sm" className="flex-1">
-                    <Icon name="UserPlus" size={14} className="mr-1" />
-                    Назначить инженера
-                  </Button>
-                )}
-                <Button size="sm" variant="outline" className="flex-1" onClick={() => setSelectedWO(null)}>
-                  Закрыть
-                </Button>
+              <div className="grid grid-cols-[120px_1fr] gap-y-2 text-sm">
+                <span className="text-gray-500">Клиент</span><span className="font-medium">{selectedWO.client}</span>
+                <span className="text-gray-500">Адрес</span><span>{selectedWO.address}</span>
+                <span className="text-gray-500">Инженер</span><span>{ENGINEERS.find(e => e.id === selectedWO.engineerId)?.name}</span>
+                <span className="text-gray-500">Вид работ</span><span>{selectedWO.serviceType}</span>
+                <span className="text-gray-500">Время</span><span>{selectedWO.timeStart} – {selectedWO.timeEnd}</span>
+                <span className="text-gray-500">День недели</span><span>{DAY_NAMES[selectedWO.dayIndex]}</span>
+                <span className="text-gray-500">Примечания</span><span className="text-gray-700">{selectedWO.notes}</span>
+              </div>
+              <div className="flex justify-end pt-2">
+                <Button variant="outline" size="sm" onClick={() => setSelectedWO(null)}>Закрыть</Button>
               </div>
             </div>
           )}

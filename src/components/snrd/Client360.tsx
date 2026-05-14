@@ -3,19 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Icon from '@/components/ui/icon';
-
-// ─────────────────────────────────────────────
-// Props
-// ─────────────────────────────────────────────
 
 interface Client360Props {
   clientId: string;
@@ -23,217 +12,116 @@ interface Client360Props {
   onClose: () => void;
 }
 
-// ─────────────────────────────────────────────
-// Demo data (same for any clientId)
-// ─────────────────────────────────────────────
+const equipment = [
+  { id: 'EQ-001', brand: 'Daikin', model: 'FTXB35C', serial: 'DN2104581', installed: '15.03.2022', lastService: '10.01.2026', nextService: '10.07.2026', status: 'Исправен' },
+  { id: 'EQ-002', brand: 'Mitsubishi', model: 'MSZ-AP25VG', serial: 'MT9823764', installed: '22.06.2021', lastService: '05.02.2026', nextService: '05.08.2026', status: 'Исправен' },
+  { id: 'EQ-003', brand: 'Samsung', model: 'AR09TXHQASINUA', serial: 'SM4561209', installed: '08.11.2023', lastService: '20.12.2025', nextService: '20.06.2026', status: 'Требует ТО' },
+  { id: 'EQ-004', brand: 'LG', model: 'S09ET', serial: 'LG7834521', installed: '30.01.2020', lastService: '15.11.2025', nextService: '15.05.2026', status: 'Внимание' },
+  { id: 'EQ-005', brand: 'Haier', model: 'AS09NS4ERA', serial: 'HR2091847', installed: '14.05.2024', lastService: '02.03.2026', nextService: '02.09.2026', status: 'Исправен' },
+];
 
-const CLIENT_INFO = {
-  name: 'ТЦ «Мега»',
-  inn: '7701234567',
-  type: 'Юридическое лицо',
-  contactPerson: 'Смирнова Ольга Владимировна',
-  phone: '+7 (495) 123-45-67',
-  email: 'o.smirnova@mega-tc.ru',
-  address: 'г. Москва, ул. Ленина, 45',
-  healthScore: 82,
-  contract: '№ ДО-2024-0042 от 01.03.2024',
-  sla: 'Корпоративный SLA — TTR 4ч, TTO 2ч',
-  totalOrders: 47,
-  avgRating: 4.8,
-  totalRevenue: '1 240 500 ₽',
+const workOrders = [
+  { id: 'WO-2026-000234', date: '10.05.2026', type: 'Ремонт', engineer: 'Иванов А.В.', status: 'Выполнен', amount: '8 500 ₽' },
+  { id: 'WO-2026-000198', date: '22.04.2026', type: 'ТО', engineer: 'Петров С.М.', status: 'Выполнен', amount: '4 200 ₽' },
+  { id: 'WO-2026-000145', date: '05.03.2026', type: 'Диагностика', engineer: 'Козлов Д.Р.', status: 'Выполнен', amount: '2 800 ₽' },
+  { id: 'WO-2025-001892', date: '18.12.2025', type: 'Ремонт', engineer: 'Иванов А.В.', status: 'Выполнен', amount: '12 600 ₽' },
+  { id: 'WO-2025-001654', date: '02.11.2025', type: 'ТО', engineer: 'Новиков П.А.', status: 'Выполнен', amount: '4 200 ₽' },
+  { id: 'WO-2025-001423', date: '14.09.2025', type: 'Установка', engineer: 'Петров С.М.', status: 'Выполнен', amount: '18 000 ₽' },
+  { id: 'WO-2025-001201', date: '28.07.2025', type: 'Ремонт', engineer: 'Козлов Д.Р.', status: 'Выполнен', amount: '6 400 ₽' },
+  { id: 'WO-2025-000987', date: '10.06.2025', type: 'ТО', engineer: 'Иванов А.В.', status: 'Выполнен', amount: '4 200 ₽' },
+];
+
+const contacts = [
+  { name: 'Смирнов Алексей Петрович', role: 'Генеральный директор', phone: '+7 (916) 234-56-78', email: 'smirnov@client.ru', telegram: '@smirnov_ap' },
+  { name: 'Козлова Марина Ивановна', role: 'Главный инженер', phone: '+7 (916) 345-67-89', email: 'kozlova@client.ru', telegram: '@kozlova_mi' },
+  { name: 'Федоров Дмитрий Сергеевич', role: 'Бухгалтер', phone: '+7 (916) 456-78-90', email: 'fedorov@client.ru', telegram: '' },
+  { name: 'Антонова Светлана Юрьевна', role: 'Офис-менеджер', phone: '+7 (916) 567-89-01', email: 'antonova@client.ru', telegram: '@antonova_su' },
+];
+
+const invoices = [
+  { id: 'INV-2026-089', date: '10.05.2026', amount: '8 500 ₽', status: 'Оплачен', due: '25.05.2026' },
+  { id: 'INV-2026-067', date: '22.04.2026', amount: '4 200 ₽', status: 'Оплачен', due: '07.05.2026' },
+  { id: 'INV-2026-034', date: '05.03.2026', amount: '2 800 ₽', status: 'Оплачен', due: '20.03.2026' },
+  { id: 'INV-2026-012', date: '15.02.2026', amount: '5 600 ₽', status: 'Ожидает оплаты', due: '01.03.2026' },
+];
+
+const documents = [
+  { name: 'Договор №ДГ-2024-156', type: 'PDF', size: '1.2 МБ', date: '01.03.2024' },
+  { name: 'Приложение №1 к договору', type: 'PDF', size: '0.8 МБ', date: '01.03.2024' },
+  { name: 'SLA Соглашение', type: 'PDF', size: '0.5 МБ', date: '01.03.2024' },
+  { name: 'Акт №АВР-2026-089', type: 'PDF', size: '0.3 МБ', date: '10.05.2026' },
+  { name: 'Акт №АВР-2026-067', type: 'PDF', size: '0.3 МБ', date: '22.04.2026' },
+  { name: 'Акт №АВР-2026-034', type: 'PDF', size: '0.3 МБ', date: '05.03.2026' },
+];
+
+const eqStatusColor: Record<string, string> = {
+  'Исправен': 'bg-green-100 text-green-700',
+  'Требует ТО': 'bg-yellow-100 text-yellow-700',
+  'Внимание': 'bg-orange-100 text-orange-700',
+  'Неисправен': 'bg-red-100 text-red-700',
 };
 
-const EQUIPMENT = [
-  { id: 'eq1', brand: 'Daikin',      model: 'PUHY-P300YNW', serial: 'SN2021030401', installed: '15.03.2021', lastService: '10.02.2026', nextService: '10.05.2026', status: 'ok' },
-  { id: 'eq2', brand: 'Mitsubishi',  model: 'FDT224KXZE6',  serial: 'SN2020110201', installed: '20.11.2020', lastService: '05.01.2026', nextService: '05.04.2026', status: 'warning' },
-  { id: 'eq3', brand: 'Daikin',      model: 'RZQSG71L3V1',  serial: 'SN2022060103', installed: '10.06.2022', lastService: '18.03.2026', nextService: '18.06.2026', status: 'ok' },
-  { id: 'eq4', brand: 'LG',          model: 'ARUN100GSS4',  serial: 'SN2019040501', installed: '05.04.2019', lastService: '22.12.2025', nextService: '22.03.2026', status: 'overdue' },
-  { id: 'eq5', brand: 'Gree',        model: 'GMV-1000WM/B', serial: 'SN2023020201', installed: '14.02.2023', lastService: '01.04.2026', nextService: '01.07.2026', status: 'ok' },
-  { id: 'eq6', brand: 'Carrier',     model: '30HXC-200',    serial: 'SN2018091501', installed: '20.09.2018', lastService: '30.11.2025', nextService: '28.02.2026', status: 'overdue' },
-];
+const woStatusColor: Record<string, string> = {
+  'Выполнен': 'bg-green-100 text-green-700',
+  'В работе': 'bg-blue-100 text-blue-700',
+  'Назначен': 'bg-yellow-100 text-yellow-700',
+};
 
-const WORK_ORDER_HISTORY = [
-  { id: 'woh1', number: 'WO-2026-000121', date: '11.05.2026', type: 'Ремонт',      engineer: 'Иванов А.В.',  status: 'in_progress', amount: '18 500 ₽' },
-  { id: 'woh2', number: 'WO-2026-000108', date: '10.04.2026', type: 'ТО',          engineer: 'Петров С.М.', status: 'completed',   amount: '8 200 ₽' },
-  { id: 'woh3', number: 'WO-2026-000095', date: '22.03.2026', type: 'Диагностика', engineer: 'Козлов Д.Р.', status: 'completed',   amount: '3 800 ₽' },
-  { id: 'woh4', number: 'WO-2026-000081', date: '05.03.2026', type: 'Ремонт',      engineer: 'Иванов А.В.',  status: 'completed',   amount: '24 700 ₽' },
-  { id: 'woh5', number: 'WO-2026-000067', date: '14.02.2026', type: 'ТО',          engineer: 'Новиков П.А.', status: 'completed',   amount: '8 200 ₽' },
-  { id: 'woh6', number: 'WO-2026-000053', date: '28.01.2026', type: 'Установка',   engineer: 'Волков А.С.',  status: 'completed',   amount: '45 000 ₽' },
-  { id: 'woh7', number: 'WO-2026-000039', date: '10.01.2026', type: 'Ремонт',      engineer: 'Петров С.М.', status: 'completed',   amount: '12 300 ₽' },
-  { id: 'woh8', number: 'WO-2025-000412', date: '18.12.2025', type: 'Диагностика', engineer: 'Козлов Д.Р.', status: 'completed',   amount: '3 800 ₽' },
-];
+const invoiceStatusColor: Record<string, string> = {
+  'Оплачен': 'bg-green-100 text-green-700',
+  'Ожидает оплаты': 'bg-yellow-100 text-yellow-700',
+  'Просрочен': 'bg-red-100 text-red-700',
+};
 
-const MONTHLY_REVENUE = [
-  { month: 'Дек', value: 38000 },
-  { month: 'Янв', value: 12300 },
-  { month: 'Фев', value: 8200 },
-  { month: 'Мар', value: 28500 },
-  { month: 'Апр', value: 8200 },
-  { month: 'Май', value: 18500 },
-];
+const healthScore = 82;
 
-const INVOICES = [
-  { id: 'inv1', number: 'СЧ-2026-0085', date: '11.05.2026', amount: '18 500 ₽', status: 'unpaid' },
-  { id: 'inv2', number: 'СЧ-2026-0061', date: '10.04.2026', amount: '8 200 ₽',  status: 'paid' },
-  { id: 'inv3', number: 'СЧ-2026-0042', date: '05.03.2026', amount: '24 700 ₽', status: 'paid' },
-  { id: 'inv4', number: 'СЧ-2026-0018', date: '28.01.2026', amount: '45 000 ₽', status: 'overdue' },
-];
-
-const CONTACTS = [
-  { id: 'c1', name: 'Смирнова Ольга Владимировна', role: 'Главный инженер',    phone: '+7 (495) 123-45-67', email: 'o.smirnova@mega-tc.ru',    telegram: '@o_smirnova' },
-  { id: 'c2', name: 'Беляев Андрей Сергеевич',     role: 'Директор по АХЧ',  phone: '+7 (495) 123-45-68', email: 'a.belyaev@mega-tc.ru',     telegram: '@belyaev_as' },
-  { id: 'c3', name: 'Круглова Наталья Петровна',   role: 'Бухгалтер',         phone: '+7 (495) 123-45-69', email: 'n.kruglova@mega-tc.ru',    telegram: '' },
-  { id: 'c4', name: 'Охрана (дежурный)',            role: 'Пропуск',           phone: '+7 (495) 123-45-00', email: '',                         telegram: '' },
-];
-
-const DOCUMENTS = [
-  { id: 'd1', name: 'Договор на обслуживание № ДО-2024-0042', type: 'PDF', size: '342 КБ', date: '01.03.2024' },
-  { id: 'd2', name: 'Приложение к договору — перечень оборудования', type: 'PDF', size: '128 КБ', date: '01.03.2024' },
-  { id: 'd3', name: 'SLA-соглашение № СЛА-2024-0042', type: 'PDF', size: '215 КБ', date: '01.03.2024' },
-  { id: 'd4', name: 'Акт № АКТ-2026-0081 от 05.03.2026', type: 'PDF', size: '98 КБ', date: '05.03.2026' },
-  { id: 'd5', name: 'Акт № АКТ-2026-0053 от 28.01.2026', type: 'PDF', size: '104 КБ', date: '28.01.2026' },
-  { id: 'd6', name: 'Счёт № СЧ-2026-0085 от 11.05.2026', type: 'PDF', size: '67 КБ', date: '11.05.2026' },
-];
-
-// ─────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────
-
-function HealthScoreGauge({ score }: { score: number }) {
-  const color = score >= 70 ? 'text-green-600' : score >= 40 ? 'text-yellow-600' : 'text-red-600';
-  const bgColor = score >= 70 ? 'bg-green-100' : score >= 40 ? 'bg-yellow-100' : 'bg-red-100';
-  const label = score >= 70 ? 'Хорошо' : score >= 40 ? 'Внимание' : 'Критично';
-  const strokeColor = score >= 70 ? '#16a34a' : score >= 40 ? '#ca8a04' : '#dc2626';
-
-  // Simple SVG arc gauge
-  const radius = 36;
-  const circumference = Math.PI * radius; // semicircle
-  const progress = (score / 100) * circumference;
+const Client360 = ({ clientName, onClose }: Client360Props) => {
+  const [tab, setTab] = useState('overview');
+  const healthColor = healthScore >= 70 ? 'text-green-600' : healthScore >= 40 ? 'text-yellow-600' : 'text-red-600';
+  const healthBg = healthScore >= 70 ? 'bg-green-100' : healthScore >= 40 ? 'bg-yellow-100' : 'bg-red-100';
 
   return (
-    <div className={`rounded-xl p-4 ${bgColor} flex flex-col items-center`}>
-      <svg width="100" height="60" viewBox="0 0 100 60">
-        {/* Background arc */}
-        <path
-          d="M 8 54 A 42 42 0 0 1 92 54"
-          fill="none"
-          stroke="#e5e7eb"
-          strokeWidth="10"
-          strokeLinecap="round"
-        />
-        {/* Progress arc */}
-        <path
-          d="M 8 54 A 42 42 0 0 1 92 54"
-          fill="none"
-          stroke={strokeColor}
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeDasharray={`${(score / 100) * 131} 131`}
-        />
-        <text x="50" y="54" textAnchor="middle" className="text-lg font-bold" style={{ fontSize: 18, fontWeight: 700, fill: strokeColor }}>
-          {score}
-        </text>
-      </svg>
-      <div className={`text-sm font-semibold ${color}`}>{label}</div>
-      <div className="text-xs text-gray-500">Индекс здоровья клиента</div>
-    </div>
-  );
-}
-
-function MiniBarChart({ data }: { data: { month: string; value: number }[] }) {
-  const max = Math.max(...data.map(d => d.value));
-  return (
-    <div className="flex items-end gap-1 h-24">
-      {data.map(d => (
-        <div key={d.month} className="flex flex-col items-center flex-1">
-          <div
-            className="w-full bg-blue-400 rounded-t"
-            style={{ height: `${(d.value / max) * 72}px` }}
-            title={`${d.month}: ${d.value.toLocaleString('ru-RU')} ₽`}
-          />
-          <div className="text-[10px] text-gray-500 mt-1">{d.month}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const WO_STATUS_LABELS: Record<string, string> = {
-  in_progress: 'Выполняется',
-  completed:   'Завершён',
-  assigned:    'Назначен',
-  cancelled:   'Отменён',
-};
-
-const WO_STATUS_VARIANTS: Record<string, string> = {
-  in_progress: 'bg-green-100 text-green-700',
-  completed:   'bg-gray-100 text-gray-600',
-  assigned:    'bg-blue-100 text-blue-700',
-  cancelled:   'bg-red-100 text-red-600',
-};
-
-const EQ_STATUS_LABELS: Record<string, string> = {
-  ok:      'В норме',
-  warning: 'Внимание',
-  overdue: 'Просрочено',
-};
-
-const EQ_STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive'> = {
-  ok:      'default',
-  warning: 'secondary',
-  overdue: 'destructive',
-};
-
-const INV_STATUS_LABELS: Record<string, string> = {
-  paid:    'Оплачен',
-  unpaid:  'К оплате',
-  overdue: 'Просрочен',
-};
-
-const INV_STATUS_COLORS: Record<string, string> = {
-  paid:    'bg-green-100 text-green-700',
-  unpaid:  'bg-blue-100 text-blue-700',
-  overdue: 'bg-red-100 text-red-700',
-};
-
-// ─────────────────────────────────────────────
-// Main component
-// ─────────────────────────────────────────────
-
-export default function Client360({ clientName, onClose }: Client360Props) {
-  const [activeTab, setActiveTab] = useState('overview');
-
-  // Use clientName if available, fall back to demo
-  const displayName = clientName || CLIENT_INFO.name;
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+        <div className="flex items-center justify-between px-6 py-4 border-b">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg">
-              {displayName.charAt(0)}
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <Icon name="Building2" size={20} className="text-blue-600" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">{displayName}</h2>
-              <div className="text-sm text-gray-500">{CLIENT_INFO.inn} · {CLIENT_INFO.type}</div>
+              <h2 className="text-lg font-bold text-gray-900">{clientName}</h2>
+              <p className="text-xs text-gray-500">360° карточка клиента</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Icon name="Edit" size={14} className="mr-1" />
-              Редактировать
-            </Button>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <Icon name="X" size={18} />
-            </Button>
+          <div className="flex items-center gap-3">
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${healthBg}`}>
+              <Icon name="Heart" size={14} className={healthColor} />
+              <span className={`text-sm font-bold ${healthColor}`}>{healthScore}/100</span>
+              <span className={`text-xs ${healthColor}`}>Здоровье клиента</span>
+            </div>
+            <Button variant="outline" size="sm" onClick={onClose}><Icon name="X" size={16} /></Button>
           </div>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-          <TabsList className="mx-6 mt-3 mb-0 flex-shrink-0 w-auto justify-start">
+        <div className="grid grid-cols-4 divide-x border-b text-center">
+          {[
+            { label: 'Нарядов всего', value: '47', icon: 'ClipboardList' },
+            { label: 'Оборудование', value: '5 ед.', icon: 'Wind' },
+            { label: 'Выручка (год)', value: '324 800 ₽', icon: 'TrendingUp' },
+            { label: 'Средняя оценка', value: '4.8 ★', icon: 'Star' },
+          ].map(s => (
+            <div key={s.label} className="py-3 px-4">
+              <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                <Icon name={s.icon as never} size={14} className="text-blue-500" />
+                <span className="text-xs text-gray-500">{s.label}</span>
+              </div>
+              <p className="font-bold text-gray-900">{s.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <Tabs value={tab} onValueChange={setTab} className="flex-1 overflow-hidden flex flex-col">
+          <TabsList className="mx-6 mt-3 shrink-0">
             <TabsTrigger value="overview">Обзор</TabsTrigger>
             <TabsTrigger value="equipment">Оборудование</TabsTrigger>
             <TabsTrigger value="history">История нарядов</TabsTrigger>
@@ -243,114 +131,82 @@ export default function Client360({ clientName, onClose }: Client360Props) {
           </TabsList>
 
           <div className="flex-1 overflow-auto px-6 py-4">
-            {/* ── ОБЗОР ── */}
-            <TabsContent value="overview" className="m-0">
-              <div className="grid grid-cols-3 gap-4">
-                {/* Left: client card */}
-                <div className="col-span-2 space-y-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm flex items-center gap-2">
-                        <Icon name="Building2" size={16} />
-                        Реквизиты и контакт
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                      <div><span className="text-gray-500">Контактное лицо: </span><span className="font-medium">{CLIENT_INFO.contactPerson}</span></div>
-                      <div><span className="text-gray-500">Телефон: </span><span className="font-medium">{CLIENT_INFO.phone}</span></div>
-                      <div><span className="text-gray-500">Email: </span><span className="font-medium">{CLIENT_INFO.email}</span></div>
-                      <div><span className="text-gray-500">ИНН: </span><span className="font-medium">{CLIENT_INFO.inn}</span></div>
-                      <div className="col-span-2"><span className="text-gray-500">Адрес: </span><span className="font-medium">{CLIENT_INFO.address}</span></div>
-                      <div className="col-span-2"><span className="text-gray-500">Договор: </span><span className="font-medium">{CLIENT_INFO.contract}</span></div>
-                      <div className="col-span-2"><span className="text-gray-500">SLA: </span><span className="font-medium">{CLIENT_INFO.sla}</span></div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-3">
-                    <Card className="text-center py-3">
-                      <div className="text-2xl font-bold text-blue-600">{CLIENT_INFO.totalOrders}</div>
-                      <div className="text-xs text-gray-500">Нарядов всего</div>
-                    </Card>
-                    <Card className="text-center py-3">
-                      <div className="text-2xl font-bold text-yellow-500">★ {CLIENT_INFO.avgRating}</div>
-                      <div className="text-xs text-gray-500">Средняя оценка</div>
-                    </Card>
-                    <Card className="text-center py-3">
-                      <div className="text-xl font-bold text-green-600">{CLIENT_INFO.totalRevenue}</div>
-                      <div className="text-xs text-gray-500">Выручка</div>
-                    </Card>
-                  </div>
-                </div>
-
-                {/* Right: health score */}
-                <div className="space-y-4">
-                  <HealthScoreGauge score={CLIENT_INFO.healthScore} />
-                  <Card className="p-3">
-                    <div className="text-xs text-gray-500 mb-2 font-medium">Факторы здоровья</div>
-                    {[
-                      { label: 'Регулярность оплаты', value: 90 },
-                      { label: 'Наличие договора', value: 100 },
-                      { label: 'Активность', value: 75 },
-                      { label: 'Оценки', value: 96 },
-                    ].map(f => (
-                      <div key={f.label} className="mb-1.5">
-                        <div className="flex justify-between text-xs mb-0.5">
-                          <span className="text-gray-600">{f.label}</span>
-                          <span className="font-medium">{f.value}%</span>
-                        </div>
-                        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${
-                              f.value >= 80 ? 'bg-green-400' : f.value >= 50 ? 'bg-yellow-400' : 'bg-red-400'
-                            }`}
-                            style={{ width: `${f.value}%` }}
-                          />
-                        </div>
-                      </div>
+            <TabsContent value="overview" className="mt-0">
+              <div className="grid grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm">Реквизиты</CardTitle></CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    {[['Наименование', clientName],['ИНН','7712345678'],['Контактное лицо','Смирнов Алексей Петрович'],['Телефон','+7 (916) 234-56-78'],['Email','smirnov@client.ru'],['Адрес','г. Москва, ул. Ленина, д. 42, оф. 301']].map(([k,v]) => (
+                      <div key={k} className="flex justify-between"><span className="text-gray-500">{k}:</span><span className="font-medium text-right max-w-[60%]">{v}</span></div>
                     ))}
-                  </Card>
-                </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm">Договор и SLA</CardTitle></CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    {[['Договор','ДГ-2024-156'],['Тип','Сервисный'],['Дата начала','01.03.2024'],['Дата окончания','28.02.2027'],['SLA','SLA-Enterprise-001'],['TTF','24 ч (рабочие)']].map(([k,v]) => (
+                      <div key={k} className="flex justify-between"><span className="text-gray-500">{k}:</span><span className="font-medium">{v}</span></div>
+                    ))}
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
-            {/* ── ОБОРУДОВАНИЕ ── */}
-            <TabsContent value="equipment" className="m-0">
+            <TabsContent value="equipment" className="mt-0">
+              <Table>
+                <TableHeader><TableRow><TableHead>Бренд / Модель</TableHead><TableHead>Серийный №</TableHead><TableHead>Установлен</TableHead><TableHead>Последнее ТО</TableHead><TableHead>Следующее ТО</TableHead><TableHead>Статус</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {equipment.map(eq => (
+                    <TableRow key={eq.id}>
+                      <TableCell className="font-medium">{eq.brand} {eq.model}</TableCell>
+                      <TableCell className="text-gray-500 font-mono text-xs">{eq.serial}</TableCell>
+                      <TableCell>{eq.installed}</TableCell>
+                      <TableCell>{eq.lastService}</TableCell>
+                      <TableCell>{eq.nextService}</TableCell>
+                      <TableCell><Badge className={eqStatusColor[eq.status]}>{eq.status}</Badge></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="history" className="mt-0">
+              <Table>
+                <TableHeader><TableRow><TableHead>Номер</TableHead><TableHead>Дата</TableHead><TableHead>Тип</TableHead><TableHead>Инженер</TableHead><TableHead>Статус</TableHead><TableHead className="text-right">Сумма</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {workOrders.map(wo => (
+                    <TableRow key={wo.id}>
+                      <TableCell className="font-mono text-xs">{wo.id}</TableCell>
+                      <TableCell>{wo.date}</TableCell>
+                      <TableCell>{wo.type}</TableCell>
+                      <TableCell>{wo.engineer}</TableCell>
+                      <TableCell><Badge className={woStatusColor[wo.status] || 'bg-gray-100 text-gray-700'}>{wo.status}</Badge></TableCell>
+                      <TableCell className="text-right font-medium">{wo.amount}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="finance" className="mt-0">
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {[{label:'Выручка (год)',value:'324 800 ₽',color:'text-green-600'},{label:'Дебиторская задолженность',value:'5 600 ₽',color:'text-yellow-600'},{label:'Средний чек',value:'6 900 ₽',color:'text-blue-600'}].map(s => (
+                  <Card key={s.label}><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-gray-500 mb-1">{s.label}</p><p className={`text-xl font-bold ${s.color}`}>{s.value}</p></CardContent></Card>
+                ))}
+              </div>
               <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Icon name="Wrench" size={16} />
-                    Оборудование клиента ({EQUIPMENT.length} ед.)
-                  </CardTitle>
-                </CardHeader>
+                <CardHeader className="pb-2"><CardTitle className="text-sm">Счета</CardTitle></CardHeader>
                 <CardContent className="p-0">
                   <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Бренд / Модель</TableHead>
-                        <TableHead>Серийный №</TableHead>
-                        <TableHead>Установлен</TableHead>
-                        <TableHead>Последнее ТО</TableHead>
-                        <TableHead>Следующее ТО</TableHead>
-                        <TableHead>Статус</TableHead>
-                      </TableRow>
-                    </TableHeader>
+                    <TableHeader><TableRow><TableHead>Счёт</TableHead><TableHead>Дата</TableHead><TableHead>Срок оплаты</TableHead><TableHead className="text-right">Сумма</TableHead><TableHead>Статус</TableHead></TableRow></TableHeader>
                     <TableBody>
-                      {EQUIPMENT.map(eq => (
-                        <TableRow key={eq.id}>
-                          <TableCell>
-                            <div className="font-medium">{eq.brand}</div>
-                            <div className="text-xs text-gray-500">{eq.model}</div>
-                          </TableCell>
-                          <TableCell className="font-mono text-xs">{eq.serial}</TableCell>
-                          <TableCell className="text-sm">{eq.installed}</TableCell>
-                          <TableCell className="text-sm">{eq.lastService}</TableCell>
-                          <TableCell className="text-sm">{eq.nextService}</TableCell>
-                          <TableCell>
-                            <Badge variant={EQ_STATUS_VARIANTS[eq.status]}>
-                              {EQ_STATUS_LABELS[eq.status]}
-                            </Badge>
-                          </TableCell>
+                      {invoices.map(inv => (
+                        <TableRow key={inv.id}>
+                          <TableCell className="font-mono text-xs">{inv.id}</TableCell>
+                          <TableCell>{inv.date}</TableCell>
+                          <TableCell>{inv.due}</TableCell>
+                          <TableCell className="text-right font-medium">{inv.amount}</TableCell>
+                          <TableCell><Badge className={invoiceStatusColor[inv.status]}>{inv.status}</Badge></TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -359,198 +215,54 @@ export default function Client360({ clientName, onClose }: Client360Props) {
               </Card>
             </TabsContent>
 
-            {/* ── ИСТОРИЯ НАРЯДОВ ── */}
-            <TabsContent value="history" className="m-0">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Icon name="History" size={16} />
-                    Последние наряды
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Номер</TableHead>
-                        <TableHead>Дата</TableHead>
-                        <TableHead>Тип</TableHead>
-                        <TableHead>Инженер</TableHead>
-                        <TableHead>Статус</TableHead>
-                        <TableHead className="text-right">Сумма</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {WORK_ORDER_HISTORY.map(wo => (
-                        <TableRow key={wo.id}>
-                          <TableCell className="font-mono text-xs">{wo.number}</TableCell>
-                          <TableCell className="text-sm">{wo.date}</TableCell>
-                          <TableCell className="text-sm">{wo.type}</TableCell>
-                          <TableCell className="text-sm">{wo.engineer}</TableCell>
-                          <TableCell>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${WO_STATUS_COLORS[wo.status] ?? ''}`}>
-                              {WO_STATUS_LABELS[wo.status] ?? wo.status}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-right font-medium">{wo.amount}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* ── ФИНАНСЫ ── */}
-            <TabsContent value="finance" className="m-0">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-3 grid grid-cols-3 gap-3">
-                  <Card className="text-center py-3">
-                    <div className="text-xl font-bold text-green-600">1 124 900 ₽</div>
-                    <div className="text-xs text-gray-500">Оплачено всего</div>
-                  </Card>
-                  <Card className="text-center py-3">
-                    <div className="text-xl font-bold text-red-500">63 500 ₽</div>
-                    <div className="text-xs text-gray-500">Дебиторская задолженность</div>
-                  </Card>
-                  <Card className="text-center py-3">
-                    <div className="text-xl font-bold text-blue-600">26 дней</div>
-                    <div className="text-xs text-gray-500">Ср. срок оплаты</div>
-                  </Card>
-                </div>
-
-                <Card className="col-span-3">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Icon name="BarChart2" size={16} />
-                      Выручка по месяцам
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <MiniBarChart data={MONTHLY_REVENUE} />
-                  </CardContent>
-                </Card>
-
-                <Card className="col-span-3">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Icon name="Receipt" size={16} />
-                      Счета
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Номер счёта</TableHead>
-                          <TableHead>Дата</TableHead>
-                          <TableHead className="text-right">Сумма</TableHead>
-                          <TableHead>Статус</TableHead>
-                          <TableHead />
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {INVOICES.map(inv => (
-                          <TableRow key={inv.id}>
-                            <TableCell className="font-mono text-xs">{inv.number}</TableCell>
-                            <TableCell className="text-sm">{inv.date}</TableCell>
-                            <TableCell className="text-right font-medium">{inv.amount}</TableCell>
-                            <TableCell>
-                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${INV_STATUS_COLORS[inv.status]}`}>
-                                {INV_STATUS_LABELS[inv.status]}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <Button variant="ghost" size="sm" className="h-6 text-xs">
-                                <Icon name="Download" size={12} className="mr-1" />
-                                PDF
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            {/* ── КОНТАКТЫ ── */}
-            <TabsContent value="contacts" className="m-0">
+            <TabsContent value="contacts" className="mt-0">
               <div className="grid grid-cols-2 gap-3">
-                {CONTACTS.map(c => (
-                  <Card key={c.id} className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold flex-shrink-0">
-                        {c.name.charAt(0)}
+                {contacts.map(c => (
+                  <Card key={c.name}>
+                    <CardContent className="pt-4 pb-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                          <Icon name="User" size={16} className="text-blue-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 text-sm">{c.name}</p>
+                          <p className="text-xs text-gray-500 mb-2">{c.role}</p>
+                          <div className="space-y-1 text-xs text-gray-600">
+                            <div className="flex items-center gap-1.5"><Icon name="Phone" size={11} />{c.phone}</div>
+                            <div className="flex items-center gap-1.5"><Icon name="Mail" size={11} />{c.email}</div>
+                            {c.telegram && <div className="flex items-center gap-1.5"><Icon name="MessageCircle" size={11} />{c.telegram}</div>}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-gray-800 text-sm">{c.name}</div>
-                        <div className="text-xs text-gray-500 mb-2">{c.role}</div>
-                        {c.phone && (
-                          <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
-                            <Icon name="Phone" size={12} />
-                            {c.phone}
-                          </div>
-                        )}
-                        {c.email && (
-                          <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
-                            <Icon name="Mail" size={12} />
-                            {c.email}
-                          </div>
-                        )}
-                        {c.telegram && (
-                          <div className="flex items-center gap-1 text-xs text-blue-600">
-                            <Icon name="MessageCircle" size={12} />
-                            {c.telegram}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
             </TabsContent>
 
-            {/* ── ДОКУМЕНТЫ ── */}
-            <TabsContent value="documents" className="m-0">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Icon name="FolderOpen" size={16} />
-                    Документы клиента
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {DOCUMENTS.map(doc => (
-                    <div
-                      key={doc.id}
-                      className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-red-100 flex items-center justify-center flex-shrink-0">
-                          <Icon name="FileText" size={16} className="text-red-500" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-gray-800">{doc.name}</div>
-                          <div className="text-xs text-gray-400">{doc.type} · {doc.size} · {doc.date}</div>
-                        </div>
+            <TabsContent value="documents" className="mt-0">
+              <div className="space-y-2">
+                {documents.map(doc => (
+                  <div key={doc.name} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center">
+                        <Icon name="FileText" size={18} className="text-red-500" />
                       </div>
-                      <Button variant="outline" size="sm" className="h-7 text-xs">
-                        <Icon name="Download" size={12} className="mr-1" />
-                        Скачать
-                      </Button>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{doc.name}</p>
+                        <p className="text-xs text-gray-400">{doc.type} · {doc.size} · {doc.date}</p>
+                      </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
+                    <Button variant="ghost" size="sm"><Icon name="Download" size={14} className="mr-1" />Скачать</Button>
+                  </div>
+                ))}
+              </div>
             </TabsContent>
           </div>
         </Tabs>
       </div>
     </div>
   );
-}
+};
 
-// Fix missing reference
-const WO_STATUS_COLORS: Record<string, string> = WO_STATUS_VARIANTS;
+export default Client360;

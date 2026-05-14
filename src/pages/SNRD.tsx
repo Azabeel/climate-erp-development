@@ -39,6 +39,22 @@ import IntegrationsModule from '@/components/snrd/IntegrationsModule';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
+import AIChatPanel from '@/components/snrd/AIChatPanel';
+import DocumentLibrary from '@/components/snrd/DocumentLibrary';
+import InboxModule from '@/components/snrd/InboxModule';
+import NotificationsCenter from '@/components/snrd/NotificationsCenter';
+import EquipmentModule from '@/components/snrd/EquipmentModule';
+import MembershipsModule from '@/components/snrd/MembershipsModule';
+import TechnicianScorecard from '@/components/snrd/TechnicianScorecard';
+import ReliabilityDashboard from '@/components/snrd/ReliabilityDashboard';
+import RefrigerantComplianceReporter from '@/components/snrd/RefrigerantComplianceReporter';
+import CashFlowForecast from '@/components/snrd/CashFlowForecast';
+import WarrantyTracking from '@/components/snrd/WarrantyTracking';
+import WorkflowBuilder from '@/components/snrd/WorkflowBuilder';
+import CapacityPlanning from '@/components/snrd/CapacityPlanning';
+import CustomerHealthScore from '@/components/snrd/CustomerHealthScore';
+import LMSModule from '@/components/snrd/LMSModule';
+import EmployeeOnboarding from '@/components/snrd/EmployeeOnboarding';
 import { toast } from 'sonner';
 import { Application, WorkOrder, Employee, Client, ServiceObject } from '@/types/snrd';
 import { mockApplications, mockWorkOrders, mockClients, mockEmployees, mockServiceObjects, mockServiceTypes } from '@/data/snrdTestData';
@@ -83,6 +99,7 @@ const SNRD = () => {
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [editingServiceObject, setEditingServiceObject] = useState<ServiceObject | null>(null);
+  const [client360Id, setClient360Id] = useState<{ id: string; name: string } | null>(null);
 
   const getStatusColor = (status: string): string => {
     switch (status) {
@@ -338,6 +355,15 @@ const SNRD = () => {
         );
 
       case 'clients':
+        if (client360Id) {
+          return (
+            <Client360
+              clientId={client360Id.id}
+              clientName={client360Id.name}
+              onBack={() => setClient360Id(null)}
+            />
+          );
+        }
         return (
           <ClientsList
             clients={clients}
@@ -438,6 +464,56 @@ const SNRD = () => {
       case 'price-list':
         return <PriceListModule />;
 
+      case 'ai-chat':
+        return <AIChatPanel />;
+
+      case 'documents':
+        return <DocumentLibrary />;
+
+      case 'inbox':
+        return <InboxModule />;
+
+      case 'notifications':
+        return <NotificationsCenter />;
+
+      case 'equipment':
+        return <EquipmentModule />;
+
+      case 'memberships':
+        return <MembershipsModule />;
+
+      case 'technician-scorecard':
+        return <TechnicianScorecard />;
+
+      case 'reliability-dashboard':
+        return <ReliabilityDashboard />;
+
+      case 'refrigerant-compliance':
+        return <RefrigerantComplianceReporter />;
+
+      case 'cash-flow':
+        return <CashFlowForecast />;
+
+      case 'warranty-tracking':
+        return <WarrantyTracking />;
+
+      case 'workflow-builder':
+        return <WorkflowBuilder />;
+
+      case 'capacity-planning':
+        return <CapacityPlanning />;
+
+      case 'customer-health':
+        return <CustomerHealthScore />;
+
+      case 'lms':
+        return <LMSModule />;
+
+      case 'employee-onboarding':
+        return <EmployeeOnboarding />;
+
+      case 'completion-acts':
+        return <CompletionActs />;
 
       default:
         return (

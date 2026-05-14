@@ -12,6 +12,8 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const menuItems = [
     { id: 'dashboard', label: 'Главная', icon: 'LayoutDashboard' },
+    { id: 'inbox', label: 'Входящие', icon: 'Inbox' },
+    { id: 'notifications', label: 'Уведомления', icon: 'Bell' },
     {
       id: 'works',
       label: 'Работы',
@@ -23,6 +25,8 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'contracts', label: 'Подряды' },
         { id: 'work-drafts', label: 'Черновики работ' },
         { id: 'completion-acts', label: 'Акты выполненных работ' },
+        { id: 'warranty-tracking', label: 'Гарантийный учёт' },
+        { id: 'typed-tasks', label: 'Задачи' },
       ]
     },
     {
@@ -33,6 +37,18 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'assign-executors', label: 'Назначение исполнителей' },
         { id: 'auto-planning', label: 'Автоматическое планирование' },
         { id: 'dispatch-board', label: 'Доска диспетчера' },
+        { id: 'capacity-planning', label: 'Планирование мощностей' },
+      ]
+    },
+    {
+      id: 'analytics-group',
+      label: 'Аналитика',
+      icon: 'BarChart3',
+      children: [
+        { id: 'reports', label: 'Отчёты' },
+        { id: 'reliability-dashboard', label: 'Надёжность оборудования' },
+        { id: 'cash-flow', label: 'Прогноз денежного потока' },
+        { id: 'customer-health', label: 'Здоровье клиентов' },
       ]
     },
     {
@@ -45,12 +61,34 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       ]
     },
     { id: 'scheduled-maintenance', label: 'Плановое обслуживание', icon: 'CalendarClock' },
-    { id: 'finance', label: 'Финансы', icon: 'CircleDollarSign' },
+    { id: 'equipment', label: 'Оборудование (EAM)', icon: 'Wrench' },
+    { id: 'refrigerant-compliance', label: 'Хладагенты', icon: 'Thermometer' },
+    {
+      id: 'finance-group',
+      label: 'Финансы',
+      icon: 'CircleDollarSign',
+      children: [
+        { id: 'finance', label: 'Финансовая сводка' },
+        { id: 'memberships', label: 'Абонементы' },
+      ]
+    },
     { id: 'warehouse', label: 'Склад', icon: 'Package' },
     { id: 'crm', label: 'CRM', icon: 'TrendingUp' },
     { id: 'price-list', label: 'Прайс-лист', icon: 'Tags' },
-    { id: 'hr', label: 'HR / Зарплата', icon: 'UserCheck' },
-    { id: 'reports', label: 'Отчеты', icon: 'BarChart3' },
+    { id: 'documents', label: 'Документы', icon: 'FolderOpen' },
+    {
+      id: 'hr-group',
+      label: 'HR',
+      icon: 'UserCheck',
+      children: [
+        { id: 'hr', label: 'HR / Зарплата' },
+        { id: 'technician-scorecard', label: 'Скорборд инженеров' },
+        { id: 'lms', label: 'Учебный центр (LMS)' },
+        { id: 'employee-onboarding', label: 'Онбординг' },
+      ]
+    },
+    { id: 'workflow-builder', label: 'Автоматизации', icon: 'Zap' },
+    { id: 'ai-chat', label: 'ИИ-ассистент', icon: 'Bot' },
     {
       id: 'directories',
       label: 'Справочники',
@@ -61,8 +99,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'clients', label: 'Клиенты' },
         { id: 'service-objects', label: 'Объекты обслуживания' },
         { id: 'service-types', label: 'Виды работ / услуг' },
-        { id: 'typed-tasks', label: 'Типовые задачи' },
-        { id: 'sla', label: 'Соглашения об уровнях сервиса' },
+        { id: 'sla', label: 'Соглашения SLA' },
         { id: 'territories', label: 'Территории обслуживания' },
       ]
     },

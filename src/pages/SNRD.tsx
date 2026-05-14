@@ -34,6 +34,10 @@ import HRModule from '@/components/snrd/HRModule';
 import WarehouseModule from '@/components/snrd/WarehouseModule';
 import RolesConstructor from '@/components/snrd/RolesConstructor';
 import ImportData from '@/components/snrd/ImportData';
+import LicensingModule from '@/components/snrd/LicensingModule';
+import IntegrationsModule from '@/components/snrd/IntegrationsModule';
+import DispatchBoard from '@/components/snrd/DispatchBoard';
+import Client360 from '@/components/snrd/Client360';
 import { toast } from 'sonner';
 import { Application, WorkOrder, ApplicationStatus, Priority, WorkOrderStatus, Employee, Client, ServiceObject } from '@/types/snrd';
 import { mockApplications, mockWorkOrders, mockClients, mockEmployees, mockServiceObjects, mockServiceTypes } from '@/data/snrdTestData';
@@ -73,7 +77,8 @@ const SNRD = () => {
   const [employeeModalOpen, setEmployeeModalOpen] = useState(false);
   const [clientModalOpen, setClientModalOpen] = useState(false);
   const [serviceObjectModalOpen, setServiceObjectModalOpen] = useState(false);
-  
+  const [client360Id, setClient360Id] = useState<{ id: string; name: string } | null>(null);
+
   const [editingApplication, setEditingApplication] = useState<Application | null>(null);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -420,6 +425,15 @@ const SNRD = () => {
       case 'import':
         return <ImportData />;
 
+      case 'licensing':
+        return <LicensingModule />;
+
+      case 'integrations':
+        return <IntegrationsModule />;
+
+      case 'dispatch-board':
+        return <DispatchBoard />;
+
       default:
         return (
           <div className="p-8">
@@ -489,6 +503,14 @@ const SNRD = () => {
         employees={employees}
         serviceObjects={serviceObjects}
       />
+
+      {client360Id && (
+        <Client360
+          clientId={client360Id.id}
+          clientName={client360Id.name}
+          onClose={() => setClient360Id(null)}
+        />
+      )}
     </div>
   );
 };

@@ -8,6 +8,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Application, ApplicationStatus, Priority, Client, ServiceObject, ServiceType } from '@/types/snrd';
 
+const SLA_HOURS_BY_PRIORITY: Record<string, number> = {
+  'Аварийный': 4,
+  'Срочно': 8,
+  'Высокий': 24,
+  'Средний': 48,
+  'Низкий': 72,
+};
+
+function getDefaultSlaDeadline(priority?: string): string {
+  const hours = SLA_HOURS_BY_PRIORITY[priority || 'Средний'] || 24;
+  return new Date(Date.now() + hours * 3600_000).toISOString();
+}
+
 interface ApplicationModalProps {
   open: boolean;
   onClose: () => void;
@@ -76,7 +89,7 @@ const ApplicationModal = ({
       ...formData,
       createdAt: formData.createdAt || new Date().toISOString(),
       number: formData.number || `APP-${Date.now().toString().slice(-6)}`,
-      slaDeadline: formData.slaDeadline || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      slaDeadline: formData.slaDeadline || getDefaultSlaDeadline(formData.priority),
     };
 
     onSave(dataToSave);
@@ -200,6 +213,9 @@ const ApplicationModal = ({
                   <SelectItem value="Аварийный">Аварийный</SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs text-gray-500 mt-1">
+                SLA: {SLA_HOURS_BY_PRIORITY[formData.priority || 'Средний']}ч с момента создания
+              </p>
             </div>
           </div>
 

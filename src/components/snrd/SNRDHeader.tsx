@@ -39,12 +39,14 @@ const tabTitles: Record<string, string> = {
   crm: 'CRM — Воронка продаж',
   hr: 'HR и Зарплата',
   warehouse: 'Склад и хладагенты',
+  'dispatch-board': 'Доска диспетчера',
+  'price-list': 'Прайс-лист',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
   const { isFetching, isError, isSuccess } = useQuery({
     queryKey: ['health'],
-    queryFn: () => fetch('/api/v1/work-orders?page=0&size=1').then(r => r.ok ? 'ok' : Promise.reject()),
+    queryFn: () => fetch('/actuator/health').then(r => r.ok ? 'ok' : Promise.reject()),
     retry: false,
     staleTime: 30_000,
     refetchInterval: 60_000,
@@ -63,6 +65,8 @@ const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
     'sla',
     'scheduled-maintenance',
     'survey-templates',
+    'dispatch-board',
+    'price-list',
   ].includes(activeTab);
 
   return (

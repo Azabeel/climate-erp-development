@@ -9,11 +9,12 @@ interface SNRDSidebarProps {
 
 const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
   const [expandedGroups, setExpandedGroups] = useState<string[]>(['works', 'directories']);
+  const [collapsed, setCollapsed] = useState(false);
   const menuItems = [
     { id: 'dashboard', label: 'Главная', icon: 'LayoutDashboard' },
-    { 
-      id: 'works', 
-      label: 'Работы', 
+    {
+      id: 'works',
+      label: 'Работы',
       icon: 'ClipboardList',
       children: [
         { id: 'applications', label: 'Заявки' },
@@ -24,18 +25,19 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'completion-acts', label: 'Акты выполненных работ' },
       ]
     },
-    { 
-      id: 'workplace', 
-      label: 'Рабочее место', 
+    {
+      id: 'workplace',
+      label: 'Рабочее место',
       icon: 'MonitorSmartphone',
       children: [
         { id: 'assign-executors', label: 'Назначение исполнителей' },
         { id: 'auto-planning', label: 'Автоматическое планирование' },
+        { id: 'dispatch-board', label: 'Доска диспетчера' },
       ]
     },
-    { 
-      id: 'surveys', 
-      label: 'Анкетирование', 
+    {
+      id: 'surveys',
+      label: 'Анкетирование',
       icon: 'FileText',
       children: [
         { id: 'survey-templates', label: 'Шаблоны анкет' },
@@ -46,11 +48,12 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
     { id: 'finance', label: 'Финансы', icon: 'CircleDollarSign' },
     { id: 'warehouse', label: 'Склад', icon: 'Package' },
     { id: 'crm', label: 'CRM', icon: 'TrendingUp' },
+    { id: 'price-list', label: 'Прайс-лист', icon: 'Tags' },
     { id: 'hr', label: 'HR / Зарплата', icon: 'UserCheck' },
     { id: 'reports', label: 'Отчеты', icon: 'BarChart3' },
-    { 
-      id: 'directories', 
-      label: 'Справочники', 
+    {
+      id: 'directories',
+      label: 'Справочники',
       icon: 'Book',
       children: [
         { id: 'employees', label: 'Выездные сотрудники' },
@@ -63,9 +66,9 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'territories', label: 'Территории обслуживания' },
       ]
     },
-    { 
-      id: 'settings', 
-      label: 'Настройки', 
+    {
+      id: 'settings',
+      label: 'Настройки',
       icon: 'Settings',
       children: [
         { id: 'licensing', label: 'Лицензирование' },
@@ -79,16 +82,25 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <aside className={`${collapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 flex flex-col transition-all duration-200`}>
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center flex-shrink-0">
             <Icon name="Wind" size={24} className="text-white" />
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-gray-900">HVAC ERP</h1>
-            <p className="text-xs text-gray-500">Сервис Климат</p>
-          </div>
+          {!collapsed && (
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">HVAC ERP</h1>
+              <p className="text-xs text-gray-500">Сервис Климат</p>
+            </div>
+          )}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="ml-auto p-1 rounded hover:bg-gray-100"
+            title={collapsed ? 'Развернуть' : 'Свернуть'}
+          >
+            <Icon name={collapsed ? 'ChevronRight' : 'ChevronLeft'} size={16} className="text-gray-400" />
+          </button>
         </div>
       </div>
 
@@ -97,10 +109,11 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
           {menuItems.map((item) => {
             const isExpanded = expandedGroups.includes(item.id);
             const isActive = activeTab === item.id || (item.children && item.children.some(c => c.id === activeTab));
-            
+
             return (
               <div key={item.id}>
                 <button
+                  title={item.label}
                   onClick={() => {
                     if (item.children) {
                       if (isExpanded) {
@@ -114,15 +127,15 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  } ${collapsed ? 'justify-center' : ''}`}
                 >
                   <Icon name={item.icon} size={18} />
-                  <span className="flex-1 text-left">{item.label}</span>
-                  {item.children && (
+                  <span className={collapsed ? 'hidden' : 'flex-1 text-left'}>{item.label}</span>
+                  {item.children && !collapsed && (
                     <Icon name={isExpanded ? 'ChevronDown' : 'ChevronRight'} size={16} />
                   )}
                 </button>
-                {item.children && isExpanded && (
+                {item.children && isExpanded && !collapsed && (
                   <div className="ml-4 mt-1 space-y-1">
                     {item.children.map((child) => (
                       <button
@@ -146,14 +159,16 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       </ScrollArea>
 
       <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center gap-3 px-3 py-2">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+        <div className={`flex items-center gap-3 px-3 py-2 ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
             <Icon name="User" size={16} className="text-blue-600" />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">Администратор</p>
-            <p className="text-xs text-gray-500">admin@hvac-erp.ru</p>
-          </div>
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">Администратор</p>
+              <p className="text-xs text-gray-500">admin@hvac-erp.ru</p>
+            </div>
+          )}
         </div>
       </div>
     </aside>

@@ -31,7 +31,7 @@ export function mapWorkOrderToApplication(wo: WorkOrderDto): Application {
     id: wo.id,
     number: wo.number,
     clientId: wo.clientId,
-    objectId: wo.contractId || wo.clientId,
+    objectId: wo.contractId || '',
     serviceTypeId: wo.type,
     status: woStatusToFrontend(wo.status),
     priority: priorityToFrontend(wo.priority),
@@ -66,6 +66,13 @@ export function mapWorkOrderToOrder(wo: WorkOrderDto): WorkOrder {
     tasks: [],
     photos: [],
     notes: wo.description || '',
+    revenue: wo.revenue,
+    costPrice: wo.costPrice,
+    margin: wo.margin,
+    marginPercent: wo.marginPercent,
+    slaStatus: wo.slaStatus as WorkOrder['slaStatus'],
+    slaViolated: wo.slaViolated,
+    slaDeadline: wo.slaTtfPlanned,
   };
 }
 
@@ -77,9 +84,12 @@ export function mapClientDtoToClient(c: ClientDto): Client {
     phone: c.phone || '',
     email: c.email || '',
     contract: c.isActive ? 'Активен' : 'Истек',
-    slaAgreement: 'SLA',
+    slaAgreement: c.isActive ? 'Активен' : 'Нет договора',
     objectsCount: 0,
     assetsCount: 0,
+    inn: c.inn,
+    address: c.address,
+    clientType: c.type === 'LEGAL_ENTITY' ? 'Юридическое лицо' as const : 'Физическое лицо' as const,
   };
 }
 

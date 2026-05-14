@@ -3,6 +3,7 @@ export type WorkOrderStatus = 'Назначен' | 'Принят' | 'В пути
 export type Priority = 'Низкий' | 'Средний' | 'Высокий' | 'Срочно' | 'Аварийный';
 export type EmployeeStatus = 'На смене' | 'Перерыв' | 'Обед' | 'Завершил смену' | 'Больничный' | 'Отпуск';
 export type ContractStatus = 'Активен' | 'На продлении' | 'Истек' | 'Приостановлен';
+export type ClientType = 'Физическое лицо' | 'Юридическое лицо';
 
 export interface Employee {
   id: string;
@@ -29,6 +30,9 @@ export interface Client {
   slaAgreement: string;
   objectsCount: number;
   assetsCount: number;
+  inn?: string;
+  clientType?: ClientType;
+  address?: string;
 }
 
 export interface ServiceObject {
@@ -90,18 +94,30 @@ export interface WorkOrder {
   tasks: TypedTask[];
   photos: string[];
   notes: string;
+  revenue?: number;
+  costPrice?: number;
+  margin?: number;
+  marginPercent?: number;
+  slaStatus?: 'GREEN' | 'YELLOW' | 'RED';
+  slaViolated?: boolean;
+  slaDeadline?: string;
 }
+
+export type ContractType = 'СЛА' | 'Разовый' | 'Абонентский';
 
 export interface Contract {
   id: string;
   number: string;
-  applicationId: string;
-  contractorId: string;
-  status: WorkOrderStatus;
-  plannedStartTime: string;
-  plannedEndTime: string;
-  tasks: TypedTask[];
-  accessLink?: string;
+  clientId: string;
+  clientName?: string;
+  type: ContractType;
+  status: ContractStatus;
+  slaAgreementId?: string;
+  slaAgreementName?: string;
+  validFrom: string;
+  validTo: string;
+  monthlyAmount?: number;
+  notes?: string;
 }
 
 export interface SLA {

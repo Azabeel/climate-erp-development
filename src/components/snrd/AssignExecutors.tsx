@@ -22,8 +22,8 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const unassignedApplications = applications.filter(app => 
-    app.status === 'Новая' && !app.assignedTo
+  const unassignedApplications = applications.filter(app =>
+    app.status === 'Новая'
   );
 
   const calculateMatches = (app: Application): EmployeeMatch[] => {
@@ -32,22 +32,24 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
         const reasons: string[] = [];
         let score = 50;
 
-        if (employee.serviceTypes.includes(app.serviceType)) {
+        const isAvailable = employee.status === 'На смене';
+
+        if (employee.competencies.includes(app.serviceTypeId)) {
           score += 30;
           reasons.push('Соответствует тип услуги');
         }
 
-        if (employee.territories.includes(app.territory)) {
+        if (employee.territory) {
           score += 20;
           reasons.push('Рабочая территория');
         }
 
-        if (app.priority === 'Высокий' && employee.skillLevel === 'Специалист') {
+        if (app.priority === 'Высокий' || app.priority === 'Срочно' || app.priority === 'Аварийный') {
           score += 15;
-          reasons.push('Высокий уровень компетенции');
+          reasons.push('Приоритетная заявка');
         }
 
-        if (employee.available) {
+        if (isAvailable) {
           score += 10;
           reasons.push('Доступен');
         }
@@ -62,7 +64,7 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
           employee,
           matchScore: Math.min(score, 100),
           distance,
-          availability: employee.available ? 'Доступен' : 'Занят',
+          availability: isAvailable ? 'Доступен' : 'Занят',
           reasons,
         };
       })
@@ -71,8 +73,8 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
 
   const filteredApplications = unassignedApplications.filter(app =>
     app.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.serviceType.toLowerCase().includes(searchQuery.toLowerCase())
+    app.clientId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    app.serviceTypeId.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const getMatchColor = (score: number): string => {
@@ -114,8 +116,8 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="font-semibold text-gray-900">{app.id}</h3>
-                    <p className="text-sm text-gray-600">{app.clientName}</p>
+                    <h3 className="font-semibold text-gray-900">{app.number || app.id}</h3>
+                    <p className="text-sm text-gray-600">Клиент: {app.clientId}</p>
                   </div>
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(app.priority)}`}>
                     {app.priority}
@@ -125,7 +127,7 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <MapPin size={14} />
-                    <span>{app.location}</span>
+                    <span>{app.objectId || 'Объект не указан'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock size={14} />
@@ -135,7 +137,7 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
 
                 <div className="mt-2">
                   <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700">
-                    {app.serviceType}
+                    {app.serviceTypeId}
                   </span>
                 </div>
               </div>
@@ -157,7 +159,7 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
                   Подбор сотрудников для: {selectedApplication.id}
                 </h3>
                 <p className="text-sm text-blue-700">
-                  {selectedApplication.description}
+                  {selectedApplication.description || `Заявка № ${selectedApplication.number}`}
                 </p>
               </div>
 
@@ -171,15 +173,15 @@ const AssignExecutors = ({ applications, employees, getPriorityColor }: AssignEx
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-semibold text-gray-900">{match.employee.name}</h4>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${match.employee.available ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                            <h4 className="font-semibold text-gray-900">{match.employee.fullName}</h4>
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${match.employee.status === 'На смене' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                               {match.availability}
                             </span>
                           </div>
                           
                           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                             <User size={14} />
-                            <span>{match.employee.skillLevel}</span>
+                            <span>{match.employee.position}</span>
                             <span className="text-gray-400">•</span>
                             <MapPin size={14} />
                             <span>{match.distance} км</span>

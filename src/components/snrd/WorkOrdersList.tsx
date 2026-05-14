@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { WorkOrder, Employee } from '@/types/snrd';
-import { Search, Edit2, Trash2, MapPin, Clock, User } from 'lucide-react';
+import { Search, Edit2, Trash2, Clock, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -21,7 +20,6 @@ const WorkOrdersList = ({
   workOrders,
   employees,
   getStatusColor,
-  getPriorityColor,
   onEdit,
   onDelete,
   searchQuery,
@@ -31,14 +29,14 @@ const WorkOrdersList = ({
 }: WorkOrdersListProps) => {
   const getEmployeeName = (id: string) => {
     const emp = employees.find(e => e.id === id);
-    return emp ? emp.name : 'Неизвестен';
+    return emp ? emp.fullName : 'Неизвестен';
   };
 
   const filteredOrders = workOrders.filter(order => {
-    const matchesSearch = 
+    const matchesSearch =
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.location.toLowerCase().includes(searchQuery.toLowerCase());
+      order.notes.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.number.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     
@@ -109,8 +107,8 @@ const WorkOrdersList = ({
               <tr key={order.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-gray-900">{order.id}</span>
-                    <span className="text-sm text-gray-500">{order.description}</span>
+                    <span className="text-sm font-medium text-gray-900">{order.number}</span>
+                    <span className="text-sm text-gray-500">{order.notes}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
@@ -120,17 +118,18 @@ const WorkOrdersList = ({
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <MapPin size={16} className="text-gray-400" />
-                    <span className="text-sm text-gray-600">{order.location}</span>
-                  </div>
+                  <span className="text-sm text-gray-600">{order.applicationId || '—'}</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <Clock size={16} className="text-gray-400" />
                     <div className="flex flex-col">
-                      <span className="text-sm text-gray-900">{order.scheduledStart}</span>
-                      <span className="text-xs text-gray-500">до {order.scheduledEnd}</span>
+                      <span className="text-sm text-gray-900">
+                        {order.plannedStartTime ? new Date(order.plannedStartTime).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        до {order.plannedEndTime ? new Date(order.plannedEndTime).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
+                      </span>
                     </div>
                   </div>
                 </td>

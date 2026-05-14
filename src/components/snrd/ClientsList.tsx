@@ -10,16 +10,18 @@ interface ClientsListProps {
   clients: Client[];
   onEdit: (client: Client) => void;
   onDelete: (id: string) => void;
+  onView360: (id: string, name: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 }
 
-const ClientsList = ({ 
-  clients, 
-  onEdit, 
-  onDelete, 
-  searchQuery, 
-  setSearchQuery 
+const ClientsList = ({
+  clients,
+  onEdit,
+  onDelete,
+  onView360,
+  searchQuery,
+  setSearchQuery
 }: ClientsListProps) => {
   const filteredClients = clients.filter(client => 
     client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -92,6 +94,9 @@ const ClientsList = ({
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
+                      <Button variant="ghost" size="sm" onClick={() => onView360(client.id, client.name)} title="Карточка клиента 360°">
+                        <Icon name="Eye" size={16} />
+                      </Button>
                       <Button variant="ghost" size="sm" onClick={() => onEdit(client)}>
                         <Icon name="Edit" size={16} />
                       </Button>

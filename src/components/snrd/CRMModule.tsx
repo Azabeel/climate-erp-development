@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -146,16 +147,28 @@ const getVariantStyle = (variant: ProposalVariant): string => {
 const LeadsTab = () => {
   const [search, setSearch] = useState('');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
-  const filtered = LEADS.filter((lead) => {
-    const matchesSearch = lead.name.toLowerCase().includes(search.toLowerCase()) || lead.phone.includes(search);
-    const matchesSource = sourceFilter === 'all' || lead.source === sourceFilter;
+  const [leads, setLeads] = useState<Lead[]>(LEADS);
+
+  const handleConvert = (lead: Lead) => {
+    setLeads((prev) =>
+      prev.map((l) => l.id === lead.id ? { ...l, status: 'В работе' } : l),
+    );
+    toast.success(`Лид "${lead.name}" конвертирован в клиента`);
+  };
+
+  const filtered = leads.filter((lead) => {
+    const matchesSearch =
+      lead.name.toLowerCase().includes(search.toLowerCase()) ||
+      lead.phone.includes(search);
+    const matchesSource =
+      sourceFilter === 'all' || lead.source === sourceFilter;
     return matchesSearch && matchesSource;
   });
   const statusCounts = {
-    'Новый': LEADS.filter((l) => l.status === 'Новый').length,
-    'В работе': LEADS.filter((l) => l.status === 'В работе').length,
-    'Квалифицирован': LEADS.filter((l) => l.status === 'Квалифицирован').length,
-    'Отказ': LEADS.filter((l) => l.status === 'Отказ').length,
+    'Новый': leads.filter((l) => l.status === 'Новый').length,
+    'В работе': leads.filter((l) => l.status === 'В работе').length,
+    'Квалифицирован': leads.filter((l) => l.status === 'Квалифицирован').length,
+    'Отказ': leads.filter((l) => l.status === 'Отказ').length,
   };
   return (
     <div className="space-y-4">
@@ -204,6 +217,8 @@ const LeadsTab = () => {
                 <TableHead className="text-xs font-semibold text-gray-500 uppercase">Статус</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-500 uppercase">Менеджер</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-500 uppercase">Дата</TableHead>
+                <TableHead className="text-xs font-semibold text-gray-500 uppercase">Действия</TableHead>
+                <TableHead className="w-10" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -227,6 +242,22 @@ const LeadsTab = () => {
                   </TableCell>
                   <TableCell className="text-sm text-gray-600">{lead.manager}</TableCell>
                   <TableCell className="text-sm text-gray-500">{lead.date}</TableCell>
+                  <TableCell>
+                    {lead.status === 'Квалифицирован' && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleConvert(lead)}
+                      >
+                        → Клиент
+                      </Button>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400 hover:text-gray-600">
+                      <Icon name="MoreHorizontal" className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

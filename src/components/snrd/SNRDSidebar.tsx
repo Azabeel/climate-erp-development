@@ -142,6 +142,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'integrations', label: 'Интеграции' },
         { id: 'client-portal-settings', label: 'Клиентский портал' },
         { id: 'audit-log', label: 'Журнал аудита' },
+        { id: 'system-settings', label: 'Системные настройки' },
         { id: 'import', label: 'Импорт данных' },
       ]
     },

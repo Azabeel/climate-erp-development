@@ -64,6 +64,7 @@ import RoleDashboard from '@/components/snrd/RoleDashboard';
 import AnalyticsDashboard from '@/components/snrd/AnalyticsDashboard';
 import CPQModule from '@/components/snrd/CPQModule';
 import AIAssistant from '@/components/snrd/AIAssistant';
+import SystemSettings from '@/components/snrd/SystemSettings';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -564,6 +565,9 @@ const SNRD = () => {
 
       case 'ai-chat':
         return <AIAssistant />;
+
+      case 'system-settings':
+        return <SystemSettings />;
 
       default:
         return (

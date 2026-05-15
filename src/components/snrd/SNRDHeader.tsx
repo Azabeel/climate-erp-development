@@ -64,6 +64,12 @@ const tabTitles: Record<string, string> = {
   lms: 'Учебный центр (LMS)',
   'employee-onboarding': 'Онбординг сотрудников',
   'ai-chat': 'ИИ-ассистент',
+  cpq: 'Коммерческое предложение (CPQ)',
+  'system-settings': 'Системные настройки',
+  'iot-dashboard': 'IoT Мониторинг',
+  'maintenance-planner': 'Планировщик ТО',
+  'field-map': 'Карта выездов',
+  'notification-templates': 'Шаблоны уведомлений',
   documents: 'Документы',
 };
 

@@ -55,6 +55,15 @@ import CapacityPlanning from '@/components/snrd/CapacityPlanning';
 import CustomerHealthScore from '@/components/snrd/CustomerHealthScore';
 import LMSModule from '@/components/snrd/LMSModule';
 import EmployeeOnboarding from '@/components/snrd/EmployeeOnboarding';
+import KPIDashboard from '@/components/snrd/KPIDashboard';
+import SLAMonitor from '@/components/snrd/SLAMonitor';
+import ClientPortalSettings from '@/components/snrd/ClientPortalSettings';
+import StockAlerts from '@/components/snrd/StockAlerts';
+import AuditLog from '@/components/snrd/AuditLog';
+import RoleDashboard from '@/components/snrd/RoleDashboard';
+import AnalyticsDashboard from '@/components/snrd/AnalyticsDashboard';
+import CommandPalette from '@/components/ui/CommandPalette';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Application, WorkOrder, Employee, Client, ServiceObject } from '@/types/snrd';
 import { mockApplications, mockWorkOrders, mockClients, mockEmployees, mockServiceObjects, mockServiceTypes } from '@/data/snrdTestData';
@@ -100,6 +109,18 @@ const SNRD = () => {
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [editingServiceObject, setEditingServiceObject] = useState<ServiceObject | null>(null);
   const [client360Id, setClient360Id] = useState<{ id: string; name: string } | null>(null);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const getStatusColor = (status: string): string => {
     switch (status) {
@@ -515,6 +536,27 @@ const SNRD = () => {
       case 'completion-acts':
         return <CompletionActs />;
 
+      case 'kpi-dashboard':
+        return <KPIDashboard />;
+
+      case 'sla-monitor':
+        return <SLAMonitor />;
+
+      case 'client-portal-settings':
+        return <ClientPortalSettings />;
+
+      case 'stock-alerts':
+        return <StockAlerts />;
+
+      case 'audit-log':
+        return <AuditLog />;
+
+      case 'role-dashboard':
+        return <RoleDashboard />;
+
+      case 'analytics-dashboard':
+        return <AnalyticsDashboard />;
+
       default:
         return (
           <div className="p-8">
@@ -530,14 +572,21 @@ const SNRD = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       <SNRDSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
+
       <main className="flex-1 overflow-auto">
-        <SNRDHeader 
-          activeTab={activeTab} 
+        <SNRDHeader
+          activeTab={activeTab}
           onCreateNew={handleCreateNew}
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
         />
         {renderContent()}
       </main>
+
+      <CommandPalette
+        open={commandPaletteOpen}
+        onClose={() => setCommandPaletteOpen(false)}
+        onNavigate={(section) => { setActiveTab(section); setCommandPaletteOpen(false); }}
+      />
 
       <ApplicationModal
         open={applicationModalOpen}

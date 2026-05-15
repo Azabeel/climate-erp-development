@@ -41,6 +41,17 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       ]
     },
     {
+      id: 'dashboards-group',
+      label: 'Дашборды',
+      icon: 'LayoutDashboard',
+      children: [
+        { id: 'kpi-dashboard', label: 'KPI' },
+        { id: 'role-dashboard', label: 'По ролям' },
+        { id: 'analytics-dashboard', label: 'Аналитика' },
+        { id: 'sla-monitor', label: 'SLA Монитор' },
+      ]
+    },
+    {
       id: 'analytics-group',
       label: 'Аналитика',
       icon: 'BarChart3',
@@ -72,7 +83,15 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'memberships', label: 'Абонементы' },
       ]
     },
-    { id: 'warehouse', label: 'Склад', icon: 'Package' },
+    {
+      id: 'warehouse-group',
+      label: 'Склад',
+      icon: 'Package',
+      children: [
+        { id: 'warehouse', label: 'Остатки и движение' },
+        { id: 'stock-alerts', label: 'Алерты остатков' },
+      ]
+    },
     { id: 'crm', label: 'CRM', icon: 'TrendingUp' },
     { id: 'price-list', label: 'Прайс-лист', icon: 'Tags' },
     { id: 'documents', label: 'Документы', icon: 'FolderOpen' },
@@ -113,6 +132,8 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'work-groups', label: 'Рабочие группы' },
         { id: 'roles', label: 'Конструктор ролей' },
         { id: 'integrations', label: 'Интеграции' },
+        { id: 'client-portal-settings', label: 'Клиентский портал' },
+        { id: 'audit-log', label: 'Журнал аудита' },
         { id: 'import', label: 'Импорт данных' },
       ]
     },

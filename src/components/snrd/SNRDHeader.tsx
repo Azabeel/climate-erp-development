@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 interface SNRDHeaderProps {
   activeTab: string;
   onCreateNew: () => void;
+  onOpenCommandPalette?: () => void;
 }
 
 const tabTitles: Record<string, string> = {
@@ -41,9 +42,32 @@ const tabTitles: Record<string, string> = {
   warehouse: 'Склад и хладагенты',
   'dispatch-board': 'Доска диспетчера',
   'price-list': 'Прайс-лист',
+  'kpi-dashboard': 'KPI Дашборд',
+  'sla-monitor': 'SLA Монитор',
+  'client-portal-settings': 'Клиентский портал',
+  'stock-alerts': 'Алерты склада',
+  'audit-log': 'Журнал аудита',
+  'role-dashboard': 'Дашборды по ролям',
+  'analytics-dashboard': 'Аналитика',
+  inbox: 'Входящие сообщения',
+  notifications: 'Уведомления',
+  equipment: 'Оборудование (EAM)',
+  memberships: 'Абонементы',
+  'technician-scorecard': 'Скорборд инженеров',
+  'reliability-dashboard': 'Надёжность оборудования',
+  'refrigerant-compliance': 'Хладагенты — Отчётность',
+  'cash-flow': 'Прогноз денежного потока',
+  'warranty-tracking': 'Гарантийный учёт',
+  'workflow-builder': 'Автоматизации',
+  'capacity-planning': 'Планирование мощностей',
+  'customer-health': 'Здоровье клиентов',
+  lms: 'Учебный центр (LMS)',
+  'employee-onboarding': 'Онбординг сотрудников',
+  'ai-chat': 'ИИ-ассистент',
+  documents: 'Документы',
 };
 
-const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
+const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {
   const { isFetching, isError, isSuccess } = useQuery({
     queryKey: ['health'],
     queryFn: () => fetch('/actuator/health').then(r => r.ok ? 'ok' : Promise.reject()),
@@ -85,6 +109,15 @@ const SNRDHeader = ({ activeTab, onCreateNew }: SNRDHeaderProps) => {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {onOpenCommandPalette && (
+            <button onClick={onOpenCommandPalette}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              title="Быстрый поиск (Ctrl+K)">
+              <Icon name="Search" size={14} />
+              <span>Поиск...</span>
+              <kbd className="ml-1 px-1.5 py-0.5 text-xs bg-gray-100 border border-gray-200 rounded font-mono">⌘K</kbd>
+            </button>
+          )}
           <div className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full border" title="Статус подключения к API">
             <span className={`w-2 h-2 rounded-full ${apiStatus === 'online' ? 'bg-green-500' : apiStatus === 'offline' ? 'bg-red-400' : 'bg-yellow-400 animate-pulse'}`} />
             <span className="text-gray-500">{apiStatus === 'online' ? 'API' : apiStatus === 'offline' ? 'Демо' : '...'}</span>

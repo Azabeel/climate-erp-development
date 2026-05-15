@@ -101,6 +101,10 @@ const tabTitles: Record<string, string> = {
   'ai-analytics': 'ИИ-аналитик',
   'checklist-templates': 'Чеклисты для нарядов',
   'geofence-zones': 'Геозоны и территории',
+  'work-order-detail': 'Карточка наряда',
+  'service-object-card': 'Карточка объекта обслуживания',
+  'client-card': 'Карточка клиента 360°',
+  'dispatch-board-full': 'Доска диспетчера (Гант)',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

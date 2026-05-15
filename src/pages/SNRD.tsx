@@ -99,6 +99,8 @@ import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import ChecklistTemplates from '@/components/snrd/ChecklistTemplates';
 import GeofenceZones from '@/components/snrd/GeofenceZones';
+import ClientCard from '@/components/snrd/ClientCard';
+import DispatchBoardFull from '@/components/snrd/DispatchBoardFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -701,6 +703,12 @@ const SNRD = () => {
 
       case 'geofence-zones':
         return <GeofenceZones />;
+
+      case 'client-card':
+        return <ClientCard />;
+
+      case 'dispatch-board-full':
+        return <DispatchBoardFull />;
 
       default:
         return (

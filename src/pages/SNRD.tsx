@@ -62,6 +62,8 @@ import StockAlerts from '@/components/snrd/StockAlerts';
 import AuditLog from '@/components/snrd/AuditLog';
 import RoleDashboard from '@/components/snrd/RoleDashboard';
 import AnalyticsDashboard from '@/components/snrd/AnalyticsDashboard';
+import CPQModule from '@/components/snrd/CPQModule';
+import AIAssistant from '@/components/snrd/AIAssistant';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -556,6 +558,12 @@ const SNRD = () => {
 
       case 'analytics-dashboard':
         return <AnalyticsDashboard />;
+
+      case 'cpq':
+        return <CPQModule />;
+
+      case 'ai-chat':
+        return <AIAssistant />;
 
       default:
         return (

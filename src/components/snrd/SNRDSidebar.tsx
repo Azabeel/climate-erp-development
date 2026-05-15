@@ -92,7 +92,15 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'stock-alerts', label: 'Алерты остатков' },
       ]
     },
-    { id: 'crm', label: 'CRM', icon: 'TrendingUp' },
+    {
+      id: 'crm-group',
+      label: 'CRM',
+      icon: 'TrendingUp',
+      children: [
+        { id: 'crm', label: 'Воронка продаж' },
+        { id: 'cpq', label: 'КП (Good-Better-Best)' },
+      ]
+    },
     { id: 'price-list', label: 'Прайс-лист', icon: 'Tags' },
     { id: 'documents', label: 'Документы', icon: 'FolderOpen' },
     {

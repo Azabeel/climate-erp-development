@@ -66,6 +66,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       icon: 'Navigation',
       children: [
         { id: 'field-map', label: 'Карта инженеров' },
+        { id: 'route-optimizer', label: 'Оптимизация маршрутов' },
         { id: 'dispatch-board', label: 'Доска диспетчера' },
         { id: 'assign-executors', label: 'Назначение исполнителей' },
         { id: 'auto-planning', label: 'Автопланирование' },
@@ -101,6 +102,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       icon: 'Package',
       children: [
         { id: 'warehouse', label: 'Остатки и движение' },
+        { id: 'purchase-orders', label: 'Закупки и ЗИП' },
         { id: 'stock-alerts', label: 'Алерты остатков' },
       ]
     },
@@ -122,7 +124,8 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       label: 'HR',
       icon: 'UserCheck',
       children: [
-        { id: 'hr', label: 'HR / Зарплата' },
+        { id: 'hr', label: 'HR / Кадры' },
+        { id: 'payroll', label: 'Расчёт зарплаты' },
         { id: 'technician-scorecard', label: 'Скорборд инженеров' },
         { id: 'lms', label: 'Учебный центр (LMS)' },
         { id: 'employee-onboarding', label: 'Онбординг' },

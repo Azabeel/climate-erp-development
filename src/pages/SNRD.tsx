@@ -73,6 +73,9 @@ import ServiceObjectCard from '@/components/snrd/ServiceObjectCard';
 import LeadScoring from '@/components/snrd/LeadScoring';
 import WorkOrderDetail from '@/components/snrd/WorkOrderDetail';
 import FinancialPlanning from '@/components/snrd/FinancialPlanning';
+import RouteOptimizer from '@/components/snrd/RouteOptimizer';
+import PayrollModule from '@/components/snrd/PayrollModule';
+import PurchaseOrders from '@/components/snrd/PurchaseOrders';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -600,6 +603,15 @@ const SNRD = () => {
 
       case 'financial-planning':
         return <FinancialPlanning />;
+
+      case 'route-optimizer':
+        return <RouteOptimizer />;
+
+      case 'payroll':
+        return <PayrollModule />;
+
+      case 'purchase-orders':
+        return <PurchaseOrders />;
 
       default:
         return (

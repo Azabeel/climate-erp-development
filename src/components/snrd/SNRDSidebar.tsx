@@ -127,6 +127,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'hr', label: 'HR / Кадры' },
         { id: 'payroll', label: 'Расчёт зарплаты' },
         { id: 'technician-scorecard', label: 'Скорборд инженеров' },
+        { id: 'competency-matrix', label: 'Матрица компетенций' },
         { id: 'lms', label: 'Учебный центр (LMS)' },
         { id: 'employee-onboarding', label: 'Онбординг' },
       ]

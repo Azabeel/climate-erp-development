@@ -76,6 +76,7 @@ import FinancialPlanning from '@/components/snrd/FinancialPlanning';
 import RouteOptimizer from '@/components/snrd/RouteOptimizer';
 import PayrollModule from '@/components/snrd/PayrollModule';
 import PurchaseOrders from '@/components/snrd/PurchaseOrders';
+import CompetencyMatrix from '@/components/snrd/CompetencyMatrix';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -612,6 +613,9 @@ const SNRD = () => {
 
       case 'purchase-orders':
         return <PurchaseOrders />;
+
+      case 'competency-matrix':
+        return <CompetencyMatrix />;
 
       default:
         return (

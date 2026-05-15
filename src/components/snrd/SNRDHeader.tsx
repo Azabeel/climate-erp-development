@@ -75,6 +75,10 @@ const tabTitles: Record<string, string> = {
   'lead-scoring': 'Скоринг лидов',
   'service-object-card': 'Карточка объекта обслуживания',
   documents: 'Документы',
+  'competency-matrix': 'Матрица компетенций',
+  'route-optimizer': 'Оптимизация маршрутов',
+  payroll: 'Расчёт зарплаты',
+  'purchase-orders': 'Закупки и ЗИП',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

@@ -147,6 +147,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
     { id: 'task-manager', label: 'Задачи (канбан)', icon: 'LayoutList' },
     { id: 'workflow-builder', label: 'Автоматизации', icon: 'Zap' },
     { id: 'ai-chat', label: 'ИИ-ассистент', icon: 'Bot' },
+    { id: 'ai-analytics', label: 'ИИ-аналитик', icon: 'Sparkles' },
     { id: 'price-calculator', label: 'Калькулятор цен', icon: 'Calculator' },
     { id: 'multi-channel-inbox', label: 'Омни-канальный Inbox', icon: 'Layers' },
     {

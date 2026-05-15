@@ -3,15 +3,10 @@ import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  // AreaChart and Area are imported per spec (available for extension)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   AreaChart,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Area,
   BarChart,
   Bar,
-  // LineChart is imported per spec (available for extension)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   LineChart,
   Line,
   ComposedChart,
@@ -19,8 +14,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  // Legend is imported per spec (available for extension)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Legend,
   ReferenceLine,
   ResponsiveContainer,
@@ -330,6 +323,35 @@ const CashFlow = () => {
         />
       </div>
 
+      {/* ── Мини-спарклайн тренда баланса (AreaChart) ────────────────────── */}
+      <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-semibold text-gray-800 flex items-center gap-2">
+            <Icon name="Activity" size={17} className="text-emerald-600" />
+            Тренд остатка на счету · факт 15 дней
+          </h3>
+          <span className="text-xs text-gray-400">Нарастающим итогом</span>
+        </div>
+        <ResponsiveContainer width="100%" height={90}>
+          <AreaChart
+            data={chartData.filter((d) => d.isFact)}
+            margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id="balanceGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="day" tick={{ fontSize: 9, fill: '#9ca3af' }} interval={2} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fill: '#9ca3af' }} tickFormatter={(v) => formatK(v)} axisLine={false} tickLine={false} width={64} />
+            <Tooltip formatter={(v: number) => [formatRub(v), 'Остаток']} contentStyle={{ fontSize: 11, borderRadius: 6 }} />
+            <Area type="monotone" dataKey="balance" name="Остаток" stroke="#10b981" strokeWidth={2} fill="url(#balanceGrad)" dot={false} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
       {/* ── Переключатель сценариев ───────────────────────────────────────── */}
       <div className="bg-white border border-gray-200 rounded-xl p-5">
         <div className="flex flex-wrap items-center gap-3 mb-1">
@@ -406,6 +428,13 @@ const CashFlow = () => {
               width={80}
             />
             <Tooltip content={<MainTooltip />} />
+            <Legend
+              verticalAlign="top"
+              align="right"
+              iconType="circle"
+              iconSize={8}
+              wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
+            />
             {todayLabel && (
               <ReferenceLine
                 x={todayLabel}
@@ -652,10 +681,44 @@ const CashFlow = () => {
         </div>
       </div>
 
+      {/* ── LineChart: сравнение балансов по сценариям (30 дней) ─────────── */}
+      <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <h3 className="text-base font-semibold text-gray-800 mb-1 flex items-center gap-2">
+          <Icon name="GitBranch" size={17} className="text-blue-600" />
+          Сравнение сценариев · динамика остатка (30 дней)
+        </h3>
+        <p className="text-xs text-gray-500 mb-4">Прогноз кумулятивного остатка по каждому сценарию</p>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart
+            data={chartData.slice(TODAY_INDEX, TODAY_INDEX + 30).filter((_, i) => i % 2 === 0).map((d, i, arr) => {
+              const base = 3_480_000;
+              const sumUpTo = (mult: { income: number; expense: number }) =>
+                arr.slice(0, i + 1).reduce((s, x) => s + Math.round(x.income * mult.income) - Math.round(x.expense * mult.expense), base);
+              return {
+                day: d.day,
+                base: sumUpTo(SCENARIO_MULTIPLIERS.base),
+                optimistic: sumUpTo(SCENARIO_MULTIPLIERS.optimistic),
+                pessimistic: sumUpTo(SCENARIO_MULTIPLIERS.pessimistic),
+              };
+            })}
+            margin={{ top: 5, right: 20, left: 10, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#9ca3af' }} interval={4} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} tickFormatter={(v) => formatK(v)} axisLine={false} tickLine={false} width={72} />
+            <Tooltip formatter={(v: number) => [formatRub(v), '']} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
+            <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
+            <Line type="monotone" dataKey="base" name="Базовый" stroke="#3b82f6" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="optimistic" name="Оптимистичный" stroke="#10b981" strokeWidth={2} dot={false} strokeDasharray="4 2" />
+            <Line type="monotone" dataKey="pessimistic" name="Пессимистичный" stroke="#f87171" strokeWidth={2} dot={false} strokeDasharray="2 3" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
       {/* ── Сравнение сценариев — мини-карточки ──────────────────────────── */}
       <div className="bg-white border border-gray-200 rounded-xl p-5">
         <h3 className="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <Icon name="GitBranch" size={17} className="text-blue-600" />
+          <Icon name="Layers" size={17} className="text-blue-600" />
           Сравнение сценариев · прогнозный остаток через 30 дней
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

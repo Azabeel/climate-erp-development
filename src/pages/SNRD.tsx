@@ -48,11 +48,11 @@ import MembershipsModule from '@/components/snrd/MembershipsModule';
 import TechnicianScorecard from '@/components/snrd/TechnicianScorecard';
 import ReliabilityDashboard from '@/components/snrd/ReliabilityDashboard';
 import RefrigerantComplianceReporter from '@/components/snrd/RefrigerantComplianceReporter';
-import CashFlowForecast from '@/components/snrd/CashFlowForecast';
+import CashFlow from '@/components/snrd/CashFlow';
 import WarrantyTracking from '@/components/snrd/WarrantyTracking';
 import WorkflowBuilder from '@/components/snrd/WorkflowBuilder';
 import CapacityPlanning from '@/components/snrd/CapacityPlanning';
-import CustomerHealthScore from '@/components/snrd/CustomerHealthScore';
+import CustomerHealth from '@/components/snrd/CustomerHealth';
 import LMSModule from '@/components/snrd/LMSModule';
 import EmployeeOnboarding from '@/components/snrd/EmployeeOnboarding';
 import KPIDashboard from '@/components/snrd/KPIDashboard';
@@ -552,7 +552,7 @@ const SNRD = () => {
         return <RefrigerantComplianceReporter />;
 
       case 'cash-flow':
-        return <CashFlowForecast />;
+        return <CashFlow />;
 
       case 'warranty-tracking':
         return <WarrantyTracking />;
@@ -564,7 +564,7 @@ const SNRD = () => {
         return <CapacityPlanning />;
 
       case 'customer-health':
-        return <CustomerHealthScore />;
+        return <CustomerHealth />;
 
       case 'lms':
         return <LMSModule />;

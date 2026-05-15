@@ -1,7 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
@@ -320,12 +318,6 @@ const STATUS_CONFIG: Record<
     dot: 'bg-amber-500',
     icon: 'AlertCircle',
   },
-};
-
-const TYPE_ICON: Record<EquipmentType, string> = {
-  'Кондиционер': 'Snowflake',
-  'Чиллер': 'Thermometer',
-  'Вентиляционная установка': 'Wind',
 };
 
 const CLIENTS = Array.from(new Set(EQUIPMENT_DATA.map((e) => e.client)));

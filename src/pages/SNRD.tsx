@@ -89,6 +89,7 @@ import TaskManager from '@/components/snrd/TaskManager';
 import SLAPolicy from '@/components/snrd/SLAPolicy';
 import StockMovement from '@/components/snrd/StockMovement';
 import ContractManager from '@/components/snrd/ContractManager';
+import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import CommandPalette from '@/components/ui/CommandPalette';
@@ -669,6 +670,9 @@ const SNRD = () => {
 
       case 'contract-manager':
         return <ContractManager />;
+
+      case 'integration-logs':
+        return <IntegrationLogs />;
 
       default:
         return (

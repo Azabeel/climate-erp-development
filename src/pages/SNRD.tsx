@@ -69,6 +69,7 @@ import IoTDashboard from '@/components/snrd/IoTDashboard';
 import MaintenancePlanner from '@/components/snrd/MaintenancePlanner';
 import FieldMap from '@/components/snrd/FieldMap';
 import NotificationTemplates from '@/components/snrd/NotificationTemplates';
+import ServiceObjectCard from '@/components/snrd/ServiceObjectCard';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -584,6 +585,9 @@ const SNRD = () => {
 
       case 'notification-templates':
         return <NotificationTemplates />;
+
+      case 'service-object-card':
+        return <ServiceObjectCard />;
 
       default:
         return (

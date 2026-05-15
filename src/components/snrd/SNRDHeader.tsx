@@ -79,6 +79,12 @@ const tabTitles: Record<string, string> = {
   'route-optimizer': 'Оптимизация маршрутов',
   payroll: 'Расчёт зарплаты',
   'purchase-orders': 'Закупки и ЗИП',
+  'onboarding-progress': 'Прогресс онбординга',
+  'smart-dispatch': 'Умный диспетчер',
+  'client-feedback': 'Отзывы клиентов',
+  'service-calendar': 'Календарь выездов',
+  'report-builder': 'Конструктор отчётов',
+  'performance-dashboard': 'Эффективность команды',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

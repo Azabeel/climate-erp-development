@@ -77,6 +77,12 @@ import RouteOptimizer from '@/components/snrd/RouteOptimizer';
 import PayrollModule from '@/components/snrd/PayrollModule';
 import PurchaseOrders from '@/components/snrd/PurchaseOrders';
 import CompetencyMatrix from '@/components/snrd/CompetencyMatrix';
+import OnboardingProgress from '@/components/snrd/OnboardingProgress';
+import SmartDispatch from '@/components/snrd/SmartDispatch';
+import ReportBuilder from '@/components/snrd/ReportBuilder';
+import PerformanceDashboard from '@/components/snrd/PerformanceDashboard';
+import ClientFeedback from '@/components/snrd/ClientFeedback';
+import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -501,7 +507,7 @@ const SNRD = () => {
         return <PriceListModule />;
 
       case 'ai-chat':
-        return <AIChatPanel />;
+        return <AIAssistant />;
 
       case 'documents':
         return <DocumentLibrary />;
@@ -575,9 +581,6 @@ const SNRD = () => {
       case 'cpq':
         return <CPQModule />;
 
-      case 'ai-chat':
-        return <AIAssistant />;
-
       case 'system-settings':
         return <SystemSettings />;
 
@@ -616,6 +619,24 @@ const SNRD = () => {
 
       case 'competency-matrix':
         return <CompetencyMatrix />;
+
+      case 'onboarding-progress':
+        return <OnboardingProgress />;
+
+      case 'smart-dispatch':
+        return <SmartDispatch />;
+
+      case 'client-feedback':
+        return <ClientFeedback />;
+
+      case 'service-calendar':
+        return <ServiceCalendar />;
+
+      case 'report-builder':
+        return <ReportBuilder />;
+
+      case 'performance-dashboard':
+        return <PerformanceDashboard />;
 
       default:
         return (

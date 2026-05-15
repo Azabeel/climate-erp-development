@@ -46,9 +46,11 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       icon: 'BarChart3',
       children: [
         { id: 'reports', label: 'Отчёты' },
+        { id: 'report-builder', label: 'Конструктор отчётов' },
         { id: 'reliability-dashboard', label: 'Надёжность оборудования' },
         { id: 'cash-flow', label: 'Прогноз денежного потока' },
         { id: 'customer-health', label: 'Здоровье клиентов' },
+        { id: 'client-feedback', label: 'Отзывы клиентов' },
       ]
     },
     {
@@ -68,6 +70,8 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'field-map', label: 'Карта инженеров' },
         { id: 'route-optimizer', label: 'Оптимизация маршрутов' },
         { id: 'dispatch-board', label: 'Доска диспетчера' },
+        { id: 'smart-dispatch', label: 'Умный диспетчер' },
+        { id: 'service-calendar', label: 'Календарь выездов' },
         { id: 'assign-executors', label: 'Назначение исполнителей' },
         { id: 'auto-planning', label: 'Автопланирование' },
         { id: 'capacity-planning', label: 'Планирование мощностей' },
@@ -127,7 +131,9 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'hr', label: 'HR / Кадры' },
         { id: 'payroll', label: 'Расчёт зарплаты' },
         { id: 'technician-scorecard', label: 'Скорборд инженеров' },
+        { id: 'performance-dashboard', label: 'Эффективность команды' },
         { id: 'competency-matrix', label: 'Матрица компетенций' },
+        { id: 'onboarding-progress', label: 'Прогресс онбординга' },
         { id: 'lms', label: 'Учебный центр (LMS)' },
         { id: 'employee-onboarding', label: 'Онбординг' },
       ]

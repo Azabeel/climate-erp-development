@@ -70,6 +70,7 @@ import MaintenancePlanner from '@/components/snrd/MaintenancePlanner';
 import FieldMap from '@/components/snrd/FieldMap';
 import NotificationTemplates from '@/components/snrd/NotificationTemplates';
 import ServiceObjectCard from '@/components/snrd/ServiceObjectCard';
+import LeadScoring from '@/components/snrd/LeadScoring';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -588,6 +589,9 @@ const SNRD = () => {
 
       case 'service-object-card':
         return <ServiceObjectCard />;
+
+      case 'lead-scoring':
+        return <LeadScoring />;
 
       default:
         return (

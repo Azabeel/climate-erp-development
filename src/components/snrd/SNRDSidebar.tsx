@@ -109,7 +109,9 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       icon: 'TrendingUp',
       children: [
         { id: 'crm', label: 'Воронка продаж' },
+        { id: 'lead-scoring', label: 'Скоринг лидов' },
         { id: 'cpq', label: 'КП (Good-Better-Best)' },
+        { id: 'customer-health', label: 'Здоровье клиентов' },
       ]
     },
     { id: 'price-list', label: 'Прайс-лист', icon: 'Tags' },

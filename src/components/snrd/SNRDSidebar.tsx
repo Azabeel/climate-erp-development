@@ -140,6 +140,8 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
     },
     { id: 'workflow-builder', label: 'Автоматизации', icon: 'Zap' },
     { id: 'ai-chat', label: 'ИИ-ассистент', icon: 'Bot' },
+    { id: 'price-calculator', label: 'Калькулятор цен', icon: 'Calculator' },
+    { id: 'multi-channel-inbox', label: 'Омни-канальный Inbox', icon: 'Layers' },
     {
       id: 'directories',
       label: 'Справочники',

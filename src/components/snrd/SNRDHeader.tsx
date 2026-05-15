@@ -85,6 +85,10 @@ const tabTitles: Record<string, string> = {
   'service-calendar': 'Календарь выездов',
   'report-builder': 'Конструктор отчётов',
   'performance-dashboard': 'Эффективность команды',
+  'multi-channel-inbox': 'Омни-канальный Inbox',
+  'price-calculator': 'Калькулятор стоимости',
+  'document-editor': 'Редактор документов',
+  'equipment-qr': 'QR-коды оборудования',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

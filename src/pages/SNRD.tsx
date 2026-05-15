@@ -81,6 +81,8 @@ import OnboardingProgress from '@/components/snrd/OnboardingProgress';
 import SmartDispatch from '@/components/snrd/SmartDispatch';
 import ReportBuilder from '@/components/snrd/ReportBuilder';
 import PerformanceDashboard from '@/components/snrd/PerformanceDashboard';
+import MultiChannelInbox from '@/components/snrd/MultiChannelInbox';
+import PriceCalculator from '@/components/snrd/PriceCalculator';
 import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import CommandPalette from '@/components/ui/CommandPalette';
@@ -637,6 +639,12 @@ const SNRD = () => {
 
       case 'performance-dashboard':
         return <PerformanceDashboard />;
+
+      case 'multi-channel-inbox':
+        return <MultiChannelInbox />;
+
+      case 'price-calculator':
+        return <PriceCalculator />;
 
       default:
         return (

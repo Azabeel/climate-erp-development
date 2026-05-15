@@ -92,6 +92,7 @@ import ContractManager from '@/components/snrd/ContractManager';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
+import QuickActions from '@/components/snrd/QuickActions';
 import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import CommandPalette from '@/components/ui/CommandPalette';
@@ -681,6 +682,9 @@ const SNRD = () => {
 
       case 'budget-planning':
         return <BudgetPlanning />;
+
+      case 'quick-actions':
+        return <QuickActions />;
 
       default:
         return (

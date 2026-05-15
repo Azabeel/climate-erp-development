@@ -12,6 +12,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const menuItems = [
     { id: 'dashboard', label: 'Главная', icon: 'LayoutDashboard' },
+    { id: 'quick-actions', label: 'Быстрые действия', icon: 'Zap' },
     { id: 'inbox', label: 'Входящие', icon: 'Inbox' },
     { id: 'notifications', label: 'Уведомления', icon: 'Bell' },
     {

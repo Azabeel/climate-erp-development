@@ -97,6 +97,8 @@ const tabTitles: Record<string, string> = {
   'budget-planning': 'Бюджетирование',
   'equipment-history': 'История оборудования',
   'mobile-app-settings': 'Настройки мобильного приложения',
+  'quick-actions': 'Быстрые действия',
+  'ai-analytics': 'ИИ-аналитик',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

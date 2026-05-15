@@ -85,6 +85,7 @@ import MultiChannelInbox from '@/components/snrd/MultiChannelInbox';
 import PriceCalculator from '@/components/snrd/PriceCalculator';
 import DocumentEditor from '@/components/snrd/DocumentEditor';
 import EquipmentQR from '@/components/snrd/EquipmentQR';
+import TaskManager from '@/components/snrd/TaskManager';
 import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import CommandPalette from '@/components/ui/CommandPalette';
@@ -653,6 +654,9 @@ const SNRD = () => {
 
       case 'equipment-qr':
         return <EquipmentQR />;
+
+      case 'task-manager':
+        return <TaskManager />;
 
       default:
         return (

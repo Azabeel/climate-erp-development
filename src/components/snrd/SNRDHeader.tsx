@@ -89,6 +89,9 @@ const tabTitles: Record<string, string> = {
   'price-calculator': 'Калькулятор стоимости',
   'document-editor': 'Редактор документов',
   'equipment-qr': 'QR-коды оборудования',
+  'task-manager': 'Менеджер задач',
+  'stock-movement': 'Журнал движения склада',
+  'contract-manager': 'Управление договорами',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

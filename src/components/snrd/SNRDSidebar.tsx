@@ -30,17 +30,6 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       ]
     },
     {
-      id: 'workplace',
-      label: 'Рабочее место',
-      icon: 'MonitorSmartphone',
-      children: [
-        { id: 'assign-executors', label: 'Назначение исполнителей' },
-        { id: 'auto-planning', label: 'Автоматическое планирование' },
-        { id: 'dispatch-board', label: 'Доска диспетчера' },
-        { id: 'capacity-planning', label: 'Планирование мощностей' },
-      ]
-    },
-    {
       id: 'dashboards-group',
       label: 'Дашборды',
       icon: 'LayoutDashboard',
@@ -71,9 +60,31 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'survey-journal', label: 'Журнал анкет' },
       ]
     },
-    { id: 'scheduled-maintenance', label: 'Плановое обслуживание', icon: 'CalendarClock' },
-    { id: 'equipment', label: 'Оборудование (EAM)', icon: 'Wrench' },
-    { id: 'refrigerant-compliance', label: 'Хладагенты', icon: 'Thermometer' },
+    {
+      id: 'field-ops',
+      label: 'Выездная служба',
+      icon: 'Navigation',
+      children: [
+        { id: 'field-map', label: 'Карта инженеров' },
+        { id: 'dispatch-board', label: 'Доска диспетчера' },
+        { id: 'assign-executors', label: 'Назначение исполнителей' },
+        { id: 'auto-planning', label: 'Автопланирование' },
+        { id: 'capacity-planning', label: 'Планирование мощностей' },
+      ]
+    },
+    {
+      id: 'eam-group',
+      label: 'Оборудование (EAM)',
+      icon: 'Wrench',
+      children: [
+        { id: 'equipment', label: 'Реестр оборудования' },
+        { id: 'scheduled-maintenance', label: 'Плановое ТО' },
+        { id: 'maintenance-planner', label: 'Планировщик ТО' },
+        { id: 'iot-dashboard', label: 'IoT Мониторинг' },
+        { id: 'reliability-dashboard', label: 'Надёжность' },
+        { id: 'refrigerant-compliance', label: 'Хладагенты' },
+      ]
+    },
     {
       id: 'finance-group',
       label: 'Финансы',
@@ -140,6 +151,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'work-groups', label: 'Рабочие группы' },
         { id: 'roles', label: 'Конструктор ролей' },
         { id: 'integrations', label: 'Интеграции' },
+        { id: 'notification-templates', label: 'Шаблоны уведомлений' },
         { id: 'client-portal-settings', label: 'Клиентский портал' },
         { id: 'audit-log', label: 'Журнал аудита' },
         { id: 'system-settings', label: 'Системные настройки' },

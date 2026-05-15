@@ -65,6 +65,10 @@ import AnalyticsDashboard from '@/components/snrd/AnalyticsDashboard';
 import CPQModule from '@/components/snrd/CPQModule';
 import AIAssistant from '@/components/snrd/AIAssistant';
 import SystemSettings from '@/components/snrd/SystemSettings';
+import IoTDashboard from '@/components/snrd/IoTDashboard';
+import MaintenancePlanner from '@/components/snrd/MaintenancePlanner';
+import FieldMap from '@/components/snrd/FieldMap';
+import NotificationTemplates from '@/components/snrd/NotificationTemplates';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -568,6 +572,18 @@ const SNRD = () => {
 
       case 'system-settings':
         return <SystemSettings />;
+
+      case 'iot-dashboard':
+        return <IoTDashboard />;
+
+      case 'maintenance-planner':
+        return <MaintenancePlanner />;
+
+      case 'field-map':
+        return <FieldMap />;
+
+      case 'notification-templates':
+        return <NotificationTemplates />;
 
       default:
         return (

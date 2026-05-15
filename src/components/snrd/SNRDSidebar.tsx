@@ -84,6 +84,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       icon: 'Wrench',
       children: [
         { id: 'equipment', label: 'Реестр оборудования' },
+        { id: 'equipment-history', label: 'История оборудования' },
         { id: 'equipment-qr', label: 'QR-коды оборудования' },
         { id: 'scheduled-maintenance', label: 'Плановое ТО' },
         { id: 'maintenance-planner', label: 'Планировщик ТО' },

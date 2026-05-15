@@ -93,6 +93,7 @@ import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
 import QuickActions from '@/components/snrd/QuickActions';
+import EquipmentHistory from '@/components/snrd/EquipmentHistory';
 import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import CommandPalette from '@/components/ui/CommandPalette';
@@ -685,6 +686,9 @@ const SNRD = () => {
 
       case 'quick-actions':
         return <QuickActions />;
+
+      case 'equipment-history':
+        return <EquipmentHistory />;
 
       default:
         return (

@@ -97,6 +97,8 @@ import EquipmentHistory from '@/components/snrd/EquipmentHistory';
 import AIAnalytics from '@/components/snrd/AIAnalytics';
 import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
+import ChecklistTemplates from '@/components/snrd/ChecklistTemplates';
+import GeofenceZones from '@/components/snrd/GeofenceZones';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -693,6 +695,12 @@ const SNRD = () => {
 
       case 'ai-analytics':
         return <AIAnalytics />;
+
+      case 'checklist-templates':
+        return <ChecklistTemplates />;
+
+      case 'geofence-zones':
+        return <GeofenceZones />;
 
       default:
         return (

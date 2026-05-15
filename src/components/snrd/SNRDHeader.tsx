@@ -99,6 +99,8 @@ const tabTitles: Record<string, string> = {
   'mobile-app-settings': 'Настройки мобильного приложения',
   'quick-actions': 'Быстрые действия',
   'ai-analytics': 'ИИ-аналитик',
+  'checklist-templates': 'Чеклисты для нарядов',
+  'geofence-zones': 'Геозоны и территории',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

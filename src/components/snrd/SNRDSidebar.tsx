@@ -28,6 +28,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'completion-acts', label: 'Акты выполненных работ' },
         { id: 'warranty-tracking', label: 'Гарантийный учёт' },
         { id: 'typed-tasks', label: 'Задачи' },
+        { id: 'checklist-templates', label: 'Чеклисты' },
       ]
     },
     {
@@ -76,6 +77,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'assign-executors', label: 'Назначение исполнителей' },
         { id: 'auto-planning', label: 'Автопланирование' },
         { id: 'capacity-planning', label: 'Планирование мощностей' },
+        { id: 'geofence-zones', label: 'Геозоны' },
       ]
     },
     {

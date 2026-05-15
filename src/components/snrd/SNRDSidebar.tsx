@@ -107,6 +107,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       icon: 'Package',
       children: [
         { id: 'warehouse', label: 'Остатки и движение' },
+        { id: 'stock-movement', label: 'Журнал движения' },
         { id: 'purchase-orders', label: 'Закупки и ЗИП' },
         { id: 'stock-alerts', label: 'Алерты остатков' },
       ]
@@ -156,6 +157,8 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'service-objects', label: 'Объекты обслуживания' },
         { id: 'service-types', label: 'Виды работ / услуг' },
         { id: 'sla', label: 'Соглашения SLA' },
+        { id: 'sla-policy', label: 'Политики SLA' },
+        { id: 'contract-manager', label: 'Управление договорами' },
         { id: 'territories', label: 'Территории обслуживания' },
       ]
     },

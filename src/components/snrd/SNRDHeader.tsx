@@ -92,6 +92,7 @@ const tabTitles: Record<string, string> = {
   'task-manager': 'Менеджер задач',
   'stock-movement': 'Журнал движения склада',
   'contract-manager': 'Управление договорами',
+  'sla-policy': 'Политики SLA',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

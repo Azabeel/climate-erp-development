@@ -86,6 +86,9 @@ import PriceCalculator from '@/components/snrd/PriceCalculator';
 import DocumentEditor from '@/components/snrd/DocumentEditor';
 import EquipmentQR from '@/components/snrd/EquipmentQR';
 import TaskManager from '@/components/snrd/TaskManager';
+import SLAPolicy from '@/components/snrd/SLAPolicy';
+import StockMovement from '@/components/snrd/StockMovement';
+import ContractManager from '@/components/snrd/ContractManager';
 import ClientFeedback from '@/components/snrd/ClientFeedback';
 import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import CommandPalette from '@/components/ui/CommandPalette';
@@ -657,6 +660,15 @@ const SNRD = () => {
 
       case 'task-manager':
         return <TaskManager />;
+
+      case 'sla-policy':
+        return <SLAPolicy />;
+
+      case 'stock-movement':
+        return <StockMovement />;
+
+      case 'contract-manager':
+        return <ContractManager />;
 
       default:
         return (

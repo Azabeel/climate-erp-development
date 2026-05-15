@@ -98,6 +98,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       children: [
         { id: 'finance', label: 'Финансовая сводка' },
         { id: 'financial-planning', label: 'Бюджет и прогноз' },
+        { id: 'budget-planning', label: 'Бюджетирование' },
         { id: 'memberships', label: 'Абонементы' },
       ]
     },
@@ -177,6 +178,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
         { id: 'client-portal-settings', label: 'Клиентский портал' },
         { id: 'audit-log', label: 'Журнал аудита' },
         { id: 'system-settings', label: 'Системные настройки' },
+        { id: 'mobile-app-settings', label: 'Мобильное приложение' },
         { id: 'import', label: 'Импорт данных' },
       ]
     },

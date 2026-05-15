@@ -96,6 +96,7 @@ const tabTitles: Record<string, string> = {
   'integration-logs': 'Журнал интеграций',
   'budget-planning': 'Бюджетирование',
   'equipment-history': 'История оборудования',
+  'mobile-app-settings': 'Настройки мобильного приложения',
 };
 
 const SNRDHeader = ({ activeTab, onCreateNew, onOpenCommandPalette }: SNRDHeaderProps) => {

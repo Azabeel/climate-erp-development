@@ -71,6 +71,8 @@ import FieldMap from '@/components/snrd/FieldMap';
 import NotificationTemplates from '@/components/snrd/NotificationTemplates';
 import ServiceObjectCard from '@/components/snrd/ServiceObjectCard';
 import LeadScoring from '@/components/snrd/LeadScoring';
+import WorkOrderDetail from '@/components/snrd/WorkOrderDetail';
+import FinancialPlanning from '@/components/snrd/FinancialPlanning';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -592,6 +594,12 @@ const SNRD = () => {
 
       case 'lead-scoring':
         return <LeadScoring />;
+
+      case 'work-order-detail':
+        return <WorkOrderDetail />;
+
+      case 'financial-planning':
+        return <FinancialPlanning />;
 
       default:
         return (

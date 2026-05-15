@@ -70,6 +70,10 @@ const tabTitles: Record<string, string> = {
   'maintenance-planner': 'Планировщик ТО',
   'field-map': 'Карта выездов',
   'notification-templates': 'Шаблоны уведомлений',
+  'work-order-detail': 'Карточка наряда',
+  'financial-planning': 'Бюджет и финансовое планирование',
+  'lead-scoring': 'Скоринг лидов',
+  'service-object-card': 'Карточка объекта обслуживания',
   documents: 'Документы',
 };
 

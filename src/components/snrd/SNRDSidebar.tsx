@@ -91,6 +91,7 @@ const SNRDSidebar = ({ activeTab, setActiveTab }: SNRDSidebarProps) => {
       icon: 'CircleDollarSign',
       children: [
         { id: 'finance', label: 'Финансовая сводка' },
+        { id: 'financial-planning', label: 'Бюджет и прогноз' },
         { id: 'memberships', label: 'Абонементы' },
       ]
     },

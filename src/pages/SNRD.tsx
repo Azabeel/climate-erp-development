@@ -53,6 +53,10 @@ import IoTDashboardFull from '@/components/snrd/IoTDashboardFull';
 import AnalyticsDashboardFull from '@/components/snrd/AnalyticsDashboardFull';
 import RoleDashboardFull from '@/components/snrd/RoleDashboardFull';
 import DocumentEditorFull from '@/components/snrd/DocumentEditorFull';
+import ServiceCalendarFull from '@/components/snrd/ServiceCalendarFull';
+import PerformanceDashboardFull from '@/components/snrd/PerformanceDashboardFull';
+import MultiChannelInboxFull from '@/components/snrd/MultiChannelInboxFull';
+import QuickActionsFull from '@/components/snrd/QuickActionsFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -684,16 +688,16 @@ const SNRD = () => {
         return <ClientFeedback />;
 
       case 'service-calendar':
-        return <ServiceCalendar />;
+        return <ServiceCalendarFull />;
 
       case 'report-builder':
         return <ReportBuilderFull />;
 
       case 'performance-dashboard':
-        return <PerformanceDashboard />;
+        return <PerformanceDashboardFull />;
 
       case 'multi-channel-inbox':
-        return <MultiChannelInbox />;
+        return <MultiChannelInboxFull />;
 
       case 'price-calculator':
         return <PriceCalculator />;
@@ -726,7 +730,7 @@ const SNRD = () => {
         return <BudgetPlanning />;
 
       case 'quick-actions':
-        return <QuickActions />;
+        return <QuickActionsFull />;
 
       case 'equipment-history':
         return <EquipmentHistory />;

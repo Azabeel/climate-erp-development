@@ -57,6 +57,10 @@ import ServiceCalendarFull from '@/components/snrd/ServiceCalendarFull';
 import PerformanceDashboardFull from '@/components/snrd/PerformanceDashboardFull';
 import MultiChannelInboxFull from '@/components/snrd/MultiChannelInboxFull';
 import QuickActionsFull from '@/components/snrd/QuickActionsFull';
+import FieldMapFull from '@/components/snrd/FieldMapFull';
+import TaskManagerFull from '@/components/snrd/TaskManagerFull';
+import CompetencyMatrixFull from '@/components/snrd/CompetencyMatrixFull';
+import BudgetPlanningFull from '@/components/snrd/BudgetPlanningFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -649,7 +653,7 @@ const SNRD = () => {
         return <MaintenancePlanner />;
 
       case 'field-map':
-        return <FieldMap />;
+        return <FieldMapFull />;
 
       case 'notification-templates':
         return <NotificationTemplatesFull />;
@@ -676,7 +680,7 @@ const SNRD = () => {
         return <PurchaseOrders />;
 
       case 'competency-matrix':
-        return <CompetencyMatrix />;
+        return <CompetencyMatrixFull />;
 
       case 'onboarding-progress':
         return <OnboardingProgress />;
@@ -709,7 +713,7 @@ const SNRD = () => {
         return <EquipmentQR />;
 
       case 'task-manager':
-        return <TaskManager />;
+        return <TaskManagerFull />;
 
       case 'sla-policy':
         return <SLAPolicy />;
@@ -727,7 +731,7 @@ const SNRD = () => {
         return <MobileAppSettings />;
 
       case 'budget-planning':
-        return <BudgetPlanning />;
+        return <BudgetPlanningFull />;
 
       case 'quick-actions':
         return <QuickActionsFull />;

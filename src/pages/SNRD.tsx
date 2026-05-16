@@ -106,6 +106,10 @@ import TechnicianScorecardFull from '@/components/snrd/TechnicianScorecardFull';
 import RouteOptimizerFull from '@/components/snrd/RouteOptimizerFull';
 import DispatchBoardFull from '@/components/snrd/DispatchBoardFull';
 import CapacityPlanningFull from '@/components/snrd/CapacityPlanningFull';
+import KPIDashboardFull from '@/components/snrd/KPIDashboardFull';
+import SLAMonitorFull from '@/components/snrd/SLAMonitorFull';
+import ReportBuilderFull from '@/components/snrd/ReportBuilderFull';
+import WarehouseFull from '@/components/snrd/WarehouseFull';
 import FinancialSummary from '@/components/snrd/FinancialSummary';
 import LeadScoringFull from '@/components/snrd/LeadScoringFull';
 import WorkflowBuilderNew from '@/components/snrd/WorkflowBuilderNew';
@@ -512,7 +516,7 @@ const SNRD = () => {
         return <HRModule />;
 
       case 'warehouse':
-        return <WarehouseModule />;
+        return <WarehouseFull />;
 
       case 'roles':
         return <RolesConstructor />;
@@ -584,10 +588,10 @@ const SNRD = () => {
         return <CompletionActs />;
 
       case 'kpi-dashboard':
-        return <KPIDashboard />;
+        return <KPIDashboardFull />;
 
       case 'sla-monitor':
-        return <SLAMonitor />;
+        return <SLAMonitorFull />;
 
       case 'client-portal-settings':
         return <ClientPortalSettings />;
@@ -659,7 +663,7 @@ const SNRD = () => {
         return <ServiceCalendar />;
 
       case 'report-builder':
-        return <ReportBuilder />;
+        return <ReportBuilderFull />;
 
       case 'performance-dashboard':
         return <PerformanceDashboard />;

@@ -52,6 +52,7 @@ import SurveyModuleFull from '@/components/snrd/SurveyModuleFull';
 import IoTDashboardFull from '@/components/snrd/IoTDashboardFull';
 import AnalyticsDashboardFull from '@/components/snrd/AnalyticsDashboardFull';
 import RoleDashboardFull from '@/components/snrd/RoleDashboardFull';
+import DocumentEditorFull from '@/components/snrd/DocumentEditorFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -698,7 +699,7 @@ const SNRD = () => {
         return <PriceCalculator />;
 
       case 'document-editor':
-        return <DocumentEditor />;
+        return <DocumentEditorFull />;
 
       case 'equipment-qr':
         return <EquipmentQR />;

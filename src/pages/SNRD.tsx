@@ -43,6 +43,7 @@ import OfficeUsersFull from '@/components/snrd/OfficeUsersFull';
 import WorkGroupsFull from '@/components/snrd/WorkGroupsFull';
 import RolesConstructorFull from '@/components/snrd/RolesConstructorFull';
 import AIAnalyticsFull from '@/components/snrd/AIAnalyticsFull';
+import SmartDispatchFull from '@/components/snrd/SmartDispatchFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -668,7 +669,7 @@ const SNRD = () => {
         return <OnboardingProgress />;
 
       case 'smart-dispatch':
-        return <SmartDispatch />;
+        return <SmartDispatchFull />;
 
       case 'client-feedback':
         return <ClientFeedback />;

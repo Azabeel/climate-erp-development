@@ -44,6 +44,8 @@ import WorkGroupsFull from '@/components/snrd/WorkGroupsFull';
 import RolesConstructorFull from '@/components/snrd/RolesConstructorFull';
 import AIAnalyticsFull from '@/components/snrd/AIAnalyticsFull';
 import SmartDispatchFull from '@/components/snrd/SmartDispatchFull';
+import NotificationTemplatesFull from '@/components/snrd/NotificationTemplatesFull';
+import LicensingFull from '@/components/snrd/LicensingFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -540,7 +542,7 @@ const SNRD = () => {
         return <ImportData />;
 
       case 'licensing':
-        return <LicensingModule />;
+        return <LicensingFull />;
 
       case 'integrations':
         return <IntegrationsFull />;
@@ -639,7 +641,7 @@ const SNRD = () => {
         return <FieldMap />;
 
       case 'notification-templates':
-        return <NotificationTemplates />;
+        return <NotificationTemplatesFull />;
 
       case 'service-object-card':
         return <ServiceObjectCard />;

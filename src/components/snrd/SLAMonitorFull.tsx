@@ -868,6 +868,7 @@ const SLAMonitorFull = () => {
             <Tooltip formatter={(v: number) => `${v}%`} />
             <ReferenceLine y={95} stroke="#22c55e" strokeDasharray="4 3"
               label={{ value: 'цель 95%', fontSize: 9, fill: '#22c55e' }} />
+            <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
             <Line type="monotone" dataKey="ttr" stroke="#3b82f6" strokeWidth={2} dot={false} name="TTR" />
             <Line type="monotone" dataKey="tto" stroke="#10b981" strokeWidth={2} dot={false} name="TTO" />
             <Line type="monotone" dataKey="ttf" stroke="#8b5cf6" strokeWidth={2} dot={false} name="TTF" />

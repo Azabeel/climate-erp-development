@@ -117,6 +117,9 @@ import CRMFull from '@/components/snrd/CRMFull';
 import HRFull from '@/components/snrd/HRFull';
 import InboxFull from '@/components/snrd/InboxFull';
 import EquipmentFull from '@/components/snrd/EquipmentFull';
+import NotificationsFull from '@/components/snrd/NotificationsFull';
+import LMSFull from '@/components/snrd/LMSFull';
+import MembershipsFull from '@/components/snrd/MembershipsFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -550,13 +553,13 @@ const SNRD = () => {
         return <InboxFull />;
 
       case 'notifications':
-        return <NotificationsCenter />;
+        return <NotificationsFull />;
 
       case 'equipment':
         return <EquipmentFull />;
 
       case 'memberships':
-        return <MembershipsModule />;
+        return <MembershipsFull />;
 
       case 'technician-scorecard':
         return <TechnicianScorecardFull />;
@@ -583,7 +586,7 @@ const SNRD = () => {
         return <CustomerHealth />;
 
       case 'lms':
-        return <LMSModule />;
+        return <LMSFull />;
 
       case 'employee-onboarding':
         return <EmployeeOnboarding />;

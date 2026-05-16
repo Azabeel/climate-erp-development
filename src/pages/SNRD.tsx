@@ -101,6 +101,10 @@ import ChecklistTemplates from '@/components/snrd/ChecklistTemplates';
 import GeofenceZones from '@/components/snrd/GeofenceZones';
 import ClientCard from '@/components/snrd/ClientCard';
 import DispatchBoardFull from '@/components/snrd/DispatchBoardFull';
+import CapacityPlanningFull from '@/components/snrd/CapacityPlanningFull';
+import FinancialSummary from '@/components/snrd/FinancialSummary';
+import LeadScoringFull from '@/components/snrd/LeadScoringFull';
+import WorkflowBuilderNew from '@/components/snrd/WorkflowBuilderNew';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -468,7 +472,7 @@ const SNRD = () => {
         return <Reports />;
 
       case 'finance':
-        return <FinanceDashboard />;
+        return <FinancialSummary />;
 
       case 'contractors':
         return <ContractorsList />;
@@ -558,10 +562,10 @@ const SNRD = () => {
         return <WarrantyTracking />;
 
       case 'workflow-builder':
-        return <WorkflowBuilder />;
+        return <WorkflowBuilderNew />;
 
       case 'capacity-planning':
-        return <CapacityPlanning />;
+        return <CapacityPlanningFull />;
 
       case 'customer-health':
         return <CustomerHealth />;
@@ -618,13 +622,13 @@ const SNRD = () => {
         return <ServiceObjectCard />;
 
       case 'lead-scoring':
-        return <LeadScoring />;
+        return <LeadScoringFull />;
 
       case 'work-order-detail':
         return <WorkOrderDetail />;
 
       case 'financial-planning':
-        return <FinancialPlanning />;
+        return <FinancialSummary />;
 
       case 'route-optimizer':
         return <RouteOptimizer />;

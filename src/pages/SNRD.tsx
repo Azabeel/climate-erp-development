@@ -100,6 +100,10 @@ import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import ChecklistTemplates from '@/components/snrd/ChecklistTemplates';
 import GeofenceZones from '@/components/snrd/GeofenceZones';
 import ClientCard from '@/components/snrd/ClientCard';
+import WorkOrderDetailFull from '@/components/snrd/WorkOrderDetailFull';
+import DispatchBoardGantt from '@/components/snrd/DispatchBoardGantt';
+import TechnicianScorecardFull from '@/components/snrd/TechnicianScorecardFull';
+import RouteOptimizerFull from '@/components/snrd/RouteOptimizerFull';
 import DispatchBoardFull from '@/components/snrd/DispatchBoardFull';
 import CapacityPlanningFull from '@/components/snrd/CapacityPlanningFull';
 import FinancialSummary from '@/components/snrd/FinancialSummary';
@@ -523,7 +527,7 @@ const SNRD = () => {
         return <IntegrationsModule />;
 
       case 'dispatch-board':
-        return <DispatchBoard />;
+        return <DispatchBoardGantt />;
 
       case 'price-list':
         return <PriceListModule />;
@@ -547,7 +551,7 @@ const SNRD = () => {
         return <MembershipsModule />;
 
       case 'technician-scorecard':
-        return <TechnicianScorecard />;
+        return <TechnicianScorecardFull />;
 
       case 'reliability-dashboard':
         return <ReliabilityDashboard />;
@@ -625,13 +629,13 @@ const SNRD = () => {
         return <LeadScoringFull />;
 
       case 'work-order-detail':
-        return <WorkOrderDetail />;
+        return <WorkOrderDetailFull />;
 
       case 'financial-planning':
         return <FinancialSummary />;
 
       case 'route-optimizer':
-        return <RouteOptimizer />;
+        return <RouteOptimizerFull />;
 
       case 'payroll':
         return <PayrollModule />;

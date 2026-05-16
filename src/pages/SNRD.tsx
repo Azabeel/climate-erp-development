@@ -113,6 +113,10 @@ import WarehouseFull from '@/components/snrd/WarehouseFull';
 import FinancialSummary from '@/components/snrd/FinancialSummary';
 import LeadScoringFull from '@/components/snrd/LeadScoringFull';
 import WorkflowBuilderNew from '@/components/snrd/WorkflowBuilderNew';
+import CRMFull from '@/components/snrd/CRMFull';
+import HRFull from '@/components/snrd/HRFull';
+import InboxFull from '@/components/snrd/InboxFull';
+import EquipmentFull from '@/components/snrd/EquipmentFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -510,10 +514,10 @@ const SNRD = () => {
         return <SurveyJournal />;
 
       case 'crm':
-        return <CRMModule />;
+        return <CRMFull />;
 
       case 'hr':
-        return <HRModule />;
+        return <HRFull />;
 
       case 'warehouse':
         return <WarehouseFull />;
@@ -543,13 +547,13 @@ const SNRD = () => {
         return <DocumentLibrary />;
 
       case 'inbox':
-        return <InboxModule />;
+        return <InboxFull />;
 
       case 'notifications':
         return <NotificationsCenter />;
 
       case 'equipment':
-        return <EquipmentModule />;
+        return <EquipmentFull />;
 
       case 'memberships':
         return <MembershipsModule />;

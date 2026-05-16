@@ -46,6 +46,9 @@ import AIAnalyticsFull from '@/components/snrd/AIAnalyticsFull';
 import SmartDispatchFull from '@/components/snrd/SmartDispatchFull';
 import NotificationTemplatesFull from '@/components/snrd/NotificationTemplatesFull';
 import LicensingFull from '@/components/snrd/LicensingFull';
+import ImportDataFull from '@/components/snrd/ImportDataFull';
+import EmployeeOnboardingFull from '@/components/snrd/EmployeeOnboardingFull';
+import SurveyModuleFull from '@/components/snrd/SurveyModuleFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -521,7 +524,7 @@ const SNRD = () => {
         return <WorkGroupsFull />;
 
       case 'survey-templates':
-        return <SurveyTemplatesList />;
+        return <SurveyModuleFull />;
 
       case 'survey-journal':
         return <SurveyJournal />;
@@ -539,7 +542,7 @@ const SNRD = () => {
         return <RolesConstructorFull />;
 
       case 'import':
-        return <ImportData />;
+        return <ImportDataFull />;
 
       case 'licensing':
         return <LicensingFull />;
@@ -599,7 +602,7 @@ const SNRD = () => {
         return <LMSFull />;
 
       case 'employee-onboarding':
-        return <EmployeeOnboarding />;
+        return <EmployeeOnboardingFull />;
 
       case 'completion-acts':
         return <CompletionActs />;

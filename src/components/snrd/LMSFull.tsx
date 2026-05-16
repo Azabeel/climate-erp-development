@@ -762,12 +762,6 @@ function ManagementView() {
     setSelectedCourse('');
   }
 
-  function getCompletionColor(percent: number) {
-    if (percent >= 75) return 'text-emerald-600';
-    if (percent >= 40) return 'text-blue-600';
-    return 'text-amber-600';
-  }
-
   function getCompletionBadge(percent: number) {
     if (percent >= 75) return 'bg-emerald-100 text-emerald-700 border-emerald-200';
     if (percent >= 40) return 'bg-blue-100 text-blue-700 border-blue-200';

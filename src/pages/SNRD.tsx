@@ -36,6 +36,10 @@ import RolesConstructor from '@/components/snrd/RolesConstructor';
 import ImportData from '@/components/snrd/ImportData';
 import LicensingModule from '@/components/snrd/LicensingModule';
 import IntegrationsModule from '@/components/snrd/IntegrationsModule';
+import IntegrationsFull from '@/components/snrd/IntegrationsFull';
+import StockAlertsFull from '@/components/snrd/StockAlertsFull';
+import ClientPortalSettingsFull from '@/components/snrd/ClientPortalSettingsFull';
+import OfficeUsersFull from '@/components/snrd/OfficeUsersFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -505,7 +509,7 @@ const SNRD = () => {
         return <TerritoriesList />;
 
       case 'office-users':
-        return <OfficeUsersList />;
+        return <OfficeUsersFull />;
 
       case 'work-groups':
         return <WorkGroupsList />;
@@ -535,7 +539,7 @@ const SNRD = () => {
         return <LicensingModule />;
 
       case 'integrations':
-        return <IntegrationsModule />;
+        return <IntegrationsFull />;
 
       case 'dispatch-board':
         return <DispatchBoardGantt />;
@@ -601,10 +605,10 @@ const SNRD = () => {
         return <SLAMonitorFull />;
 
       case 'client-portal-settings':
-        return <ClientPortalSettings />;
+        return <ClientPortalSettingsFull />;
 
       case 'stock-alerts':
-        return <StockAlerts />;
+        return <StockAlertsFull />;
 
       case 'audit-log':
         return <AuditLog />;

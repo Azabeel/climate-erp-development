@@ -40,6 +40,9 @@ import IntegrationsFull from '@/components/snrd/IntegrationsFull';
 import StockAlertsFull from '@/components/snrd/StockAlertsFull';
 import ClientPortalSettingsFull from '@/components/snrd/ClientPortalSettingsFull';
 import OfficeUsersFull from '@/components/snrd/OfficeUsersFull';
+import WorkGroupsFull from '@/components/snrd/WorkGroupsFull';
+import RolesConstructorFull from '@/components/snrd/RolesConstructorFull';
+import AIAnalyticsFull from '@/components/snrd/AIAnalyticsFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -512,7 +515,7 @@ const SNRD = () => {
         return <OfficeUsersFull />;
 
       case 'work-groups':
-        return <WorkGroupsList />;
+        return <WorkGroupsFull />;
 
       case 'survey-templates':
         return <SurveyTemplatesList />;
@@ -530,7 +533,7 @@ const SNRD = () => {
         return <WarehouseFull />;
 
       case 'roles':
-        return <RolesConstructor />;
+        return <RolesConstructorFull />;
 
       case 'import':
         return <ImportData />;
@@ -719,7 +722,7 @@ const SNRD = () => {
         return <EquipmentHistory />;
 
       case 'ai-analytics':
-        return <AIAnalytics />;
+        return <AIAnalyticsFull />;
 
       case 'checklist-templates':
         return <ChecklistTemplates />;

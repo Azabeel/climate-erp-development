@@ -49,6 +49,8 @@ import LicensingFull from '@/components/snrd/LicensingFull';
 import ImportDataFull from '@/components/snrd/ImportDataFull';
 import EmployeeOnboardingFull from '@/components/snrd/EmployeeOnboardingFull';
 import SurveyModuleFull from '@/components/snrd/SurveyModuleFull';
+import IoTDashboardFull from '@/components/snrd/IoTDashboardFull';
+import AnalyticsDashboardFull from '@/components/snrd/AnalyticsDashboardFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -626,7 +628,7 @@ const SNRD = () => {
         return <RoleDashboard />;
 
       case 'analytics-dashboard':
-        return <AnalyticsDashboard />;
+        return <AnalyticsDashboardFull />;
 
       case 'cpq':
         return <CPQModule />;
@@ -635,7 +637,7 @@ const SNRD = () => {
         return <SystemSettings />;
 
       case 'iot-dashboard':
-        return <IoTDashboard />;
+        return <IoTDashboardFull />;
 
       case 'maintenance-planner':
         return <MaintenancePlanner />;

@@ -51,6 +51,7 @@ import EmployeeOnboardingFull from '@/components/snrd/EmployeeOnboardingFull';
 import SurveyModuleFull from '@/components/snrd/SurveyModuleFull';
 import IoTDashboardFull from '@/components/snrd/IoTDashboardFull';
 import AnalyticsDashboardFull from '@/components/snrd/AnalyticsDashboardFull';
+import RoleDashboardFull from '@/components/snrd/RoleDashboardFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -625,7 +626,7 @@ const SNRD = () => {
         return <AuditLog />;
 
       case 'role-dashboard':
-        return <RoleDashboard />;
+        return <RoleDashboardFull />;
 
       case 'analytics-dashboard':
         return <AnalyticsDashboardFull />;

@@ -144,6 +144,9 @@ import PurchaseOrderFull from '@/components/snrd/PurchaseOrderFull';
 import InvoiceManagerFull from '@/components/snrd/InvoiceManagerFull';
 import EngineerScheduleFull from '@/components/snrd/EngineerScheduleFull';
 import KnowledgeBaseFull from '@/components/snrd/KnowledgeBaseFull';
+import NotificationCenterFull from '@/components/snrd/NotificationCenterFull';
+import AIAssistantFull from '@/components/snrd/AIAssistantFull';
+import SystemSettingsFull from '@/components/snrd/SystemSettingsFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -831,6 +834,15 @@ const SNRD = () => {
 
       case 'knowledge-base':
         return <KnowledgeBaseFull />;
+
+      case 'notification-center':
+        return <NotificationCenterFull />;
+
+      case 'ai-assistant':
+        return <AIAssistantFull />;
+
+      case 'system-settings':
+        return <SystemSettingsFull />;
 
       default:
         return (

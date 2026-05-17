@@ -128,6 +128,8 @@ import ContractManagerFull from '@/components/snrd/ContractManagerFull';
 import ReliabilityDashboardFull from '@/components/snrd/ReliabilityDashboardFull';
 import MaintenancePlannerFull from '@/components/snrd/MaintenancePlannerFull';
 import ClientFeedbackFull from '@/components/snrd/ClientFeedbackFull';
+import SalesAnalyticsFull from '@/components/snrd/SalesAnalyticsFull';
+import LeadsFunnelFull from '@/components/snrd/LeadsFunnelFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -767,6 +769,12 @@ const SNRD = () => {
 
       case 'dispatch-board-full':
         return <DispatchBoardFull />;
+
+      case 'sales-analytics':
+        return <SalesAnalyticsFull />;
+
+      case 'leads-funnel':
+        return <LeadsFunnelFull />;
 
       default:
         return (

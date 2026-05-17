@@ -150,6 +150,9 @@ import SystemSettingsFull from '@/components/snrd/SystemSettingsFull';
 import WorkOrderDetailFull from '@/components/snrd/WorkOrderDetailFull';
 import HRDashboardFull from '@/components/snrd/HRDashboardFull';
 import ClientsListFull from '@/components/snrd/ClientsListFull';
+import CommercialProposalFull from '@/components/snrd/CommercialProposalFull';
+import WeatherWidgetFull from '@/components/snrd/WeatherWidgetFull';
+import RefrigerantLogFull from '@/components/snrd/RefrigerantLogFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -851,6 +854,15 @@ const SNRD = () => {
 
       case 'clients-list':
         return <ClientsListFull />;
+
+      case 'commercial-proposal':
+        return <CommercialProposalFull />;
+
+      case 'weather-widget':
+        return <WeatherWidgetFull />;
+
+      case 'refrigerant-log':
+        return <RefrigerantLogFull />;
 
       default:
         return (

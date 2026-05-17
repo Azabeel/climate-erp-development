@@ -153,6 +153,9 @@ import ClientsListFull from '@/components/snrd/ClientsListFull';
 import CommercialProposalFull from '@/components/snrd/CommercialProposalFull';
 import WeatherWidgetFull from '@/components/snrd/WeatherWidgetFull';
 import RefrigerantLogFull from '@/components/snrd/RefrigerantLogFull';
+import DashboardManagerFull from '@/components/snrd/DashboardManagerFull';
+import AuditLogFull from '@/components/snrd/AuditLogFull';
+import SLAMonitorFull from '@/components/snrd/SLAMonitorFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -170,7 +173,6 @@ import RouteOptimizerFull from '@/components/snrd/RouteOptimizerFull';
 import DispatchBoardFull from '@/components/snrd/DispatchBoardFull';
 import CapacityPlanningFull from '@/components/snrd/CapacityPlanningFull';
 import KPIDashboardFull from '@/components/snrd/KPIDashboardFull';
-import SLAMonitorFull from '@/components/snrd/SLAMonitorFull';
 import ReportBuilderFull from '@/components/snrd/ReportBuilderFull';
 import WarehouseFull from '@/components/snrd/WarehouseFull';
 import FinancialSummary from '@/components/snrd/FinancialSummary';
@@ -863,6 +865,15 @@ const SNRD = () => {
 
       case 'refrigerant-log':
         return <RefrigerantLogFull />;
+
+      case 'dashboard-manager':
+        return <DashboardManagerFull />;
+
+      case 'audit-log':
+        return <AuditLogFull />;
+
+      case 'sla-monitor':
+        return <SLAMonitorFull />;
 
       default:
         return (

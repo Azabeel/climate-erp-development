@@ -61,6 +61,10 @@ import FieldMapFull from '@/components/snrd/FieldMapFull';
 import TaskManagerFull from '@/components/snrd/TaskManagerFull';
 import CompetencyMatrixFull from '@/components/snrd/CompetencyMatrixFull';
 import BudgetPlanningFull from '@/components/snrd/BudgetPlanningFull';
+import StockMovementFull from '@/components/snrd/StockMovementFull';
+import WarrantyTrackingFull from '@/components/snrd/WarrantyTrackingFull';
+import SLAPolicyFull from '@/components/snrd/SLAPolicyFull';
+import MobileAppSettingsFull from '@/components/snrd/MobileAppSettingsFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -599,7 +603,7 @@ const SNRD = () => {
         return <CashFlow />;
 
       case 'warranty-tracking':
-        return <WarrantyTracking />;
+        return <WarrantyTrackingFull />;
 
       case 'workflow-builder':
         return <WorkflowBuilderNew />;
@@ -716,10 +720,10 @@ const SNRD = () => {
         return <TaskManagerFull />;
 
       case 'sla-policy':
-        return <SLAPolicy />;
+        return <SLAPolicyFull />;
 
       case 'stock-movement':
-        return <StockMovement />;
+        return <StockMovementFull />;
 
       case 'contract-manager':
         return <ContractManager />;
@@ -728,7 +732,7 @@ const SNRD = () => {
         return <IntegrationLogs />;
 
       case 'mobile-app-settings':
-        return <MobileAppSettings />;
+        return <MobileAppSettingsFull />;
 
       case 'budget-planning':
         return <BudgetPlanningFull />;

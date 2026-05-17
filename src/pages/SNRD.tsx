@@ -156,6 +156,9 @@ import RefrigerantLogFull from '@/components/snrd/RefrigerantLogFull';
 import DashboardManagerFull from '@/components/snrd/DashboardManagerFull';
 import AuditLogFull from '@/components/snrd/AuditLogFull';
 import SLAMonitorFull from '@/components/snrd/SLAMonitorFull';
+import MobileEngineerFull from '@/components/snrd/MobileEngineerFull';
+import ReportBuilderV2Full from '@/components/snrd/ReportBuilderV2Full';
+import TaskBoardFull from '@/components/snrd/TaskBoardFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -874,6 +877,15 @@ const SNRD = () => {
 
       case 'sla-monitor':
         return <SLAMonitorFull />;
+
+      case 'mobile-engineer':
+        return <MobileEngineerFull />;
+
+      case 'report-builder-v2':
+        return <ReportBuilderV2Full />;
+
+      case 'task-board':
+        return <TaskBoardFull />;
 
       default:
         return (

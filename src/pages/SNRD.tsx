@@ -124,6 +124,9 @@ import TaskManager from '@/components/snrd/TaskManager';
 import SLAPolicy from '@/components/snrd/SLAPolicy';
 import StockMovement from '@/components/snrd/StockMovement';
 import ContractManager from '@/components/snrd/ContractManager';
+import ContractManagerFull from '@/components/snrd/ContractManagerFull';
+import ReliabilityDashboardFull from '@/components/snrd/ReliabilityDashboardFull';
+import MaintenancePlannerFull from '@/components/snrd/MaintenancePlannerFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -600,7 +603,7 @@ const SNRD = () => {
         return <TechnicianScorecardFull />;
 
       case 'reliability-dashboard':
-        return <ReliabilityDashboard />;
+        return <ReliabilityDashboardFull />;
 
       case 'refrigerant-compliance':
         return <RefrigerantComplianceFull />;
@@ -660,7 +663,7 @@ const SNRD = () => {
         return <IoTDashboardFull />;
 
       case 'maintenance-planner':
-        return <MaintenancePlanner />;
+        return <MaintenancePlannerFull />;
 
       case 'field-map':
         return <FieldMapFull />;
@@ -732,7 +735,7 @@ const SNRD = () => {
         return <StockMovementFull />;
 
       case 'contract-manager':
-        return <ContractManager />;
+        return <ContractManagerFull />;
 
       case 'integration-logs':
         return <IntegrationLogsFull />;

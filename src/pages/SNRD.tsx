@@ -68,6 +68,7 @@ import MobileAppSettingsFull from '@/components/snrd/MobileAppSettingsFull';
 import IntegrationLogsFull from '@/components/snrd/IntegrationLogsFull';
 import EquipmentQRFull from '@/components/snrd/EquipmentQRFull';
 import OnboardingProgressFull from '@/components/snrd/OnboardingProgressFull';
+import EquipmentHistoryFull from '@/components/snrd/EquipmentHistoryFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -744,7 +745,7 @@ const SNRD = () => {
         return <QuickActionsFull />;
 
       case 'equipment-history':
-        return <EquipmentHistory />;
+        return <EquipmentHistoryFull />;
 
       case 'ai-analytics':
         return <AIAnalyticsFull />;

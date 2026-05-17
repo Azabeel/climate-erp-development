@@ -147,6 +147,8 @@ import KnowledgeBaseFull from '@/components/snrd/KnowledgeBaseFull';
 import NotificationCenterFull from '@/components/snrd/NotificationCenterFull';
 import AIAssistantFull from '@/components/snrd/AIAssistantFull';
 import SystemSettingsFull from '@/components/snrd/SystemSettingsFull';
+import WorkOrderDetailFull from '@/components/snrd/WorkOrderDetailFull';
+import HRDashboardFull from '@/components/snrd/HRDashboardFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -158,7 +160,6 @@ import ServiceCalendar from '@/components/snrd/ServiceCalendar';
 import ChecklistTemplates from '@/components/snrd/ChecklistTemplates';
 import GeofenceZones from '@/components/snrd/GeofenceZones';
 import ClientCard from '@/components/snrd/ClientCard';
-import WorkOrderDetailFull from '@/components/snrd/WorkOrderDetailFull';
 import DispatchBoardGantt from '@/components/snrd/DispatchBoardGantt';
 import TechnicianScorecardFull from '@/components/snrd/TechnicianScorecardFull';
 import RouteOptimizerFull from '@/components/snrd/RouteOptimizerFull';
@@ -843,6 +844,9 @@ const SNRD = () => {
 
       case 'system-settings':
         return <SystemSettingsFull />;
+
+      case 'hr-dashboard':
+        return <HRDashboardFull />;
 
       default:
         return (

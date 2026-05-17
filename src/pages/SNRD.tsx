@@ -69,6 +69,8 @@ import IntegrationLogsFull from '@/components/snrd/IntegrationLogsFull';
 import EquipmentQRFull from '@/components/snrd/EquipmentQRFull';
 import OnboardingProgressFull from '@/components/snrd/OnboardingProgressFull';
 import EquipmentHistoryFull from '@/components/snrd/EquipmentHistoryFull';
+import PriceCalculatorFull from '@/components/snrd/PriceCalculatorFull';
+import RefrigerantComplianceFull from '@/components/snrd/RefrigerantComplianceFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -601,7 +603,7 @@ const SNRD = () => {
         return <ReliabilityDashboard />;
 
       case 'refrigerant-compliance':
-        return <RefrigerantComplianceReporter />;
+        return <RefrigerantComplianceFull />;
 
       case 'cash-flow':
         return <CashFlow />;
@@ -712,7 +714,7 @@ const SNRD = () => {
         return <MultiChannelInboxFull />;
 
       case 'price-calculator':
-        return <PriceCalculator />;
+        return <PriceCalculatorFull />;
 
       case 'document-editor':
         return <DocumentEditorFull />;

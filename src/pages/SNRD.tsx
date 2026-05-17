@@ -149,6 +149,7 @@ import AIAssistantFull from '@/components/snrd/AIAssistantFull';
 import SystemSettingsFull from '@/components/snrd/SystemSettingsFull';
 import WorkOrderDetailFull from '@/components/snrd/WorkOrderDetailFull';
 import HRDashboardFull from '@/components/snrd/HRDashboardFull';
+import ClientsListFull from '@/components/snrd/ClientsListFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -847,6 +848,9 @@ const SNRD = () => {
 
       case 'hr-dashboard':
         return <HRDashboardFull />;
+
+      case 'clients-list':
+        return <ClientsListFull />;
 
       default:
         return (

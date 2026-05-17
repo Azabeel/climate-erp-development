@@ -130,6 +130,8 @@ import MaintenancePlannerFull from '@/components/snrd/MaintenancePlannerFull';
 import ClientFeedbackFull from '@/components/snrd/ClientFeedbackFull';
 import SalesAnalyticsFull from '@/components/snrd/SalesAnalyticsFull';
 import LeadsFunnelFull from '@/components/snrd/LeadsFunnelFull';
+import PayrollDashboardFull from '@/components/snrd/PayrollDashboardFull';
+import InventoryAuditFull from '@/components/snrd/InventoryAuditFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -775,6 +777,12 @@ const SNRD = () => {
 
       case 'leads-funnel':
         return <LeadsFunnelFull />;
+
+      case 'payroll-dashboard':
+        return <PayrollDashboardFull />;
+
+      case 'inventory-audit':
+        return <InventoryAuditFull />;
 
       default:
         return (

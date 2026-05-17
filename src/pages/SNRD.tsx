@@ -65,6 +65,9 @@ import StockMovementFull from '@/components/snrd/StockMovementFull';
 import WarrantyTrackingFull from '@/components/snrd/WarrantyTrackingFull';
 import SLAPolicyFull from '@/components/snrd/SLAPolicyFull';
 import MobileAppSettingsFull from '@/components/snrd/MobileAppSettingsFull';
+import IntegrationLogsFull from '@/components/snrd/IntegrationLogsFull';
+import EquipmentQRFull from '@/components/snrd/EquipmentQRFull';
+import OnboardingProgressFull from '@/components/snrd/OnboardingProgressFull';
 import DispatchBoard from '@/components/snrd/DispatchBoard';
 import PriceListModule from '@/components/snrd/PriceListModule';
 import Client360 from '@/components/snrd/Client360';
@@ -687,7 +690,7 @@ const SNRD = () => {
         return <CompetencyMatrixFull />;
 
       case 'onboarding-progress':
-        return <OnboardingProgress />;
+        return <OnboardingProgressFull />;
 
       case 'smart-dispatch':
         return <SmartDispatchFull />;
@@ -714,7 +717,7 @@ const SNRD = () => {
         return <DocumentEditorFull />;
 
       case 'equipment-qr':
-        return <EquipmentQR />;
+        return <EquipmentQRFull />;
 
       case 'task-manager':
         return <TaskManagerFull />;
@@ -729,7 +732,7 @@ const SNRD = () => {
         return <ContractManager />;
 
       case 'integration-logs':
-        return <IntegrationLogs />;
+        return <IntegrationLogsFull />;
 
       case 'mobile-app-settings':
         return <MobileAppSettingsFull />;

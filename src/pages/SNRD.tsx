@@ -138,6 +138,9 @@ import SupplierManagementFull from '@/components/snrd/SupplierManagementFull';
 import ClientCard360Full from '@/components/snrd/ClientCard360Full';
 import FinanceDashboardFull from '@/components/snrd/FinanceDashboardFull';
 import StockReportFull from '@/components/snrd/StockReportFull';
+import DispatchCenterFull from '@/components/snrd/DispatchCenterFull';
+import EquipmentCatalogFull from '@/components/snrd/EquipmentCatalogFull';
+import PurchaseOrderFull from '@/components/snrd/PurchaseOrderFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -807,6 +810,15 @@ const SNRD = () => {
 
       case 'stock-report':
         return <StockReportFull />;
+
+      case 'dispatch-center':
+        return <DispatchCenterFull />;
+
+      case 'equipment-catalog':
+        return <EquipmentCatalogFull />;
+
+      case 'purchase-orders':
+        return <PurchaseOrderFull />;
 
       default:
         return (

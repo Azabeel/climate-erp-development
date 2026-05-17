@@ -127,6 +127,7 @@ import ContractManager from '@/components/snrd/ContractManager';
 import ContractManagerFull from '@/components/snrd/ContractManagerFull';
 import ReliabilityDashboardFull from '@/components/snrd/ReliabilityDashboardFull';
 import MaintenancePlannerFull from '@/components/snrd/MaintenancePlannerFull';
+import ClientFeedbackFull from '@/components/snrd/ClientFeedbackFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -702,7 +703,7 @@ const SNRD = () => {
         return <SmartDispatchFull />;
 
       case 'client-feedback':
-        return <ClientFeedback />;
+        return <ClientFeedbackFull />;
 
       case 'service-calendar':
         return <ServiceCalendarFull />;

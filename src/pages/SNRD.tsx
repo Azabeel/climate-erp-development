@@ -132,6 +132,9 @@ import SalesAnalyticsFull from '@/components/snrd/SalesAnalyticsFull';
 import LeadsFunnelFull from '@/components/snrd/LeadsFunnelFull';
 import PayrollDashboardFull from '@/components/snrd/PayrollDashboardFull';
 import InventoryAuditFull from '@/components/snrd/InventoryAuditFull';
+import GPSTrackingFull from '@/components/snrd/GPSTrackingFull';
+import WorkOrderReportFull from '@/components/snrd/WorkOrderReportFull';
+import SupplierManagementFull from '@/components/snrd/SupplierManagementFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -783,6 +786,15 @@ const SNRD = () => {
 
       case 'inventory-audit':
         return <InventoryAuditFull />;
+
+      case 'gps-tracking':
+        return <GPSTrackingFull />;
+
+      case 'work-order-report':
+        return <WorkOrderReportFull />;
+
+      case 'supplier-management':
+        return <SupplierManagementFull />;
 
       default:
         return (

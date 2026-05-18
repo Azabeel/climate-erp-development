@@ -211,6 +211,8 @@ import EquipmentPassportFull from '@/components/snrd/EquipmentPassportFull';
 import BudgetForecastFull from '@/components/snrd/BudgetForecastFull';
 import WorkshopOrderFull from '@/components/snrd/WorkshopOrderFull';
 import InstallerDashboardFull from '@/components/snrd/InstallerDashboardFull';
+import PriceListFull from '@/components/snrd/PriceListFull';
+import DispatchMapFull from '@/components/snrd/DispatchMapFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -978,6 +980,12 @@ const SNRD = () => {
 
       case 'installer-dashboard':
         return <InstallerDashboardFull />;
+
+      case 'price-list':
+        return <PriceListFull />;
+
+      case 'dispatch-map':
+        return <DispatchMapFull />;
 
       default:
         return (

@@ -215,6 +215,7 @@ import PriceListFull from '@/components/snrd/PriceListFull';
 import DispatchMapFull from '@/components/snrd/DispatchMapFull';
 import WarrantyClaimsFull from '@/components/snrd/WarrantyClaimsFull';
 import AccountingIntegrationFull from '@/components/snrd/AccountingIntegrationFull';
+import CustomerSatisfactionFull from '@/components/snrd/CustomerSatisfactionFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -994,6 +995,9 @@ const SNRD = () => {
 
       case 'accounting-integration':
         return <AccountingIntegrationFull />;
+
+      case 'customer-satisfaction':
+        return <CustomerSatisfactionFull />;
 
       default:
         return (

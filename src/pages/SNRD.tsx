@@ -205,6 +205,8 @@ import AvitoCRMFull from '@/components/snrd/AvitoCRMFull';
 import MarginalityReportFull from '@/components/snrd/MarginalityReportFull';
 import DocumentFlowFull from '@/components/snrd/DocumentFlowFull';
 import ClientHistoryFull from '@/components/snrd/ClientHistoryFull';
+import ServiceRequestFull from '@/components/snrd/ServiceRequestFull';
+import EngineerProfileFull from '@/components/snrd/EngineerProfileFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -954,6 +956,12 @@ const SNRD = () => {
 
       case 'client-history':
         return <ClientHistoryFull />;
+
+      case 'service-request':
+        return <ServiceRequestFull />;
+
+      case 'engineer-profile':
+        return <EngineerProfileFull />;
 
       default:
         return (

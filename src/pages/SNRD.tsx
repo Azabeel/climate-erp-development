@@ -207,6 +207,9 @@ import DocumentFlowFull from '@/components/snrd/DocumentFlowFull';
 import ClientHistoryFull from '@/components/snrd/ClientHistoryFull';
 import ServiceRequestFull from '@/components/snrd/ServiceRequestFull';
 import EngineerProfileFull from '@/components/snrd/EngineerProfileFull';
+import EquipmentPassportFull from '@/components/snrd/EquipmentPassportFull';
+import BudgetForecastFull from '@/components/snrd/BudgetForecastFull';
+import WorkshopOrderFull from '@/components/snrd/WorkshopOrderFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -962,6 +965,15 @@ const SNRD = () => {
 
       case 'engineer-profile':
         return <EngineerProfileFull />;
+
+      case 'equipment-passport':
+        return <EquipmentPassportFull />;
+
+      case 'budget-forecast':
+        return <BudgetForecastFull />;
+
+      case 'workshop-order':
+        return <WorkshopOrderFull />;
 
       default:
         return (

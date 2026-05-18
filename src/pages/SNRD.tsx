@@ -200,6 +200,9 @@ import EquipmentFull from '@/components/snrd/EquipmentFull';
 import NotificationsFull from '@/components/snrd/NotificationsFull';
 import LMSFull from '@/components/snrd/LMSFull';
 import MembershipsFull from '@/components/snrd/MembershipsFull';
+import WarehouseMapFull from '@/components/snrd/WarehouseMapFull';
+import AvitoCRMFull from '@/components/snrd/AvitoCRMFull';
+import MarginalityReportFull from '@/components/snrd/MarginalityReportFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -934,6 +937,15 @@ const SNRD = () => {
 
       case 'digital-signature':
         return <DigitalSignatureFull />;
+
+      case 'warehouse-map':
+        return <WarehouseMapFull />;
+
+      case 'avito-crm':
+        return <AvitoCRMFull />;
+
+      case 'marginality-report':
+        return <MarginalityReportFull />;
 
       default:
         return (

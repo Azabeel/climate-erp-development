@@ -168,6 +168,9 @@ import PredictiveMaintenanceFull from '@/components/snrd/PredictiveMaintenanceFu
 import FuelManagementFull from '@/components/snrd/FuelManagementFull';
 import OneCIntegrationFull from '@/components/snrd/OneCIntegrationFull';
 import QualityControlFull from '@/components/snrd/QualityControlFull';
+import SeasonalPlanningFull from '@/components/snrd/SeasonalPlanningFull';
+import CostAnalysisFull from '@/components/snrd/CostAnalysisFull';
+import DigitalSignatureFull from '@/components/snrd/DigitalSignatureFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -922,6 +925,15 @@ const SNRD = () => {
 
       case 'quality-control':
         return <QualityControlFull />;
+
+      case 'seasonal-planning':
+        return <SeasonalPlanningFull />;
+
+      case 'cost-analysis':
+        return <CostAnalysisFull />;
+
+      case 'digital-signature':
+        return <DigitalSignatureFull />;
 
       default:
         return (

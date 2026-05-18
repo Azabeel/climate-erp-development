@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -79,62 +78,66 @@ interface NotifSetting {
 
 // ─── Static data ─────────────────────────────────────────────────────────────
 
+// prettier-ignore
 const CRITICAL_ITEMS: CriticalItem[] = [
-  { id: 'c1',  article: 'R410A-13',     name: 'Хладагент R-410A (13.6 кг)',        current: 0,  min: 3,  unit: 'бал.', warehouse: 'Центральный', status: 'out',      category: 'Хладагенты' },
-  { id: 'c2',  article: 'COMP-DAI-35',  name: 'Компрессор Daikin JT160BCBY1L',     current: 0,  min: 1,  unit: 'шт.',  warehouse: 'Центральный', status: 'out',      category: 'ЗИП' },
-  { id: 'c3',  article: 'R32-12',       name: 'Хладагент R-32 (12 кг)',             current: 1,  min: 4,  unit: 'бал.', warehouse: 'Мобильный',   status: 'critical', category: 'Хладагенты' },
-  { id: 'c4',  article: 'FLT-DCL-085',  name: 'Фильтр-осушитель DCL-085S',         current: 3,  min: 10, unit: 'шт.',  warehouse: 'Центральный', status: 'critical', category: 'Фильтры' },
-  { id: 'c5',  article: 'PCB-MDV-D36',  name: 'Плата управления Midea MDV-D36T1',   current: 0,  min: 2,  unit: 'шт.',  warehouse: 'Центральный', status: 'out',      category: 'ЗИП' },
-  { id: 'c6',  article: 'FILTR-G4-500', name: 'Фильтр G4 500×500×20',              current: 8,  min: 20, unit: 'шт.',  warehouse: 'Мобильный',   status: 'critical', category: 'Фильтры' },
-  { id: 'c7',  article: 'FAN-OUT-380',  name: 'Вентилятор внешнего блока 380В',    current: 0,  min: 2,  unit: 'шт.',  warehouse: 'Центральный', status: 'out',      category: 'ЗИП' },
-  { id: 'c8',  article: 'SEN-HP-16BAR', name: 'Датчик давления высокой стороны',   current: 2,  min: 5,  unit: 'шт.',  warehouse: 'Центральный', status: 'critical', category: 'ЗИП' },
-  { id: 'c9',  article: 'TAPE-SELF-25', name: 'Лента самоклейка 25мм × 10м',       current: 4,  min: 15, unit: 'рул.', warehouse: 'Мобильный',   status: 'critical', category: 'Расходники' },
-  { id: 'c10', article: 'R22-13',       name: 'Хладагент R-22 (13.6 кг)',           current: 2,  min: 5,  unit: 'бал.', warehouse: 'Центральный', status: 'critical', category: 'Хладагенты' },
-  { id: 'c11', article: 'OIL-POE68-1L', name: 'Масло компрессорное POE 68 (1 л)',  current: 0,  min: 4,  unit: 'фл.',  warehouse: 'Центральный', status: 'out',      category: 'Расходники' },
-  { id: 'c12', article: 'GLUE-ARM-310', name: 'Герметик армированный 310 мл',      current: 1,  min: 8,  unit: 'шт.',  warehouse: 'Мобильный',   status: 'critical', category: 'Расходники' },
-  { id: 'c13', article: 'PCB-HAI-5611', name: 'Плата управления Haier AC-5611',    current: 1,  min: 3,  unit: 'шт.',  warehouse: 'Центральный', status: 'critical', category: 'ЗИП' },
-  { id: 'c14', article: 'TXV-R410-7',   name: 'Расширительный клапан TXV R410',    current: 3,  min: 6,  unit: 'шт.',  warehouse: 'Центральный', status: 'critical', category: 'ЗИП' },
-  { id: 'c15', article: 'BELT-B48',     name: 'Ремень приводной B48',              current: 3,  min: 10, unit: 'шт.',  warehouse: 'Мобильный',   status: 'critical', category: 'ЗИП' },
-  { id: 'c16', article: 'CAP-RUN-30UF', name: 'Конденсатор пусковой 30 мкФ',      current: 4,  min: 8,  unit: 'шт.',  warehouse: 'Центральный', status: 'critical', category: 'ЗИП' },
-  { id: 'c17', article: 'ISOL-PIPE-6',  name: 'Теплоизоляция трубная ø6 (2 м)',    current: 0,  min: 20, unit: 'шт.',  warehouse: 'Центральный', status: 'out',      category: 'Расходники' },
+  { id:'c1',  article:'R410A-13',     name:'Хладагент R-410A (13.6 кг)',       current:0, min:3,  unit:'бал.', warehouse:'Центральный', status:'out',      category:'Хладагенты' },
+  { id:'c2',  article:'COMP-DAI-35',  name:'Компрессор Daikin JT160BCBY1L',    current:0, min:1,  unit:'шт.',  warehouse:'Центральный', status:'out',      category:'ЗИП' },
+  { id:'c3',  article:'R32-12',       name:'Хладагент R-32 (12 кг)',            current:1, min:4,  unit:'бал.', warehouse:'Мобильный',   status:'critical', category:'Хладагенты' },
+  { id:'c4',  article:'FLT-DCL-085',  name:'Фильтр-осушитель DCL-085S',        current:3, min:10, unit:'шт.',  warehouse:'Центральный', status:'critical', category:'Фильтры' },
+  { id:'c5',  article:'PCB-MDV-D36',  name:'Плата управления Midea MDV-D36T1', current:0, min:2,  unit:'шт.',  warehouse:'Центральный', status:'out',      category:'ЗИП' },
+  { id:'c6',  article:'FILTR-G4-500', name:'Фильтр G4 500×500×20',             current:8, min:20, unit:'шт.',  warehouse:'Мобильный',   status:'critical', category:'Фильтры' },
+  { id:'c7',  article:'FAN-OUT-380',  name:'Вентилятор внешнего блока 380В',   current:0, min:2,  unit:'шт.',  warehouse:'Центральный', status:'out',      category:'ЗИП' },
+  { id:'c8',  article:'SEN-HP-16BAR', name:'Датчик давления высокой стороны',  current:2, min:5,  unit:'шт.',  warehouse:'Центральный', status:'critical', category:'ЗИП' },
+  { id:'c9',  article:'TAPE-SELF-25', name:'Лента самоклейка 25мм × 10м',      current:4, min:15, unit:'рул.', warehouse:'Мобильный',   status:'critical', category:'Расходники' },
+  { id:'c10', article:'R22-13',       name:'Хладагент R-22 (13.6 кг)',          current:2, min:5,  unit:'бал.', warehouse:'Центральный', status:'critical', category:'Хладагенты' },
+  { id:'c11', article:'OIL-POE68-1L', name:'Масло компрессорное POE 68 (1 л)', current:0, min:4,  unit:'фл.',  warehouse:'Центральный', status:'out',      category:'Расходники' },
+  { id:'c12', article:'GLUE-ARM-310', name:'Герметик армированный 310 мл',     current:1, min:8,  unit:'шт.',  warehouse:'Мобильный',   status:'critical', category:'Расходники' },
+  { id:'c13', article:'PCB-HAI-5611', name:'Плата управления Haier AC-5611',   current:1, min:3,  unit:'шт.',  warehouse:'Центральный', status:'critical', category:'ЗИП' },
+  { id:'c14', article:'TXV-R410-7',   name:'Расширительный клапан TXV R410',   current:3, min:6,  unit:'шт.',  warehouse:'Центральный', status:'critical', category:'ЗИП' },
+  { id:'c15', article:'BELT-B48',     name:'Ремень приводной B48',              current:3, min:10, unit:'шт.',  warehouse:'Мобильный',   status:'critical', category:'ЗИП' },
+  { id:'c16', article:'CAP-RUN-30UF', name:'Конденсатор пусковой 30 мкФ',     current:4, min:8,  unit:'шт.',  warehouse:'Центральный', status:'critical', category:'ЗИП' },
+  { id:'c17', article:'ISOL-PIPE-6',  name:'Теплоизоляция трубная ø6 (2 м)',   current:0, min:20, unit:'шт.',  warehouse:'Центральный', status:'out',      category:'Расходники' },
 ];
 
+// prettier-ignore
 const ALL_ITEMS: ControlItem[] = [
-  { id: 'i1',  name: 'Хладагент R-410A (13.6 кг)',       current: 0,   min: 3,   max: 12,  unit: 'бал.', turnover: 8,  lastMove: '15.05.2026' },
-  { id: 'i2',  name: 'Хладагент R-32 (12 кг)',            current: 1,   min: 4,   max: 15,  unit: 'бал.', turnover: 10, lastMove: '14.05.2026' },
-  { id: 'i3',  name: 'Фильтр G4 500×500×20',              current: 8,   min: 20,  max: 60,  unit: 'шт.',  turnover: 14, lastMove: '13.05.2026' },
-  { id: 'i4',  name: 'Фильтр-осушитель DCL-085S',         current: 3,   min: 10,  max: 30,  unit: 'шт.',  turnover: 12, lastMove: '16.05.2026' },
-  { id: 'i5',  name: 'Компрессор Daikin JT160BCBY1L',     current: 0,   min: 1,   max: 3,   unit: 'шт.',  turnover: 45, lastMove: '02.05.2026' },
-  { id: 'i6',  name: 'Вентилятор внешнего блока 380В',   current: 0,   min: 2,   max: 5,   unit: 'шт.',  turnover: 30, lastMove: '04.05.2026' },
-  { id: 'i7',  name: 'Плата управления Midea MDV-D36T1',  current: 0,   min: 2,   max: 6,   unit: 'шт.',  turnover: 25, lastMove: '07.05.2026' },
-  { id: 'i8',  name: 'Датчик давления высокой стороны',  current: 2,   min: 5,   max: 15,  unit: 'шт.',  turnover: 18, lastMove: '15.05.2026' },
-  { id: 'i9',  name: 'Масло компрессорное POE 68 (1 л)', current: 0,   min: 4,   max: 12,  unit: 'фл.',  turnover: 15, lastMove: '10.05.2026' },
-  { id: 'i10', name: 'Лента самоклейка 25мм × 10м',       current: 4,   min: 15,  max: 50,  unit: 'рул.', turnover: 7,  lastMove: '16.05.2026' },
-  { id: 'i11', name: 'Теплоизоляция трубная ø6 (2 м)',    current: 0,   min: 20,  max: 80,  unit: 'шт.',  turnover: 9,  lastMove: '08.05.2026' },
-  { id: 'i12', name: 'Конденсатор пусковой 30 мкФ',      current: 4,   min: 8,   max: 20,  unit: 'шт.',  turnover: 22, lastMove: '14.05.2026' },
-  { id: 'i13', name: 'Хладагент R-22 (13.6 кг)',          current: 2,   min: 5,   max: 18,  unit: 'бал.', turnover: 20, lastMove: '12.05.2026' },
-  { id: 'i14', name: 'Расширительный клапан TXV R410',   current: 3,   min: 6,   max: 15,  unit: 'шт.',  turnover: 28, lastMove: '11.05.2026' },
-  { id: 'i15', name: 'Ремень приводной B48',              current: 3,   min: 10,  max: 30,  unit: 'шт.',  turnover: 16, lastMove: '13.05.2026' },
-  { id: 'i16', name: 'Медная труба ø12 (бухта 15 м)',     current: 12,  min: 5,   max: 20,  unit: 'бух.', turnover: 11, lastMove: '16.05.2026' },
-  { id: 'i17', name: 'Контактор 3P 25А 230В',            current: 5,   min: 10,  max: 25,  unit: 'шт.',  turnover: 19, lastMove: '15.05.2026' },
-  { id: 'i18', name: 'Пресс-фитинг ø28 (т-образный)',    current: 6,   min: 15,  max: 40,  unit: 'шт.',  turnover: 13, lastMove: '14.05.2026' },
-  { id: 'i19', name: 'Герметик армированный 310 мл',     current: 1,   min: 8,   max: 24,  unit: 'шт.',  turnover: 10, lastMove: '16.05.2026' },
-  { id: 'i20', name: 'Датчик температуры NTC 10k',        current: 14,  min: 15,  max: 40,  unit: 'шт.',  turnover: 17, lastMove: '16.05.2026' },
+  { id:'i1',  name:'Хладагент R-410A (13.6 кг)',      current:0,  min:3,  max:12, unit:'бал.', turnover:8,  lastMove:'15.05.2026' },
+  { id:'i2',  name:'Хладагент R-32 (12 кг)',           current:1,  min:4,  max:15, unit:'бал.', turnover:10, lastMove:'14.05.2026' },
+  { id:'i3',  name:'Фильтр G4 500×500×20',             current:8,  min:20, max:60, unit:'шт.',  turnover:14, lastMove:'13.05.2026' },
+  { id:'i4',  name:'Фильтр-осушитель DCL-085S',        current:3,  min:10, max:30, unit:'шт.',  turnover:12, lastMove:'16.05.2026' },
+  { id:'i5',  name:'Компрессор Daikin JT160BCBY1L',    current:0,  min:1,  max:3,  unit:'шт.',  turnover:45, lastMove:'02.05.2026' },
+  { id:'i6',  name:'Вентилятор внешнего блока 380В',  current:0,  min:2,  max:5,  unit:'шт.',  turnover:30, lastMove:'04.05.2026' },
+  { id:'i7',  name:'Плата управления Midea MDV-D36T1', current:0,  min:2,  max:6,  unit:'шт.',  turnover:25, lastMove:'07.05.2026' },
+  { id:'i8',  name:'Датчик давления высокой стороны', current:2,  min:5,  max:15, unit:'шт.',  turnover:18, lastMove:'15.05.2026' },
+  { id:'i9',  name:'Масло компрессорное POE 68 (1 л)',current:0,  min:4,  max:12, unit:'фл.',  turnover:15, lastMove:'10.05.2026' },
+  { id:'i10', name:'Лента самоклейка 25мм × 10м',      current:4,  min:15, max:50, unit:'рул.', turnover:7,  lastMove:'16.05.2026' },
+  { id:'i11', name:'Теплоизоляция трубная ø6 (2 м)',   current:0,  min:20, max:80, unit:'шт.',  turnover:9,  lastMove:'08.05.2026' },
+  { id:'i12', name:'Конденсатор пусковой 30 мкФ',     current:4,  min:8,  max:20, unit:'шт.',  turnover:22, lastMove:'14.05.2026' },
+  { id:'i13', name:'Хладагент R-22 (13.6 кг)',         current:2,  min:5,  max:18, unit:'бал.', turnover:20, lastMove:'12.05.2026' },
+  { id:'i14', name:'Расширительный клапан TXV R410',  current:3,  min:6,  max:15, unit:'шт.',  turnover:28, lastMove:'11.05.2026' },
+  { id:'i15', name:'Ремень приводной B48',             current:3,  min:10, max:30, unit:'шт.',  turnover:16, lastMove:'13.05.2026' },
+  { id:'i16', name:'Медная труба ø12 (бухта 15 м)',    current:12, min:5,  max:20, unit:'бух.', turnover:11, lastMove:'16.05.2026' },
+  { id:'i17', name:'Контактор 3P 25А 230В',           current:5,  min:10, max:25, unit:'шт.',  turnover:19, lastMove:'15.05.2026' },
+  { id:'i18', name:'Пресс-фитинг ø28 (т-образный)',   current:6,  min:15, max:40, unit:'шт.',  turnover:13, lastMove:'14.05.2026' },
+  { id:'i19', name:'Герметик армированный 310 мл',    current:1,  min:8,  max:24, unit:'шт.',  turnover:10, lastMove:'16.05.2026' },
+  { id:'i20', name:'Датчик температуры NTC 10k',       current:14, min:15, max:40, unit:'шт.',  turnover:17, lastMove:'16.05.2026' },
 ];
 
+const CS = 'Центральный склад';
+// prettier-ignore
 const MOVEMENTS: Movement[] = [
-  { id: 'm1',  date: '16.05.2026 09:14', type: 'Приход',      name: 'Хладагент R-410A (13.6 кг)',      qty: 5,  unit: 'бал.', from: 'Поставщик ХладоСнаб',   to: 'Центральный склад',  user: 'Захаров Е.' },
-  { id: 'm2',  date: '16.05.2026 10:32', type: 'Расход',      name: 'Фильтр G4 500×500×20',            qty: 4,  unit: 'шт.',  from: 'Центральный склад',     to: 'Наряд WO-2026-000418', user: 'Козлов А.' },
-  { id: 'm3',  date: '16.05.2026 11:05', type: 'Перемещение', name: 'Масло компрессорное POE 68',      qty: 2,  unit: 'фл.',  from: 'Центральный склад',     to: 'Мобильный склад М2',  user: 'Диспетчер' },
-  { id: 'm4',  date: '16.05.2026 12:41', type: 'Расход',      name: 'Лента самоклейка 25мм',           qty: 3,  unit: 'рул.', from: 'Мобильный склад М1',   to: 'Наряд WO-2026-000421', user: 'Петров С.' },
-  { id: 'm5',  date: '15.05.2026 08:50', type: 'Приход',      name: 'Фильтр-осушитель DCL-085S',       qty: 10, unit: 'шт.',  from: 'Поставщик Danfoss',      to: 'Центральный склад',  user: 'Захаров Е.' },
-  { id: 'm6',  date: '15.05.2026 10:15', type: 'Расход',      name: 'Датчик давления высокой стороны', qty: 2,  unit: 'шт.',  from: 'Центральный склад',     to: 'Наряд WO-2026-000414', user: 'Иванов Д.' },
-  { id: 'm7',  date: '15.05.2026 14:22', type: 'Расход',      name: 'Конденсатор пусковой 30 мкФ',    qty: 1,  unit: 'шт.',  from: 'Центральный склад',     to: 'Наряд WO-2026-000410', user: 'Козлов А.' },
-  { id: 'm8',  date: '14.05.2026 09:00', type: 'Приход',      name: 'Хладагент R-32 (12 кг)',          qty: 8,  unit: 'бал.', from: 'Поставщик ХладоСнаб',   to: 'Центральный склад',  user: 'Захаров Е.' },
-  { id: 'm9',  date: '14.05.2026 11:30', type: 'Расход',      name: 'Контактор 3P 25А 230В',          qty: 2,  unit: 'шт.',  from: 'Центральный склад',     to: 'Наряд WO-2026-000408', user: 'Сидоров Н.' },
-  { id: 'm10', date: '14.05.2026 15:45', type: 'Перемещение', name: 'Ремень приводной B48',            qty: 5,  unit: 'шт.',  from: 'Центральный склад',     to: 'Мобильный склад М3',  user: 'Диспетчер' },
-  { id: 'm11', date: '13.05.2026 09:30', type: 'Расход',      name: 'Медная труба ø12 (бухта 15 м)',  qty: 1,  unit: 'бух.', from: 'Центральный склад',     to: 'Наряд WO-2026-000405', user: 'Иванов Д.' },
-  { id: 'm12', date: '13.05.2026 13:00', type: 'Приход',      name: 'Пресс-фитинг ø28 (т-образный)', qty: 15, unit: 'шт.',  from: 'Поставщик МеталлКлимат', to: 'Центральный склад',  user: 'Захаров Е.' },
+  { id:'m1',  date:'16.05.2026 09:14', type:'Приход',      name:'Хладагент R-410A (13.6 кг)',      qty:5,  unit:'бал.', from:'Поставщик ХладоСнаб',    to:CS,                     user:'Захаров Е.' },
+  { id:'m2',  date:'16.05.2026 10:32', type:'Расход',      name:'Фильтр G4 500×500×20',            qty:4,  unit:'шт.',  from:CS,                       to:'Наряд WO-2026-000418', user:'Козлов А.' },
+  { id:'m3',  date:'16.05.2026 11:05', type:'Перемещение', name:'Масло компрессорное POE 68',      qty:2,  unit:'фл.',  from:CS,                       to:'Мобильный склад М2',   user:'Диспетчер' },
+  { id:'m4',  date:'16.05.2026 12:41', type:'Расход',      name:'Лента самоклейка 25мм',           qty:3,  unit:'рул.', from:'Мобильный склад М1',     to:'Наряд WO-2026-000421', user:'Петров С.' },
+  { id:'m5',  date:'15.05.2026 08:50', type:'Приход',      name:'Фильтр-осушитель DCL-085S',       qty:10, unit:'шт.',  from:'Поставщик Danfoss',       to:CS,                     user:'Захаров Е.' },
+  { id:'m6',  date:'15.05.2026 10:15', type:'Расход',      name:'Датчик давления высокой стороны', qty:2,  unit:'шт.',  from:CS,                       to:'Наряд WO-2026-000414', user:'Иванов Д.' },
+  { id:'m7',  date:'15.05.2026 14:22', type:'Расход',      name:'Конденсатор пусковой 30 мкФ',    qty:1,  unit:'шт.',  from:CS,                       to:'Наряд WO-2026-000410', user:'Козлов А.' },
+  { id:'m8',  date:'14.05.2026 09:00', type:'Приход',      name:'Хладагент R-32 (12 кг)',          qty:8,  unit:'бал.', from:'Поставщик ХладоСнаб',    to:CS,                     user:'Захаров Е.' },
+  { id:'m9',  date:'14.05.2026 11:30', type:'Расход',      name:'Контактор 3P 25А 230В',          qty:2,  unit:'шт.',  from:CS,                       to:'Наряд WO-2026-000408', user:'Сидоров Н.' },
+  { id:'m10', date:'14.05.2026 15:45', type:'Перемещение', name:'Ремень приводной B48',            qty:5,  unit:'шт.',  from:CS,                       to:'Мобильный склад М3',   user:'Диспетчер' },
+  { id:'m11', date:'13.05.2026 09:30', type:'Расход',      name:'Медная труба ø12 (бухта 15 м)',  qty:1,  unit:'бух.', from:CS,                       to:'Наряд WO-2026-000405', user:'Иванов Д.' },
+  { id:'m12', date:'13.05.2026 13:00', type:'Приход',      name:'Пресс-фитинг ø28 (т-образный)', qty:15, unit:'шт.',  from:'Поставщик МеталлКлимат', to:CS,                     user:'Захаров Е.' },
 ];
 
 const AREA_DATA = [
@@ -167,36 +170,11 @@ const INITIAL_NOTIF: NotifSetting[] = [
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const statusLabel = (s: StockStatus) => {
-  if (s === 'out')      return 'Нет в наличии';
-  if (s === 'critical') return 'Критичный';
-  return 'Заканчивается';
-};
-
-const statusBadgeClass = (s: StockStatus) => {
-  if (s === 'out')      return 'bg-red-100 text-red-700 border-red-200';
-  if (s === 'critical') return 'bg-orange-100 text-orange-700 border-orange-200';
-  return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-};
-
-const movementBadgeClass = (t: MovementType) => {
-  if (t === 'Приход')      return 'bg-green-100 text-green-700 border-green-200';
-  if (t === 'Расход')      return 'bg-red-100 text-red-700 border-red-200';
-  return 'bg-blue-100 text-blue-700 border-blue-200';
-};
-
-const levelPercent = (current: number, min: number, max: number) => {
-  if (max <= 0) return 0;
-  return Math.min(100, Math.round((current / max) * 100));
-};
-
-const levelColor = (pct: number) => {
-  if (pct === 0)   return 'bg-red-500';
-  if (pct < 25)    return 'bg-orange-400';
-  if (pct < 50)    return 'bg-yellow-400';
-  return 'bg-green-500';
-};
-
+const statusLabel = (s: StockStatus) => s === 'out' ? 'Нет в наличии' : s === 'critical' ? 'Критичный' : 'Заканчивается';
+const statusBadgeClass = (s: StockStatus) => s === 'out' ? 'bg-red-100 text-red-700 border-red-200' : s === 'critical' ? 'bg-orange-100 text-orange-700 border-orange-200' : 'bg-yellow-100 text-yellow-700 border-yellow-200';
+const movementBadgeClass = (t: MovementType) => t === 'Приход' ? 'bg-green-100 text-green-700 border-green-200' : t === 'Расход' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-blue-100 text-blue-700 border-blue-200';
+const levelPercent = (current: number, _min: number, max: number) => max <= 0 ? 0 : Math.min(100, Math.round((current / max) * 100));
+const levelColor = (pct: number) => pct === 0 ? 'bg-red-500' : pct < 25 ? 'bg-orange-400' : pct < 50 ? 'bg-yellow-400' : 'bg-green-500';
 const CATEGORIES: Category[] = ['Фильтры', 'Хладагенты', 'Расходники', 'ЗИП'];
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -212,37 +190,24 @@ const StockAlertsFull = () => {
 
   const criticalCount = CRITICAL_ITEMS.filter(i => i.status === 'out' || i.status === 'critical').length;
 
-  const filteredCritical = CRITICAL_ITEMS.filter(item => {
-    return critCategory === 'all' || item.category === critCategory;
-  }).sort((a, b) => {
-    const order = { out: 0, critical: 1, low: 2 };
-    return order[a.status] - order[b.status];
-  });
+  const ORDER: Record<StockStatus, number> = { out: 0, critical: 1, low: 2 };
+  const filteredCritical = CRITICAL_ITEMS
+    .filter(item => critCategory === 'all' || item.category === critCategory)
+    .sort((a, b) => ORDER[a.status] - ORDER[b.status]);
 
-  const filteredControl = ALL_ITEMS.filter(item => {
-    const matchSearch = !controlSearch || item.name.toLowerCase().includes(controlSearch.toLowerCase());
-    const matchWh = controlWarehouse === 'all' || true; // all items available in both
-    return matchSearch && matchWh;
-  });
+  const filteredControl = ALL_ITEMS.filter(item =>
+    !controlSearch || item.name.toLowerCase().includes(controlSearch.toLowerCase())
+  );
 
   const incomeTotal = MOVEMENTS.filter(m => m.type === 'Приход').reduce((s, m) => s + m.qty, 0);
   const outcomeTotal = MOVEMENTS.filter(m => m.type === 'Расход').reduce((s, m) => s + m.qty, 0);
 
-  const handleNotifMinChange = (id: string, val: string) => {
+  const updateNotif = (id: string, field: 'min' | 'max', val: string) => {
     const num = parseInt(val, 10);
-    if (isNaN(num) || num < 0) return;
-    setNotifSettings(prev => prev.map(n => n.id === id ? { ...n, min: num } : n));
+    if (!isNaN(num) && num >= 0) setNotifSettings(prev => prev.map(n => n.id === id ? { ...n, [field]: num } : n));
   };
-
-  const handleNotifMaxChange = (id: string, val: string) => {
-    const num = parseInt(val, 10);
-    if (isNaN(num) || num < 0) return;
-    setNotifSettings(prev => prev.map(n => n.id === id ? { ...n, max: num } : n));
-  };
-
-  const handleEmailToggle = (id: string) => {
+  const handleEmailToggle = (id: string) =>
     setNotifSettings(prev => prev.map(n => n.id === id ? { ...n, email: !n.email } : n));
-  };
 
   return (
     <div className="p-6 space-y-5 bg-gray-50 min-h-screen">
@@ -694,7 +659,7 @@ const StockAlertsFull = () => {
                             type="number"
                             min={0}
                             value={n.min}
-                            onChange={e => handleNotifMinChange(n.id, e.target.value)}
+                            onChange={e => updateNotif(n.id, 'min', e.target.value)}
                             className="w-20 h-8 text-center text-sm mx-auto"
                           />
                         </td>
@@ -703,7 +668,7 @@ const StockAlertsFull = () => {
                             type="number"
                             min={0}
                             value={n.max}
-                            onChange={e => handleNotifMaxChange(n.id, e.target.value)}
+                            onChange={e => updateNotif(n.id, 'max', e.target.value)}
                             className="w-20 h-8 text-center text-sm mx-auto"
                           />
                         </td>

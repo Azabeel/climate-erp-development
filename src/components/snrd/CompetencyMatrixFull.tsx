@@ -284,7 +284,6 @@ const CompetencyMatrixFull = () => {
   return (
     <div className="flex flex-col h-full bg-gray-50">
 
-      {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -321,7 +320,6 @@ const CompetencyMatrixFull = () => {
         </div>
       </div>
 
-      {/* ── Tabs ─────────────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-hidden">
         <Tabs defaultValue="matrix" className="flex flex-col h-full">
           <div className="bg-white border-b border-gray-200 px-6">
@@ -524,18 +522,13 @@ const CompetencyMatrixFull = () => {
                       <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-red-50 border border-red-100">
                         <div className="flex items-center gap-3">
                           <span className="w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-bold">{i+1}</span>
-                          <div>
-                            <p className="text-sm font-semibold text-gray-900">{row.eng.name}</p>
-                            <p className="text-xs text-gray-500">{row.compName}</p>
-                          </div>
+                          <p className="text-sm font-semibold text-gray-900">{row.eng.name} · <span className="font-normal text-gray-500">{row.compName}</span></p>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           <LevelDot level={row.current} />
                           <Icon name="ArrowRight" size={12} className="text-gray-400" />
                           <LevelDot level={row.target} />
-                          <Badge className={`text-xs border-0 ${row.gap <= -2 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
-                            {row.gap <= -2 ? 'Критично' : 'Требует внимания'}
-                          </Badge>
+                          <Badge className={`text-xs border-0 ${row.gap <= -2 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{row.gap <= -2 ? 'Критично' : 'Внимание'}</Badge>
                         </div>
                       </div>
                     ))}
@@ -712,7 +705,6 @@ const CompetencyMatrixFull = () => {
         </Tabs>
       </div>
 
-      {/* ── Edit level dialog ────────────────────────────────────────────────── */}
       <Dialog open={editCell !== null} onOpenChange={open => !open && setEditCell(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>

@@ -750,6 +750,114 @@ export default function AIAnalyticsFull() {
             ))}
           </div>
         </div>
+
+        {/* Bottom charts row */}
+        <div className="grid grid-cols-3 gap-4">
+          {/* Engineer efficiency bar chart */}
+          <div className="col-span-2 rounded-xl border border-gray-200 bg-white p-5">
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-gray-900">Эффективность инженеров</h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Балл (0–10) и маржинальность нарядов % (май 2026)
+              </p>
+            </div>
+            <ResponsiveContainer width="100%" height={170}>
+              <BarChart
+                data={ENGINEER_EFFICIENCY_DATA}
+                layout="vertical"
+                margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
+                barCategoryGap="30%"
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+                <XAxis
+                  type="number"
+                  domain={[0, 45]}
+                  tick={{ fontSize: 11, fill: '#9ca3af' }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  tick={{ fontSize: 11, fill: '#6b7280' }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={56}
+                />
+                <Tooltip
+                  formatter={(value: number, name: string) => [
+                    name === 'score' ? `${value}/10` : `${value}%`,
+                    name === 'score' ? 'Балл' : 'Маржа',
+                  ]}
+                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                />
+                <Bar dataKey="score" fill="#6366f1" radius={[0, 4, 4, 0]} name="score" />
+                <Bar dataKey="margin" fill="#c7d2fe" radius={[0, 4, 4, 0]} name="margin" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Revenue structure pie + trend line */}
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <div className="mb-2">
+              <h3 className="text-sm font-semibold text-gray-900">Структура выручки</h3>
+              <p className="text-xs text-gray-500 mt-0.5">По типам нарядов</p>
+            </div>
+            <div className="flex justify-center">
+              <PieChart width={155} height={130}>
+                <Pie
+                  data={REVENUE_STRUCTURE_DATA}
+                  cx={72}
+                  cy={60}
+                  innerRadius={36}
+                  outerRadius={56}
+                  paddingAngle={3}
+                  dataKey="value"
+                >
+                  {REVENUE_STRUCTURE_DATA.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value: number) => [`${value}%`, 'Доля']}
+                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                />
+              </PieChart>
+            </div>
+            <div className="space-y-1">
+              {REVENUE_STRUCTURE_DATA.map((item) => (
+                <div key={item.name} className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-2 w-2 rounded-full" style={{ background: item.color }} />
+                    <span className="text-gray-600">{item.name}</span>
+                  </div>
+                  <span className="font-semibold text-gray-800">{item.value}%</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 border-t border-gray-100 pt-3">
+              <div className="text-xs text-gray-500 mb-1.5">Динамика нарядов (янв–май)</div>
+              <ResponsiveContainer width="100%" height={46}>
+                <LineChart
+                  data={MONTHLY_ORDERS_DATA}
+                  margin={{ top: 2, right: 4, left: 4, bottom: 2 }}
+                >
+                  <Line
+                    type="monotone"
+                    dataKey="orders"
+                    stroke="#6366f1"
+                    strokeWidth={2}
+                    dot={{ fill: '#6366f1', r: 2, strokeWidth: 0 }}
+                  />
+                  <Tooltip
+                    formatter={(value: number) => [value, 'Нарядов']}
+                    contentStyle={{ fontSize: 11, borderRadius: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

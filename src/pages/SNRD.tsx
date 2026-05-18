@@ -162,6 +162,9 @@ import TaskBoardFull from '@/components/snrd/TaskBoardFull';
 import ClientPortalFull from '@/components/snrd/ClientPortalFull';
 import EmailTemplatesFull from '@/components/snrd/EmailTemplatesFull';
 import CapacityPlannerFull from '@/components/snrd/CapacityPlannerFull';
+import ServiceZonesFull from '@/components/snrd/ServiceZonesFull';
+import TelegramBotFull from '@/components/snrd/TelegramBotFull';
+import PredictiveMaintenanceFull from '@/components/snrd/PredictiveMaintenanceFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -898,6 +901,15 @@ const SNRD = () => {
 
       case 'capacity-planner':
         return <CapacityPlannerFull />;
+
+      case 'service-zones':
+        return <ServiceZonesFull />;
+
+      case 'telegram-bot':
+        return <TelegramBotFull />;
+
+      case 'predictive-maintenance':
+        return <PredictiveMaintenanceFull />;
 
       default:
         return (

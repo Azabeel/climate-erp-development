@@ -210,6 +210,7 @@ import EngineerProfileFull from '@/components/snrd/EngineerProfileFull';
 import EquipmentPassportFull from '@/components/snrd/EquipmentPassportFull';
 import BudgetForecastFull from '@/components/snrd/BudgetForecastFull';
 import WorkshopOrderFull from '@/components/snrd/WorkshopOrderFull';
+import InstallerDashboardFull from '@/components/snrd/InstallerDashboardFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -974,6 +975,9 @@ const SNRD = () => {
 
       case 'workshop-order':
         return <WorkshopOrderFull />;
+
+      case 'installer-dashboard':
+        return <InstallerDashboardFull />;
 
       default:
         return (

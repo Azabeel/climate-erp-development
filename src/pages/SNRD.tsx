@@ -159,6 +159,9 @@ import SLAMonitorFull from '@/components/snrd/SLAMonitorFull';
 import MobileEngineerFull from '@/components/snrd/MobileEngineerFull';
 import ReportBuilderV2Full from '@/components/snrd/ReportBuilderV2Full';
 import TaskBoardFull from '@/components/snrd/TaskBoardFull';
+import ClientPortalFull from '@/components/snrd/ClientPortalFull';
+import EmailTemplatesFull from '@/components/snrd/EmailTemplatesFull';
+import CapacityPlannerFull from '@/components/snrd/CapacityPlannerFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -886,6 +889,15 @@ const SNRD = () => {
 
       case 'task-board':
         return <TaskBoardFull />;
+
+      case 'client-portal':
+        return <ClientPortalFull />;
+
+      case 'email-templates':
+        return <EmailTemplatesFull />;
+
+      case 'capacity-planner':
+        return <CapacityPlannerFull />;
 
       default:
         return (

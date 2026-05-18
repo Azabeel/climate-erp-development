@@ -1,21 +1,27 @@
 import { useState, useMemo } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
 import {
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  ResponsiveContainer,
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
+import { toast } from 'sonner';
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-type Level = 0 | 1 | 2 | 3;
+type Level = 0 | 1 | 2 | 3 | 4;
 
 interface Certification {
+  id: string;
   name: string;
+  issuer: string;
+  issued: string;  // ISO date
   expires: string; // ISO date
 }
 
@@ -24,527 +30,727 @@ interface Engineer {
   name: string;
   role: string;
   skills: Record<string, Level>;
+  target: Record<string, Level>;
   certifications: Certification[];
+}
+
+interface TrainingItem {
+  id: string;
+  course: string;
+  engineerId: string;
+  date: string;
+  status: 'planned' | 'in_progress' | 'completed' | 'cancelled';
+}
+
+interface EditCell {
+  engId: string;
+  compId: string;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const COMPETENCIES = [
-  { id: 'c1',  name: 'Ремонт VRF' },
-  { id: 'c2',  name: 'ТО сплит-систем' },
-  { id: 'c3',  name: 'Монтаж чиллеров' },
-  { id: 'c4',  name: 'Работа с R-410A' },
-  { id: 'c5',  name: 'Электрика (до 380В)' },
-  { id: 'c6',  name: 'Диагностика ошибок' },
-  { id: 'c7',  name: 'Пайка медных труб' },
-  { id: 'c8',  name: 'Пусконаладка' },
-  { id: 'c9',  name: 'Работа с IoT' },
-  { id: 'c10', name: 'Клиентский сервис' },
+  { id: 'c1',  name: 'VRF-системы' },
+  { id: 'c2',  name: 'Чиллеры' },
+  { id: 'c3',  name: 'Кондиционеры' },
+  { id: 'c4',  name: 'Вентиляция' },
+  { id: 'c5',  name: 'Электрика' },
+  { id: 'c6',  name: 'Гидравлика' },
+  { id: 'c7',  name: 'Автоматика' },
+  { id: 'c8',  name: 'Хладагенты' },
+  { id: 'c9',  name: 'Монтаж' },
+  { id: 'c10', name: 'Диагностика' },
 ] as const;
+
+const LEVEL_CFG: Record<Level, { label: string; short: string; bg: string; text: string; dot: string }> = {
+  0: { label: 'Нет',      short: '0', bg: 'bg-gray-100',   text: 'text-gray-400',   dot: 'bg-gray-300' },
+  1: { label: 'Базовый',  short: '1', bg: 'bg-yellow-100', text: 'text-yellow-700', dot: 'bg-yellow-400' },
+  2: { label: 'Уверенный',short: '2', bg: 'bg-blue-100',   text: 'text-blue-700',   dot: 'bg-blue-500' },
+  3: { label: 'Эксперт',  short: '3', bg: 'bg-green-100',  text: 'text-green-700',  dot: 'bg-green-500' },
+  4: { label: 'Наставник',short: '4', bg: 'bg-purple-100', text: 'text-purple-700', dot: 'bg-purple-500' },
+};
+
+const TRAINING_STATUS_CFG: Record<TrainingItem['status'], { label: string; cls: string }> = {
+  planned:     { label: 'Запланировано', cls: 'bg-blue-100 text-blue-700' },
+  in_progress: { label: 'Идёт',          cls: 'bg-amber-100 text-amber-700' },
+  completed:   { label: 'Завершено',     cls: 'bg-green-100 text-green-700' },
+  cancelled:   { label: 'Отменено',      cls: 'bg-red-100 text-red-700' },
+};
+
+// ─── Static data ──────────────────────────────────────────────────────────────
 
 const ENGINEERS_INITIAL: Engineer[] = [
   {
     id: 'e1', name: 'Иванов А.П.', role: 'Старший инженер',
+    skills:  { c1:4, c2:3, c3:4, c4:2, c5:3, c6:2, c7:3, c8:4, c9:3, c10:4 },
+    target:  { c1:4, c2:4, c3:4, c4:3, c5:3, c6:3, c7:3, c8:4, c9:3, c10:4 },
     certifications: [
-      { name: 'Daikin Expert', expires: '2026-09-01' },
-      { name: 'F-газы (кат. I)', expires: '2027-03-15' },
-      { name: 'Электробезопасность III гр.', expires: '2026-01-20' },
+      { id:'cert-1', name:'Daikin Expert', issuer:'Daikin Russia', issued:'2023-05-10', expires:'2026-05-10' },
+      { id:'cert-2', name:'F-газы кат. I', issuer:'Росприроднадзор', issued:'2022-03-15', expires:'2027-03-15' },
+      { id:'cert-3', name:'Электробезопасность III гр.', issuer:'Ростехнадзор', issued:'2024-01-20', expires:'2026-01-20' },
+      { id:'cert-4', name:'Работа на высоте', issuer:'Учебный центр', issued:'2024-06-01', expires:'2026-06-01' },
     ],
-    skills: { c1: 3, c2: 3, c3: 2, c4: 3, c5: 2, c6: 3, c7: 3, c8: 2, c9: 1, c10: 2 },
   },
   {
     id: 'e2', name: 'Петров С.В.', role: 'Инженер',
+    skills:  { c1:2, c2:1, c3:3, c4:2, c5:2, c6:1, c7:2, c8:3, c9:2, c10:3 },
+    target:  { c1:3, c2:3, c3:3, c4:3, c5:3, c6:2, c7:3, c8:3, c9:3, c10:3 },
     certifications: [
-      { name: 'Mitsubishi Certified', expires: '2025-12-01' },
-      { name: 'F-газы (кат. II)', expires: '2026-06-10' },
+      { id:'cert-5', name:'Mitsubishi Certified', issuer:'Mitsubishi Electric', issued:'2024-02-01', expires:'2025-12-01' },
+      { id:'cert-6', name:'F-газы кат. II', issuer:'Росприроднадзор', issued:'2023-06-10', expires:'2028-06-10' },
     ],
-    skills: { c1: 2, c2: 3, c3: 1, c4: 2, c5: 2, c6: 2, c7: 2, c8: 3, c9: 0, c10: 3 },
   },
   {
     id: 'e3', name: 'Сидоров К.И.', role: 'Инженер',
+    skills:  { c1:1, c2:0, c3:3, c4:3, c5:3, c6:0, c7:2, c8:2, c9:3, c10:2 },
+    target:  { c1:2, c2:2, c3:3, c4:3, c5:3, c6:2, c7:2, c8:3, c9:3, c10:3 },
     certifications: [
-      { name: 'F-газы (кат. I)', expires: '2026-11-05' },
-      { name: 'Daikin Basic', expires: '2025-08-22' },
+      { id:'cert-7', name:'F-газы кат. I', issuer:'Росприроднадзор', issued:'2021-11-05', expires:'2026-11-05' },
+      { id:'cert-8', name:'Daikin Basic', issuer:'Daikin Russia', issued:'2021-08-22', expires:'2025-08-22' },
     ],
-    skills: { c1: 1, c2: 3, c3: 0, c4: 2, c5: 3, c6: 2, c7: 1, c8: 2, c9: 1, c10: 2 },
   },
   {
     id: 'e4', name: 'Козлов М.А.', role: 'Старший инженер',
+    skills:  { c1:4, c2:3, c3:3, c4:2, c5:2, c6:3, c7:2, c8:4, c9:4, c10:3 },
+    target:  { c1:4, c2:4, c3:4, c4:3, c5:3, c6:4, c7:3, c8:4, c9:4, c10:4 },
     certifications: [
-      { name: 'Gree Certified', expires: '2026-04-18' },
-      { name: 'F-газы (кат. I)', expires: '2027-01-30' },
-      { name: 'Работа на высоте', expires: '2026-07-12' },
+      { id:'cert-9', name:'Gree Certified', issuer:'Gree Electric', issued:'2023-04-18', expires:'2026-04-18' },
+      { id:'cert-10', name:'F-газы кат. I', issuer:'Росприроднадзор', issued:'2022-01-30', expires:'2027-01-30' },
+      { id:'cert-11', name:'Работа на высоте', issuer:'Учебный центр', issued:'2024-07-12', expires:'2026-07-12' },
     ],
-    skills: { c1: 3, c2: 2, c3: 3, c4: 3, c5: 2, c6: 3, c7: 3, c8: 3, c9: 0, c10: 1 },
   },
   {
     id: 'e5', name: 'Новиков Д.В.', role: 'Инженер',
+    skills:  { c1:2, c2:2, c3:2, c4:1, c5:1, c6:1, c7:2, c8:2, c9:2, c10:2 },
+    target:  { c1:3, c2:3, c3:3, c4:2, c5:2, c6:2, c7:2, c8:3, c9:3, c10:3 },
     certifications: [
-      { name: 'F-газы (кат. II)', expires: '2026-09-09' },
+      { id:'cert-12', name:'F-газы кат. II', issuer:'Росприроднадзор', issued:'2024-09-09', expires:'2029-09-09' },
     ],
-    skills: { c1: 2, c2: 2, c3: 1, c4: 2, c5: 1, c6: 2, c7: 2, c8: 1, c9: 2, c10: 2 },
   },
   {
     id: 'e6', name: 'Морозова Е.С.', role: 'Инженер',
+    skills:  { c1:0, c2:1, c3:2, c4:2, c5:2, c6:0, c7:4, c8:1, c9:2, c10:3 },
+    target:  { c1:2, c2:2, c3:3, c4:3, c5:3, c6:2, c7:4, c8:2, c9:3, c10:4 },
     certifications: [
-      { name: 'IoT/BMS Siemens', expires: '2027-02-14' },
-      { name: 'F-газы (кат. II)', expires: '2026-08-01' },
+      { id:'cert-13', name:'IoT/BMS Siemens', issuer:'Siemens Learning', issued:'2024-02-14', expires:'2027-02-14' },
+      { id:'cert-14', name:'F-газы кат. II', issuer:'Росприроднадзор', issued:'2023-08-01', expires:'2028-08-01' },
     ],
-    skills: { c1: 0, c2: 2, c3: 0, c4: 1, c5: 2, c6: 3, c7: 1, c8: 2, c9: 3, c10: 3 },
   },
   {
     id: 'e7', name: 'Волков Р.П.', role: 'Стажёр',
+    skills:  { c1:0, c2:0, c3:1, c4:1, c5:1, c6:0, c7:1, c8:1, c9:1, c10:1 },
+    target:  { c1:2, c2:2, c3:2, c4:2, c5:2, c6:1, c7:2, c8:2, c9:2, c10:2 },
     certifications: [],
-    skills: { c1: 0, c2: 1, c3: 0, c4: 1, c5: 1, c6: 1, c7: 1, c8: 0, c9: 1, c10: 1 },
   },
   {
     id: 'e8', name: 'Захаров И.Н.', role: 'Инженер',
+    skills:  { c1:3, c2:3, c3:3, c4:2, c5:3, c6:2, c7:2, c8:3, c9:2, c10:3 },
+    target:  { c1:4, c2:4, c3:3, c4:3, c5:3, c6:3, c7:3, c8:4, c9:3, c10:3 },
     certifications: [
-      { name: 'Mitsubishi Expert', expires: '2026-05-20' },
-      { name: 'F-газы (кат. I)', expires: '2026-12-31' },
-      { name: 'Электробезопасность IV гр.', expires: '2025-11-15' },
-      { name: 'Работа на высоте', expires: '2026-03-08' },
+      { id:'cert-15', name:'Mitsubishi Expert', issuer:'Mitsubishi Electric', issued:'2023-05-20', expires:'2026-05-20' },
+      { id:'cert-16', name:'F-газы кат. I', issuer:'Росприроднадзор', issued:'2021-12-31', expires:'2026-12-31' },
+      { id:'cert-17', name:'Электробезопасность IV гр.', issuer:'Ростехнадзор', issued:'2023-11-15', expires:'2025-11-15' },
     ],
-    skills: { c1: 3, c2: 3, c3: 1, c4: 3, c5: 3, c6: 3, c7: 2, c8: 2, c9: 1, c10: 2 },
-  },
-  {
-    id: 'e9', name: 'Лебедева Т.О.', role: 'Инженер',
-    certifications: [
-      { name: 'F-газы (кат. II)', expires: '2026-07-07' },
-    ],
-    skills: { c1: 1, c2: 2, c3: 0, c4: 2, c5: 1, c6: 2, c7: 1, c8: 2, c9: 2, c10: 3 },
-  },
-  {
-    id: 'e10', name: 'Орлов А.К.', role: 'Стажёр',
-    certifications: [],
-    skills: { c1: 0, c2: 1, c3: 0, c4: 0, c5: 1, c6: 1, c7: 0, c8: 0, c9: 0, c10: 1 },
   },
 ];
 
-// Level config: icon character, bg/text colours
-const LEVEL_CFG: Record<Level, { emoji: string; label: string; bg: string; text: string; border: string }> = {
-  0: { emoji: '❌', label: 'Нет',      bg: 'bg-gray-100',   text: 'text-gray-400',   border: 'border-gray-200' },
-  1: { emoji: '🟡', label: 'Базовый', bg: 'bg-yellow-50',  text: 'text-yellow-700', border: 'border-yellow-200' },
-  2: { emoji: '🟢', label: 'Эксперт', bg: 'bg-green-50',   text: 'text-green-700',  border: 'border-green-200' },
-  3: { emoji: '🏆', label: 'Наставник', bg: 'bg-blue-50',  text: 'text-blue-700',   border: 'border-blue-200' },
-};
-
-const RADAR_AXES = [
-  { label: 'VRF / Чиллеры',    ids: ['c1', 'c3'] },
-  { label: 'ТО и Монтаж',       ids: ['c2', 'c8'] },
-  { label: 'Хладагенты',        ids: ['c4', 'c7'] },
-  { label: 'Электрика',         ids: ['c5'] },
-  { label: 'Диагностика / IoT', ids: ['c6', 'c9'] },
-  { label: 'Сервис',            ids: ['c10'] },
+const TRAINING_DATA: TrainingItem[] = [
+  { id:'t1', course:'VRF Advanced — Daikin VRV IV',    engineerId:'e2', date:'2026-06-10', status:'planned' },
+  { id:'t2', course:'Чиллеры York: монтаж и наладка',  engineerId:'e3', date:'2026-06-18', status:'planned' },
+  { id:'t3', course:'Электробезопасность III гр.',      engineerId:'e7', date:'2026-05-28', status:'in_progress' },
+  { id:'t4', course:'F-газы кат. I — продление',       engineerId:'e5', date:'2026-07-05', status:'planned' },
+  { id:'t5', course:'Гидравлика в системах вентиляции', engineerId:'e6', date:'2026-05-20', status:'completed' },
+  { id:'t6', course:'Основы диагностики VRF',           engineerId:'e7', date:'2026-08-01', status:'planned' },
 ];
 
-// ─── Helper fns ───────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const axisValue = (eng: Engineer, ids: string[]): number => {
-  const sum = ids.reduce((acc, id) => acc + (eng.skills[id] ?? 0), 0);
-  return Math.round((sum / (ids.length * 3)) * 3 * 10) / 10;
-};
+function certStatus(expires: string): { label: string; cls: string } {
+  const days = Math.ceil((new Date(expires).getTime() - Date.now()) / 86_400_000);
+  if (days < 0)   return { label: 'Просрочен',  cls: 'bg-red-100 text-red-700' };
+  if (days < 90)  return { label: 'Истекает',   cls: 'bg-amber-100 text-amber-700' };
+  return { label: 'Активен', cls: 'bg-green-100 text-green-700' };
+}
 
-const getRadarData = (eng: Engineer) =>
-  RADAR_AXES.map(ax => ({
-    subject: ax.label,
-    value: axisValue(eng, ax.ids),
-  }));
+function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
 
-const certExpiresBadge = (expires: string) => {
-  const ms = new Date(expires).getTime() - Date.now();
-  const days = Math.ceil(ms / 86_400_000);
-  if (days < 0) return { label: 'Истёк', cls: 'bg-red-100 text-red-700' };
-  if (days < 60) return { label: `${days} дн.`, cls: 'bg-yellow-100 text-yellow-700' };
-  return { label: new Date(expires).toLocaleDateString('ru-RU'), cls: 'bg-green-100 text-green-700' };
-};
+function initials(name: string) {
+  return name.split(' ').map(n => n[0]).join('').slice(0, 2);
+}
 
-// ─── Component ────────────────────────────────────────────────────────────────
+function totalScore(eng: Engineer): number {
+  const sum = COMPETENCIES.reduce((s, c) => s + (eng.skills[c.id] ?? 0), 0);
+  return Math.round((sum / (COMPETENCIES.length * 4)) * 100);
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function LevelDot({ level }: { level: Level }) {
+  const cfg = LEVEL_CFG[level];
+  return (
+    <span
+      title={cfg.label}
+      className={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${cfg.bg} ${cfg.text}`}
+    >
+      {cfg.short}
+    </span>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 
 const CompetencyMatrixFull = () => {
   const [engineers, setEngineers] = useState<Engineer[]>(ENGINEERS_INITIAL);
-  const [selectedId, setSelectedId] = useState<string | null>('e1');
-  const [search, setSearch] = useState('');
-  const [filterMode, setFilterMode] = useState<'all' | 'missing' | 'basic'>('all');
-  const [filterCompetency, setFilterCompetency] = useState<string>('');
-  const [gapHighlight, setGapHighlight] = useState<Set<string>>(new Set());
+  const [selectedId, setSelectedId] = useState<string>('all');
+  const [editCell, setEditCell] = useState<EditCell | null>(null);
+  const [editLevel, setEditLevel] = useState<Level>(0);
 
-  // ── Derived data ──────────────────────────────────────────────────────────
+  // ── Derived ────────────────────────────────────────────────────────────────
 
-  const selectedEng = engineers.find(e => e.id === selectedId) ?? null;
-
-  const totalCertified = useMemo(
-    () => engineers.filter(e => e.certifications.length > 0).length,
-    [engineers],
-  );
-  const needsTraining = useMemo(
-    () =>
-      engineers.filter(e =>
-        COMPETENCIES.some(c => (e.skills[c.id] ?? 0) === 0),
-      ).length,
-    [engineers],
+  const selectedEng = useMemo(
+    () => engineers.find(e => e.id === selectedId) ?? null,
+    [engineers, selectedId],
   );
 
-  const filteredEngineers = useMemo(() => {
-    let list = engineers;
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(e => e.name.toLowerCase().includes(q));
-    }
-    if (filterCompetency && filterMode !== 'all') {
-      list = list.filter(e => {
-        const lvl = e.skills[filterCompetency] ?? 0;
-        if (filterMode === 'missing') return lvl === 0;
-        if (filterMode === 'basic') return lvl === 1;
-        return true;
+  const radarData = useMemo(() => {
+    if (!selectedEng) return [];
+    return COMPETENCIES.map(c => ({
+      subject: c.name,
+      Текущий: selectedEng.skills[c.id] ?? 0,
+      Целевой: selectedEng.target[c.id] ?? 0,
+    }));
+  }, [selectedEng]);
+
+  const barData = useMemo(() => {
+    if (!selectedEng) return [];
+    return COMPETENCIES.map(c => ({
+      name: c.name,
+      Текущий: selectedEng.skills[c.id] ?? 0,
+      Целевой: selectedEng.target[c.id] ?? 0,
+    }));
+  }, [selectedEng]);
+
+  const gapRows = useMemo(() => {
+    const rows: { eng: Engineer; compId: string; compName: string; current: Level; target: Level; gap: number }[] = [];
+    engineers.forEach(eng => {
+      COMPETENCIES.forEach(c => {
+        const cur = (eng.skills[c.id] ?? 0) as Level;
+        const tgt = (eng.target[c.id] ?? 0) as Level;
+        const gap = cur - tgt;
+        if (gap < 0) rows.push({ eng, compId: c.id, compName: c.name, current: cur, target: tgt, gap });
       });
-    }
-    return list;
-  }, [engineers, search, filterCompetency, filterMode]);
+    });
+    return rows.sort((a, b) => a.gap - b.gap);
+  }, [engineers]);
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
+  const top5Gaps = useMemo(() => gapRows.slice(0, 5), [gapRows]);
 
-  const cycleLevel = (engId: string, compId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const allCerts = useMemo(() =>
+    engineers
+      .flatMap(eng => eng.certifications.map(cert => ({ ...cert, eng })))
+      .sort((a, b) => new Date(a.expires).getTime() - new Date(b.expires).getTime()),
+    [engineers],
+  );
+
+  // ── Handlers ───────────────────────────────────────────────────────────────
+
+  const openEditDialog = (engId: string, compId: string, current: Level) => {
+    setEditCell({ engId, compId });
+    setEditLevel(current);
+  };
+
+  const saveLevel = () => {
+    if (!editCell) return;
     setEngineers(prev =>
       prev.map(eng => {
-        if (eng.id !== engId) return eng;
-        const cur = (eng.skills[compId] ?? 0) as Level;
-        const next = ((cur + 1) % 4) as Level;
-        toast.success(
-          `${eng.name} — «${COMPETENCIES.find(c => c.id === compId)?.name}»: ${LEVEL_CFG[next].emoji} ${LEVEL_CFG[next].label}`,
-        );
-        return { ...eng, skills: { ...eng.skills, [compId]: next } };
+        if (eng.id !== editCell.engId) return eng;
+        const comp = COMPETENCIES.find(c => c.id === editCell.compId);
+        toast.success(`${eng.name} — «${comp?.name}»: уровень → ${LEVEL_CFG[editLevel].label}`);
+        return { ...eng, skills: { ...eng.skills, [editCell.compId]: editLevel } };
       }),
     );
+    setEditCell(null);
   };
 
-  const findGaps = () => {
-    // Columns where NO engineer has level >= 2 (expert)
-    const gaps = new Set<string>();
-    COMPETENCIES.forEach(c => {
-      const hasExpert = engineers.some(e => (e.skills[c.id] ?? 0) >= 2);
-      if (!hasExpert) gaps.add(c.id);
-    });
-    setGapHighlight(gaps);
-    if (gaps.size === 0) {
-      toast.success('Пробелов не найдено — по каждой компетенции есть эксперт');
-    } else {
-      toast.warning(`Найдено ${gaps.size} компетенций без экспертов: ${[...gaps].map(id => COMPETENCIES.find(c => c.id === id)?.name).join(', ')}`);
-    }
-  };
+  const handleExport = () => toast.success('Матрица компетенций экспортируется в Excel…');
+  const handleAddComp = () => toast.info('Форма добавления компетенции откроется в следующей версии');
+  const handleAddTraining = () => toast.info('Форма добавления обучения откроется в следующей версии');
+  const handleAssignTraining = (eng: Engineer) => toast.info(`Обучение назначено для ${eng.name}`);
 
-  const exportMatrix = () => {
-    toast.success('Матрица компетенций экспортируется в Excel…');
-  };
-
-  const assignTraining = (eng: Engineer) => {
-    toast.info(`Обучение назначено для ${eng.name}`);
-  };
-
-  const downloadProfile = (eng: Engineer) => {
-    toast.success(`Профиль ${eng.name} скачивается…`);
-  };
-
-  // ─── Render ───────────────────────────────────────────────────────────────
+  // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
 
-      {/* ── Header ── */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between mb-4">
+      {/* ── Header ──────────────────────────────────────────────────────────── */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4 shrink-0">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Icon name="Award" className="text-blue-600" size={20} />
+            <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+              <Icon name="Award" className="text-indigo-600" size={20} />
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">Матрица компетенций</h2>
-              <p className="text-sm text-gray-500">Уровни навыков и сертификации инженеров</p>
+              <p className="text-sm text-gray-500">Уровни навыков, сертификаты и планы обучения инженеров</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" onClick={findGaps}>
-              <Icon name="Search" size={14} className="mr-1.5" />
-              Найти пробелы
+
+          <div className="flex items-center gap-3">
+            <Select value={selectedId} onValueChange={setSelectedId}>
+              <SelectTrigger className="w-52 text-sm">
+                <SelectValue placeholder="Выбрать инженера" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все инженеры</SelectItem>
+                {engineers.map(e => (
+                  <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button size="sm" variant="outline" onClick={handleAddComp}>
+              <Icon name="Plus" size={14} className="mr-1.5" />
+              Добавить компетенцию
             </Button>
-            <Button size="sm" variant="outline" onClick={exportMatrix}>
+            <Button size="sm" variant="outline" onClick={handleExport}>
               <Icon name="Download" size={14} className="mr-1.5" />
-              Экспорт матрицы
+              Экспорт
             </Button>
           </div>
-        </div>
-
-        {/* ── Metrics ── */}
-        <div className="grid grid-cols-4 gap-4 mb-4">
-          {[
-            { label: 'Инженеров',       value: engineers.length,  icon: 'Users',      color: 'text-blue-600',   bg: 'bg-blue-50' },
-            { label: 'Компетенций',     value: COMPETENCIES.length + 8, icon: 'LayoutGrid', color: 'text-purple-600', bg: 'bg-purple-50' },
-            { label: 'Сертифицированных', value: totalCertified,  icon: 'BadgeCheck', color: 'text-green-600',  bg: 'bg-green-50' },
-            { label: 'Требует обучения', value: needsTraining,    icon: 'AlertTriangle', color: 'text-amber-600', bg: 'bg-amber-50' },
-          ].map(m => (
-            <div key={m.label} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 ${m.bg} rounded-lg flex items-center justify-center`}>
-                  <Icon name={m.icon as any} size={18} className={m.color} />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{m.value}</p>
-                  <p className="text-xs text-gray-500">{m.label}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Filters ── */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1 max-w-xs">
-            <Icon name="Search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Поиск по инженеру…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <select
-            value={filterCompetency}
-            onChange={e => setFilterCompetency(e.target.value)}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-          >
-            <option value="">Все компетенции</option>
-            {COMPETENCIES.map(c => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-
-          <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
-            {([
-              { key: 'all',     label: 'Все' },
-              { key: 'missing', label: 'Нет навыка' },
-              { key: 'basic',   label: 'Базовый' },
-            ] as const).map(opt => (
-              <button
-                key={opt.key}
-                onClick={() => setFilterMode(opt.key)}
-                className={`px-3 py-1.5 ${filterMode === opt.key ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-
-          {gapHighlight.size > 0 && (
-            <button
-              onClick={() => setGapHighlight(new Set())}
-              className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
-            >
-              <Icon name="X" size={12} />
-              Сбросить подсветку
-            </button>
-          )}
-        </div>
-
-        {/* ── Legend ── */}
-        <div className="flex items-center gap-4 mt-3">
-          <span className="text-xs text-gray-400">Уровень:</span>
-          {([0, 1, 2, 3] as Level[]).map(l => (
-            <span key={l} className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border ${LEVEL_CFG[l].bg} ${LEVEL_CFG[l].text} ${LEVEL_CFG[l].border}`}>
-              {LEVEL_CFG[l].emoji} {LEVEL_CFG[l].label}
-            </span>
-          ))}
-          <span className="text-xs text-gray-400 ml-2">Клик на ячейку — изменить уровень</span>
         </div>
       </div>
 
-      {/* ── Body: table + detail panel ── */}
-      <div className="flex flex-1 overflow-hidden">
-
-        {/* ── Matrix table ── */}
-        <div className="flex-1 overflow-auto">
-          <table className="w-full text-xs border-collapse">
-            <thead className="sticky top-0 z-10 bg-gray-100 shadow-sm">
-              <tr>
-                <th className="sticky left-0 z-20 bg-gray-100 text-left px-4 py-3 text-gray-500 font-semibold border-b border-r border-gray-200 min-w-[180px]">
-                  Инженер
-                </th>
-                {COMPETENCIES.map(c => (
-                  <th
-                    key={c.id}
-                    title={c.name}
-                    className={`px-2 py-3 text-center border-b border-gray-200 font-medium min-w-[82px] transition-colors ${
-                      gapHighlight.has(c.id) ? 'bg-red-50 text-red-700' : 'text-gray-500'
-                    }`}
-                  >
-                    <span className="block leading-tight">{c.name}</span>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEngineers.map((eng, rowIdx) => (
-                <tr
-                  key={eng.id}
-                  onClick={() => setSelectedId(eng.id)}
-                  className={`cursor-pointer transition-colors ${
-                    selectedId === eng.id
-                      ? 'bg-blue-50 ring-inset ring-1 ring-blue-300'
-                      : rowIdx % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50/50 hover:bg-gray-100/60'
-                  }`}
+      {/* ── Tabs ─────────────────────────────────────────────────────────────── */}
+      <div className="flex-1 overflow-hidden">
+        <Tabs defaultValue="matrix" className="flex flex-col h-full">
+          <div className="bg-white border-b border-gray-200 px-6">
+            <TabsList className="h-10 bg-transparent p-0 gap-0">
+              {[
+                { value:'matrix',  label:'Матрица',     icon:'LayoutGrid' },
+                { value:'gaps',    label:'Пробелы',      icon:'AlertTriangle' },
+                { value:'training',label:'Обучение',     icon:'GraduationCap' },
+                { value:'certs',   label:'Сертификаты',  icon:'BadgeCheck' },
+              ].map(tab => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="flex items-center gap-1.5 px-4 py-2.5 text-sm rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-700 data-[state=active]:bg-transparent text-gray-500"
                 >
-                  {/* Engineer name cell */}
-                  <td
-                    className={`sticky left-0 z-10 px-4 py-2.5 border-b border-r border-gray-100 ${
-                      selectedId === eng.id ? 'bg-blue-50' : rowIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
-                        {eng.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900 whitespace-nowrap">{eng.name}</p>
-                        <p className="text-gray-400">{eng.role}</p>
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Competency cells */}
-                  {COMPETENCIES.map(c => {
-                    const lvl = (eng.skills[c.id] ?? 0) as Level;
-                    const cfg = LEVEL_CFG[lvl];
-                    const isGap = gapHighlight.has(c.id) && lvl < 2;
-                    return (
-                      <td
-                        key={c.id}
-                        className={`px-1.5 py-2 text-center border-b border-gray-100 ${isGap ? 'bg-red-50/40' : ''}`}
-                      >
-                        <button
-                          onClick={e => cycleLevel(eng.id, c.id, e)}
-                          title={`${cfg.label} — кликнуть для изменения`}
-                          className={`inline-flex items-center justify-center w-full py-1 px-1 rounded border text-xs font-medium transition-all hover:scale-105 active:scale-95 ${cfg.bg} ${cfg.text} ${cfg.border} ${isGap ? 'ring-1 ring-red-300' : ''}`}
-                        >
-                          {cfg.emoji}
-                        </button>
-                      </td>
-                    );
-                  })}
-                </tr>
+                  <Icon name={tab.icon as any} size={14} />
+                  {tab.label}
+                </TabsTrigger>
               ))}
+            </TabsList>
+          </div>
 
-              {filteredEngineers.length === 0 && (
-                <tr>
-                  <td colSpan={COMPETENCIES.length + 1} className="text-center py-12 text-gray-400 text-sm">
-                    <Icon name="SearchX" size={32} className="mx-auto mb-2 opacity-30" />
-                    Инженеры не найдены
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+          {/* ── Tab: Matrix ───────────────────────────────────────────────────── */}
+          <TabsContent value="matrix" className="flex-1 overflow-hidden m-0 flex">
 
-        {/* ── Detail panel ── */}
-        {selectedEng && (
-          <div className="w-80 shrink-0 bg-white border-l border-gray-200 overflow-y-auto">
+            {/* Matrix table */}
+            <div className="flex-1 overflow-auto">
 
-            {/* Engineer header */}
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-base">
-                  {selectedEng.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900">{selectedEng.name}</h3>
-                  <p className="text-xs text-gray-500">{selectedEng.role}</p>
-                </div>
+              <div className="flex flex-wrap items-center gap-2 px-4 py-2 border-b border-gray-100 bg-white text-xs">
+                <span className="font-medium text-gray-500">Уровни:</span>
+                {([0,1,2,3,4] as Level[]).map(l => (
+                  <span key={l} className={`px-2 py-0.5 rounded-full font-medium ${LEVEL_CFG[l].bg} ${LEVEL_CFG[l].text}`}>
+                    {LEVEL_CFG[l].short} — {LEVEL_CFG[l].label}
+                  </span>
+                ))}
+                <span className="text-gray-400 ml-1">· клик на ячейку для изменения</span>
               </div>
-              <div className="flex gap-2">
-                <Button size="sm" className="flex-1 text-xs" onClick={() => assignTraining(selectedEng)}>
-                  <Icon name="GraduationCap" size={13} className="mr-1" />
-                  Назначить обучение
-                </Button>
-                <Button size="sm" variant="outline" className="flex-1 text-xs" onClick={() => downloadProfile(selectedEng)}>
-                  <Icon name="FileDown" size={13} className="mr-1" />
-                  Скачать профиль
-                </Button>
-              </div>
+
+              <table className="w-full text-xs border-collapse">
+                <thead className="sticky top-0 z-10 bg-gray-50 shadow-sm">
+                  <tr>
+                    <th className="sticky left-0 z-20 bg-gray-50 text-left px-4 py-3 text-gray-500 font-semibold border-b border-r border-gray-200 min-w-[180px]">
+                      Инженер
+                    </th>
+                    {COMPETENCIES.map(c => (
+                      <th key={c.id} className="px-2 py-3 text-center border-b border-gray-200 font-medium text-gray-600 min-w-[88px]">
+                        {c.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {engineers.map((eng, rowIdx) => (
+                    <tr key={eng.id} onClick={() => setSelectedId(eng.id)}
+                      className={`cursor-pointer transition-colors ${selectedId === eng.id ? 'bg-indigo-50 ring-inset ring-1 ring-indigo-200' : rowIdx % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50/60 hover:bg-gray-100/70'}`}
+                    >
+                      <td className={`sticky left-0 z-10 px-4 py-2.5 border-b border-r border-gray-100 ${selectedId === eng.id ? 'bg-indigo-50' : rowIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50/60'}`}>
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
+                            {initials(eng.name)}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900 whitespace-nowrap">{eng.name}</p>
+                            <p className="text-gray-400">{eng.role}</p>
+                          </div>
+                        </div>
+                      </td>
+                      {COMPETENCIES.map(c => {
+                        const lvl = (eng.skills[c.id] ?? 0) as Level;
+                        return (
+                          <td key={c.id} className="px-2 py-2 text-center border-b border-gray-100">
+                            <button onClick={e => { e.stopPropagation(); openEditDialog(eng.id, c.id, lvl); }}
+                              className="hover:scale-110 transition-transform active:scale-95">
+                              <LevelDot level={lvl} />
+                            </button>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
-            {/* Radar chart */}
-            <div className="p-4 border-b border-gray-100">
-              <p className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">Профиль компетенций</p>
-              <ResponsiveContainer width="100%" height={200}>
-                <RadarChart data={getRadarData(selectedEng)} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
-                  <PolarGrid stroke="#e5e7eb" />
-                  <PolarAngleAxis
-                    dataKey="subject"
-                    tick={{ fontSize: 9, fill: '#6b7280' }}
-                  />
-                  <Radar
-                    name={selectedEng.name}
-                    dataKey="value"
-                    stroke="#3b82f6"
-                    fill="#3b82f6"
-                    fillOpacity={0.25}
-                    strokeWidth={2}
-                  />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
+            {/* Detail panel (shown when engineer selected) */}
+            {selectedEng && (
+              <div className="w-96 shrink-0 bg-white border-l border-gray-200 overflow-y-auto">
 
-            {/* All competencies */}
-            <div className="p-4 border-b border-gray-100">
-              <p className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">Компетенции</p>
-              <div className="space-y-1.5">
-                {COMPETENCIES.map(c => {
-                  const lvl = (selectedEng.skills[c.id] ?? 0) as Level;
-                  const cfg = LEVEL_CFG[lvl];
-                  return (
-                    <div key={c.id} className="flex items-center justify-between">
-                      <span className="text-xs text-gray-700 truncate mr-2">{c.name}</span>
-                      <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full border font-medium ${cfg.bg} ${cfg.text} ${cfg.border}`}>
-                        {cfg.emoji} {cfg.label}
-                      </span>
+                {/* Engineer header */}
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white font-bold text-base shrink-0">
+                      {initials(selectedEng.name)}
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-900">{selectedEng.name}</h3>
+                      <p className="text-xs text-gray-500">{selectedEng.role}</p>
+                      <Progress value={totalScore(selectedEng)} className="h-1.5 mt-1.5" />
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-2xl font-bold text-indigo-600">{totalScore(selectedEng)}%</p>
+                      <p className="text-xs text-gray-400">балл</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" className="flex-1 text-xs" onClick={() => handleAssignTraining(selectedEng)}>
+                      <Icon name="GraduationCap" size={13} className="mr-1" />
+                      Назначить обучение
+                    </Button>
+                    <Button size="sm" variant="outline" className="text-xs" onClick={() => toast.success(`Профиль ${selectedEng.name} скачивается…`)}>
+                      <Icon name="FileDown" size={13} />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Radar chart */}
+                <div className="p-4 border-b border-gray-100">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Профиль компетенций</p>
+                  <ResponsiveContainer width="100%" height={220}>
+                    <RadarChart data={radarData} margin={{ top:10, right:20, bottom:10, left:20 }}>
+                      <PolarGrid stroke="#e5e7eb" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fill: '#6b7280' }} />
+                      <PolarRadiusAxis angle={30} domain={[0, 4]} tick={{ fontSize: 8, fill: '#9ca3af' }} tickCount={5} />
+                      <Radar name="Целевой" dataKey="Целевой" stroke="#e5e7eb" fill="#e5e7eb" fillOpacity={0.5} strokeWidth={1} strokeDasharray="4 2" />
+                      <Radar name="Текущий" dataKey="Текущий" stroke="#6366f1" fill="#6366f1" fillOpacity={0.3} strokeWidth={2} />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                  <div className="flex items-center gap-4 text-xs text-gray-500 justify-center mt-1">
+                    <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-indigo-500 inline-block"/>Текущий</span>
+                    <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-gray-300 inline-block"/>Целевой</span>
+                  </div>
+                </div>
+
+                {/* Bar chart */}
+                <div className="p-4 border-b border-gray-100">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Прогресс по компетенциям</p>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={barData} layout="vertical" margin={{ top:0, right:20, bottom:0, left:10 }}>
+                      <XAxis type="number" domain={[0,4]} tickCount={5} tick={{ fontSize:9 }} />
+                      <YAxis type="category" dataKey="name" tick={{ fontSize:9 }} width={80} />
+                      <Tooltip
+                        contentStyle={{ fontSize:11 }}
+                        formatter={(val, name) => [`${val} — ${LEVEL_CFG[val as Level]?.label ?? val}`, name]}
+                      />
+                      <Bar dataKey="Целевой" fill="#e5e7eb" radius={2} />
+                      <Bar dataKey="Текущий" radius={2}>
+                        {barData.map((entry, i) => (
+                          <Cell
+                            key={i}
+                            fill={entry.Текущий >= entry.Целевой ? '#6366f1' : entry.Текущий === 0 ? '#fca5a5' : '#93c5fd'}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Certifications */}
+                <div className="p-4">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Сертификаты ({selectedEng.certifications.length})</p>
+                  {selectedEng.certifications.length === 0
+                    ? <p className="text-xs text-gray-400 flex items-center gap-1.5"><Icon name="AlertCircle" size={13} />Нет сертификатов</p>
+                    : <div className="space-y-2">
+                      {selectedEng.certifications.map(cert => {
+                        const st = certStatus(cert.expires);
+                        return (
+                          <div key={cert.id} className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
+                            <div className="flex items-start justify-between gap-2">
+                              <p className="text-xs font-medium text-gray-800 flex items-start gap-1.5 leading-tight">
+                                <Icon name="BadgeCheck" size={13} className="text-indigo-400 mt-0.5 shrink-0" />{cert.name}
+                              </p>
+                              <Badge className={`text-xs shrink-0 ${st.cls} border-0`}>{st.label}</Badge>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-1 ml-5">{cert.issuer} · до {fmtDate(cert.expires)}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  }
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* ── Tab: Gaps ─────────────────────────────────────────────────────── */}
+          <TabsContent value="gaps" className="flex-1 overflow-auto m-0 p-6">
+            <div className="max-w-5xl mx-auto space-y-6">
+
+              {/* Top 5 critical */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Icon name="AlertTriangle" size={16} className="text-red-500" />
+                    Топ-5 критических пробелов
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {top5Gaps.map((row, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-red-50 border border-red-100">
+                        <div className="flex items-center gap-3">
+                          <span className="w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-bold">{i+1}</span>
+                          <div>
+                            <p className="text-sm font-semibold text-gray-900">{row.eng.name}</p>
+                            <p className="text-xs text-gray-500">{row.compName}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <LevelDot level={row.current} />
+                          <Icon name="ArrowRight" size={12} className="text-gray-400" />
+                          <LevelDot level={row.target} />
+                          <Badge className={`text-xs border-0 ${row.gap <= -2 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                            {row.gap <= -2 ? 'Критично' : 'Требует внимания'}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Full gap table */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Все пробелы в компетенциях</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50 border-y border-gray-200">
+                        <tr>
+                          {['Инженер','Компетенция','Текущий уровень','Целевой уровень','GAP'].map(h => (
+                            <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {gapRows.map((row, i) => (
+                          <tr key={i} className="hover:bg-gray-50">
+                            <td className="px-4 py-2.5">
+                              <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                                  {initials(row.eng.name)}
+                                </div>
+                                <span className="font-medium text-gray-900">{row.eng.name}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-2.5 text-gray-700">{row.compName}</td>
+                            <td className="px-4 py-2.5">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${LEVEL_CFG[row.current].bg} ${LEVEL_CFG[row.current].text}`}>
+                                {row.current} — {LEVEL_CFG[row.current].label}
+                              </span>
+                            </td>
+                            <td className="px-4 py-2.5">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${LEVEL_CFG[row.target].bg} ${LEVEL_CFG[row.target].text}`}>
+                                {row.target} — {LEVEL_CFG[row.target].label}
+                              </span>
+                            </td>
+                            <td className="px-4 py-2.5">
+                              <span className={`font-bold text-sm ${row.gap <= -2 ? 'text-red-600' : 'text-amber-600'}`}>
+                                {row.gap}
+                              </span>
+                              {row.gap <= -2 && (
+                                <Badge className="ml-2 text-xs border-0 bg-red-100 text-red-700">Критично</Badge>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                        {gapRows.length === 0 && (
+                          <tr>
+                            <td colSpan={5} className="text-center py-10 text-gray-400 text-sm">
+                              <Icon name="CheckCircle2" size={32} className="mx-auto mb-2 text-green-400" />
+                              Пробелов не найдено
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* ── Tab: Training ─────────────────────────────────────────────────── */}
+          <TabsContent value="training" className="flex-1 overflow-auto m-0 p-6">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-semibold text-gray-900">Планы обучения</h3>
+                <Button size="sm" onClick={handleAddTraining}>
+                  <Icon name="Plus" size={14} className="mr-1.5" />
+                  Добавить обучение
+                </Button>
+              </div>
+
+              <div className="space-y-3">
+                {TRAINING_DATA.map(item => {
+                  const eng = engineers.find(e => e.id === item.engineerId);
+                  const st = TRAINING_STATUS_CFG[item.status];
+                  return (
+                    <Card key={item.id}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="w-9 h-9 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                              <Icon name="GraduationCap" size={16} className="text-indigo-600" />
+                            </div>
+                            <div>
+                              <p className="font-semibold text-gray-900 text-sm">{item.course}</p>
+                              {eng && (
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                  <div className="w-4 h-4 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                                    {initials(eng.name)}
+                                  </div>
+                                  <span className="text-xs text-gray-500">{eng.name} · {eng.role}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4 shrink-0">
+                            <div className="text-right">
+                              <p className="text-xs text-gray-500">Дата</p>
+                              <p className="text-sm font-medium text-gray-800">{fmtDate(item.date)}</p>
+                            </div>
+                            <Badge className={`text-xs border-0 ${st.cls}`}>{st.label}</Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   );
                 })}
               </div>
             </div>
+          </TabsContent>
 
-            {/* Certifications */}
-            <div className="p-4">
-              <p className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">Сертификаты</p>
-              {selectedEng.certifications.length === 0 ? (
-                <div className="flex items-center gap-2 text-xs text-gray-400">
-                  <Icon name="AlertCircle" size={13} />
-                  Нет сертификатов
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {selectedEng.certifications.map(cert => {
-                    const badge = certExpiresBadge(cert.expires);
-                    return (
-                      <div key={cert.name} className="flex items-start justify-between gap-2 p-2 rounded-lg bg-gray-50 border border-gray-100">
-                        <div className="flex items-start gap-1.5">
-                          <Icon name="BadgeCheck" size={13} className="text-blue-500 mt-0.5 shrink-0" />
-                          <span className="text-xs text-gray-800 leading-tight">{cert.name}</span>
-                        </div>
-                        <span className={`shrink-0 text-xs px-1.5 py-0.5 rounded-full font-medium ${badge.cls}`}>
-                          {badge.label}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+          {/* ── Tab: Certificates ─────────────────────────────────────────────── */}
+          <TabsContent value="certs" className="flex-1 overflow-auto m-0 p-6">
+            <div className="max-w-5xl mx-auto">
+              <h3 className="text-base font-semibold text-gray-900 mb-4">
+                Все сертификаты — отсортированы по дате истечения
+              </h3>
+              <Card>
+                <CardContent className="p-0">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-50 border-y border-gray-200">
+                      <tr>
+                        {['Инженер','Сертификат','Организация','Выдан','Истекает','Статус'].map(h => (
+                          <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {allCerts.map(cert => {
+                        const st = certStatus(cert.expires);
+                        return (
+                          <tr key={cert.id} className="hover:bg-gray-50">
+                            <td className="px-4 py-2.5">
+                              <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                                  {initials(cert.eng.name)}
+                                </div>
+                                <span className="font-medium text-gray-900">{cert.eng.name}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-2.5">
+                              <div className="flex items-center gap-1.5">
+                                <Icon name="BadgeCheck" size={13} className="text-indigo-400 shrink-0" />
+                                <span className="text-gray-900">{cert.name}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-2.5 text-gray-500">{cert.issuer}</td>
+                            <td className="px-4 py-2.5 text-gray-600">{fmtDate(cert.issued)}</td>
+                            <td className={`px-4 py-2.5 font-medium ${st.label === 'Просрочен' ? 'text-red-600' : st.label === 'Истекает' ? 'text-amber-600' : 'text-gray-700'}`}>
+                              {fmtDate(cert.expires)}
+                            </td>
+                            <td className="px-4 py-2.5">
+                              <Badge className={`text-xs border-0 ${st.cls}`}>{st.label}</Badge>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </CardContent>
+              </Card>
             </div>
-          </div>
-        )}
+          </TabsContent>
+        </Tabs>
       </div>
+
+      {/* ── Edit level dialog ────────────────────────────────────────────────── */}
+      <Dialog open={editCell !== null} onOpenChange={open => !open && setEditCell(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-base">
+              Изменить уровень компетенции
+            </DialogTitle>
+          </DialogHeader>
+          {editCell && (() => {
+            const eng = engineers.find(e => e.id === editCell.engId);
+            const comp = COMPETENCIES.find(c => c.id === editCell.compId);
+            return (
+              <div className="space-y-4">
+                <div className="text-sm text-gray-600">
+                  <span className="font-semibold">{eng?.name}</span> · {comp?.name}
+                </div>
+                <div className="grid grid-cols-5 gap-2">
+                  {([0,1,2,3,4] as Level[]).map(l => (
+                    <button
+                      key={l}
+                      onClick={() => setEditLevel(l)}
+                      className={`flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
+                        editLevel === l ? 'border-indigo-500 shadow-sm' : 'border-gray-200 hover:border-gray-300'
+                      } ${LEVEL_CFG[l].bg}`}
+                    >
+                      <span className={`text-lg font-bold ${LEVEL_CFG[l].text}`}>{LEVEL_CFG[l].short}</span>
+                      <span className={`text-xs ${LEVEL_CFG[l].text} text-center leading-tight`}>{LEVEL_CFG[l].label}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2 justify-end pt-2">
+                  <Button variant="outline" size="sm" onClick={() => setEditCell(null)}>Отмена</Button>
+                  <Button size="sm" onClick={saveLevel}>Сохранить</Button>
+                </div>
+              </div>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

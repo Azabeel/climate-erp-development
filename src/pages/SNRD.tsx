@@ -203,6 +203,8 @@ import MembershipsFull from '@/components/snrd/MembershipsFull';
 import WarehouseMapFull from '@/components/snrd/WarehouseMapFull';
 import AvitoCRMFull from '@/components/snrd/AvitoCRMFull';
 import MarginalityReportFull from '@/components/snrd/MarginalityReportFull';
+import DocumentFlowFull from '@/components/snrd/DocumentFlowFull';
+import ClientHistoryFull from '@/components/snrd/ClientHistoryFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -946,6 +948,12 @@ const SNRD = () => {
 
       case 'marginality-report':
         return <MarginalityReportFull />;
+
+      case 'document-flow':
+        return <DocumentFlowFull />;
+
+      case 'client-history':
+        return <ClientHistoryFull />;
 
       default:
         return (

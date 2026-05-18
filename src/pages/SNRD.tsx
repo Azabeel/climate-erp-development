@@ -165,6 +165,9 @@ import CapacityPlannerFull from '@/components/snrd/CapacityPlannerFull';
 import ServiceZonesFull from '@/components/snrd/ServiceZonesFull';
 import TelegramBotFull from '@/components/snrd/TelegramBotFull';
 import PredictiveMaintenanceFull from '@/components/snrd/PredictiveMaintenanceFull';
+import FuelManagementFull from '@/components/snrd/FuelManagementFull';
+import OneCIntegrationFull from '@/components/snrd/OneCIntegrationFull';
+import QualityControlFull from '@/components/snrd/QualityControlFull';
 import IntegrationLogs from '@/components/snrd/IntegrationLogs';
 import MobileAppSettings from '@/components/snrd/MobileAppSettings';
 import BudgetPlanning from '@/components/snrd/BudgetPlanning';
@@ -910,6 +913,15 @@ const SNRD = () => {
 
       case 'predictive-maintenance':
         return <PredictiveMaintenanceFull />;
+
+      case 'fuel-management':
+        return <FuelManagementFull />;
+
+      case 'onec-integration':
+        return <OneCIntegrationFull />;
+
+      case 'quality-control':
+        return <QualityControlFull />;
 
       default:
         return (

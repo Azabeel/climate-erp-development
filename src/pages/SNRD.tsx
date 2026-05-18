@@ -213,6 +213,8 @@ import WorkshopOrderFull from '@/components/snrd/WorkshopOrderFull';
 import InstallerDashboardFull from '@/components/snrd/InstallerDashboardFull';
 import PriceListFull from '@/components/snrd/PriceListFull';
 import DispatchMapFull from '@/components/snrd/DispatchMapFull';
+import WarrantyClaimsFull from '@/components/snrd/WarrantyClaimsFull';
+import AccountingIntegrationFull from '@/components/snrd/AccountingIntegrationFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -986,6 +988,12 @@ const SNRD = () => {
 
       case 'dispatch-map':
         return <DispatchMapFull />;
+
+      case 'warranty-claims':
+        return <WarrantyClaimsFull />;
+
+      case 'accounting-integration':
+        return <AccountingIntegrationFull />;
 
       default:
         return (

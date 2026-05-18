@@ -216,6 +216,8 @@ import DispatchMapFull from '@/components/snrd/DispatchMapFull';
 import WarrantyClaimsFull from '@/components/snrd/WarrantyClaimsFull';
 import AccountingIntegrationFull from '@/components/snrd/AccountingIntegrationFull';
 import CustomerSatisfactionFull from '@/components/snrd/CustomerSatisfactionFull';
+import WorkloadAnalysisFull from '@/components/snrd/WorkloadAnalysisFull';
+import ContractorManagementFull from '@/components/snrd/ContractorManagementFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -998,6 +1000,12 @@ const SNRD = () => {
 
       case 'customer-satisfaction':
         return <CustomerSatisfactionFull />;
+
+      case 'workload-analysis':
+        return <WorkloadAnalysisFull />;
+
+      case 'contractor-management':
+        return <ContractorManagementFull />;
 
       default:
         return (

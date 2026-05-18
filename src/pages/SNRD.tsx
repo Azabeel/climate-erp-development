@@ -218,6 +218,8 @@ import AccountingIntegrationFull from '@/components/snrd/AccountingIntegrationFu
 import CustomerSatisfactionFull from '@/components/snrd/CustomerSatisfactionFull';
 import WorkloadAnalysisFull from '@/components/snrd/WorkloadAnalysisFull';
 import ContractorManagementFull from '@/components/snrd/ContractorManagementFull';
+import ObjectsMapFull from '@/components/snrd/ObjectsMapFull';
+import RevenueByClientFull from '@/components/snrd/RevenueByClientFull';
 import CommandPalette from '@/components/ui/CommandPalette';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -1006,6 +1008,12 @@ const SNRD = () => {
 
       case 'contractor-management':
         return <ContractorManagementFull />;
+
+      case 'objects-map':
+        return <ObjectsMapFull />;
+
+      case 'revenue-by-client':
+        return <RevenueByClientFull />;
 
       default:
         return (
